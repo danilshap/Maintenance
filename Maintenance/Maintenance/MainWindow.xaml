@@ -9,8 +9,188 @@
         Height="900"
         Width="1560"
         ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        FontSize="16">
     <Grid>
-        
+        <Border>
+            <Border.Background>
+                <ImageBrush ImageSource="Images/mainbackground.png" Opacity="0.2"/>
+            </Border.Background>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="60*" />
+                    <ColumnDefinition Width="35*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- основные команды приложения -->
+                <Border Grid.Column="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <!-- добавить новый заказ -->
+                        <Button Grid.Row="0"
+                                x:Name="BtAppendOrder"
+                                Content="+"
+                                Margin="10"
+                                ToolTip="Оформление нового заказа" />
+
+                        <!-- запросы -->
+                        <Button Grid.Row="1"
+                                x:Name="BtQueries"
+                                Content="Q"
+                                Margin="10"
+                                ToolTip="Оформление нового заказа" />
+
+                        <!-- о приложении -->
+                        <Button Grid.Row="2"
+                                x:Name="BtAboutProgram"
+                                Content="!"
+                                Margin="10"
+                                ToolTip="Оформление нового заказа" />
+
+                        <!-- выход из приложения -->
+                        <Button Grid.Row="11"
+                                x:Name="BtExit"
+                                Content="X"
+                                Margin="10"
+                                ToolTip="Оформление нового заказа" />
+                    </Grid>
+                </Border>
+
+                <!-- список заявок -->
+                <ListView Grid.Column="1"
+                          x:Name="LvOrders"
+                          Margin="10">
+                    <!-- сделать элементы для хранение заявок -->
+                </ListView>
+
+                <!-- контейнер для отображения клиентов, работников, машин -->
+                <Border Grid.Column="2">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="10*" />
+                            <RowDefinition Height="70*" />
+                            <RowDefinition Height="20*" />
+                            <RowDefinition Height="10*" />
+                            <RowDefinition Height="70*" />
+                            <RowDefinition Height="20*" />
+                            <RowDefinition Height="10*" />
+                            <RowDefinition Height="70*" />
+                            <RowDefinition Height="20*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- работа с клиентоми -->
+                        <Label Grid.Column="0"
+                               Grid.Row="0"
+                               Grid.ColumnSpan="2"
+                               Content="Клиенты:"
+                               Margin="10, 0"
+                               FontWeight="Bold"/>
+                        <ListBox Grid.Column="0"
+                                 Grid.Row="1"
+                                 Grid.ColumnSpan="2"
+                                 x:Name="LbClients"
+                                 Margin="10, 0, 10, 10">
+                            <!-- сделать элемент для отображения клиентов -->
+                        </ListBox>
+                        <Button Grid.Column="0"
+                                Grid.Row="2"
+                                x:Name="BtAppendClient"
+                                Content="Append"
+                                Margin="10"
+                                ToolTip="Добавить клиента">
+
+                        </Button>
+                        <Button Grid.Column="1"
+                                Grid.Row="2"
+                                x:Name="BtChangeClient"
+                                Content="Change"
+                                Margin="10"
+                                ToolTip="Изменить данные о клиенте">
+
+                        </Button>
+
+                        <!-- Работа с работниками -->
+                        <Label Grid.Column="0"
+                               Grid.Row="3"
+                               Grid.ColumnSpan="2"
+                               Content="Работники:"
+                               Margin="10, 0"
+                               FontWeight="Bold"/>
+                        <ListBox Grid.Column="0"
+                                 Grid.Row="4"
+                                 Grid.ColumnSpan="2"
+                                 x:Name="LbWorkers"
+                                 Margin="10, 0, 10, 10">
+                            <!-- сделать элемент для отображения работников -->
+                        </ListBox>
+                        <Button Grid.Column="0"
+                                Grid.Row="5"
+                                x:Name="BtAppendWorker"
+                                Content="Append"
+                                Margin="10"
+                                ToolTip="Добавить работника">
+
+                        </Button>
+                        <Button Grid.Column="1"
+                                Grid.Row="5"
+                                x:Name="BtRemoveWorker"
+                                Content="Remove"
+                                Margin="10"
+                                ToolTip="Уволить работника">
+
+                        </Button>
+                        <!-- работа с авто -->
+                        <Label Grid.Column="0"
+                               Grid.Row="6"
+                               Grid.ColumnSpan="2"
+                               Content="Машины:"
+                               Margin="10, 0"
+                               FontWeight="Bold"/>
+                        <ListBox Grid.Column="0"
+                                 Grid.Row="7"
+                                 Grid.ColumnSpan="2"
+                                 x:Name="LbCars"
+                                 Margin="10, 0, 10, 10">
+                            <!-- сделать элемент для отображения клиентов -->
+                        </ListBox>
+                        <Button Grid.Column="0"
+                                Grid.Row="8"
+                                x:Name="BtAppendCar"
+                                Content="Append"
+                                Margin="10"
+                                ToolTip="Добавить автомобиль">
+
+                        </Button>
+                        <Button Grid.Column="1"
+                                Grid.Row="8"
+                                x:Name="BtChangeCar"
+                                Content="Change"
+                                Margin="10"
+                                ToolTip="Изменить данные об автомобиле">
+
+                        </Button>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
