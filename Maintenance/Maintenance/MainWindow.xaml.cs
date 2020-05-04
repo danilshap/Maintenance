@@ -20,9 +20,25 @@ namespace Maintenance
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
+        public MainWindow() {
             InitializeComponent();
         }
-    }
+
+        /// <summary>
+        /// асинхронное добавление элемента в контейнер типа ListView
+        /// </summary>
+        /// <param name="value">значение которое будет добавлено в этот контейнер</param>
+        public void AppendDataToListView(object value) {
+
+        } // AppendDataToListView
+
+        /// <summary>
+        /// асинхронное добавление данных в контейнер типа ListBox
+        /// </summary>
+        /// <param name="lb">контейнер</param>
+        /// <param name="value">значение которое будет добавленно в этот контейнер</param>
+        public void AppendDataToListBox(ListBox lb, object value) {
+
+        } // AppendDataToListBox
+    } // MainWindow
 }

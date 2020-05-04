@@ -10,7 +10,8 @@
         Width="1560"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        FontSize="16">
+        FontSize="16"
+        Icon="Images/application_icon.png">
     <Grid>
         <Border>
             <Border.Background>
@@ -114,18 +115,16 @@
                         <Button Grid.Column="0"
                                 Grid.Row="2"
                                 x:Name="BtAppendClient"
-                                Content="Append"
                                 Margin="10"
                                 ToolTip="Добавить клиента">
-
+                            <Image Source="Images/person_add.png"/>
                         </Button>
                         <Button Grid.Column="1"
                                 Grid.Row="2"
                                 x:Name="BtChangeClient"
-                                Content="Change"
                                 Margin="10"
                                 ToolTip="Изменить данные о клиенте">
-
+                            <Image Source="Images/change.png"/>
                         </Button>
 
                         <!-- Работа с работниками -->
@@ -145,18 +144,16 @@
                         <Button Grid.Column="0"
                                 Grid.Row="5"
                                 x:Name="BtAppendWorker"
-                                Content="Append"
                                 Margin="10"
                                 ToolTip="Добавить работника">
-
+                            <Image Source="Images/person_add.png"/>
                         </Button>
                         <Button Grid.Column="1"
                                 Grid.Row="5"
                                 x:Name="BtRemoveWorker"
-                                Content="Remove"
                                 Margin="10"
                                 ToolTip="Уволить работника">
-
+                            <Image Source="Images/person_remove.png"/>
                         </Button>
                         <!-- работа с авто -->
                         <Label Grid.Column="0"
@@ -175,18 +172,16 @@
                         <Button Grid.Column="0"
                                 Grid.Row="8"
                                 x:Name="BtAppendCar"
-                                Content="Append"
                                 Margin="10"
                                 ToolTip="Добавить автомобиль">
-
+                            <Image Source="Images/add.png"/>
                         </Button>
                         <Button Grid.Column="1"
                                 Grid.Row="8"
                                 x:Name="BtChangeCar"
-                                Content="Change"
                                 Margin="10"
                                 ToolTip="Изменить данные об автомобиле">
-
+                            <Image Source="Images/change.png"/>
                         </Button>
                     </Grid>
                 </Border>

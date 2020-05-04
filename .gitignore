@@ -1,5 +1,9 @@
 Maintenance/.vs
 Maintenance/Maintenance/bin
 Maintenance/Maintenance/obj
+Maintenance.Models/Maintenance.Models/bin
+Maintenance.Models/Maintenance.Models/obj
+Maintenance.DataAccess/Maintenance.DataAccess/bin
+Maintenance.DataAccess/Maintenance.DataAccess/obj
 MaintenanceServer/MaintenanceServer/bin
 MaintenanceServer/MaintenanceServer/obj

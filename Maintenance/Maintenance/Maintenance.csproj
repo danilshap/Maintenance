@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Maintenance.Models">
+      <HintPath>..\Maintenance.Models\bin\Debug\Maintenance.Models.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -55,6 +58,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Views\AboutApplicationWindow.xaml.cs">
+      <DependentUpon>AboutApplicationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppendCarWindow.xaml.cs">
+      <DependentUpon>AppendCarWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppendOrChangeClientWindow.xaml.cs">
+      <DependentUpon>AppendOrChangeClientWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppendRepairRequestWindow.xaml.cs">
+      <DependentUpon>AppendRepairRequestWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppendWorkerWindow.xaml.cs">
+      <DependentUpon>AppendWorkerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RequestWindow.xaml.cs">
+      <DependentUpon>RequestWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,6 +88,30 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AboutApplicationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppendCarWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppendOrChangeClientWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppendRepairRequestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppendWorkerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RequestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -96,6 +141,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\mainbackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\application_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\change.png" />
+    <Resource Include="Images\person_add.png" />
+    <Resource Include="Images\person_remove.png" />
+    <Resource Include="Images\remove.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
