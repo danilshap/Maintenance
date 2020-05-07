@@ -144,6 +144,9 @@ namespace Maintenance.DataAccess
                 .Property(w => w.IsWorkNow)
                 .IsRequired();
             modelBuilder.Entity<Worker>()
+                .HasRequired(c => c.Person)
+                .WithOptional(p => p.Worker);
+            modelBuilder.Entity<Worker>()
                 .HasMany(w => w.RepairOrders)
                 .WithRequired(r => r.Worker);
             #endregion

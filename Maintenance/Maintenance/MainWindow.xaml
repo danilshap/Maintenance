@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Maintenance"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Техобслуживание"
         Height="900"
@@ -11,11 +12,99 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         FontSize="16"
-        Icon="Images/application_icon.png">
+        Icon="Images/application_icon.png"
+        FontFamily="{materialDesign:MaterialDesignFont}">
+    <Window.Resources>
+        <!-- карточка для заказов на ремонт -->
+        <DataTemplate x:Key="OrderCards">
+            <Border BorderBrush="Black"
+                    BorderThickness="1"
+                    Width="450"
+                    Height="420"
+                    Background="{DynamicResource MaterialDesignPaper}"
+                    ToolTip="Заявка на ремонт">
+                <ScrollViewer>
+                    <StackPanel>
+                        <!-- информацция по заявке -->
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="1. Данные по заявке:"
+                                   FontWeight="Bold" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Id,
+                            StringFormat=Номер заказа: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding DateOfTheApplication,
+                            StringFormat=Дата обращения: {0:d}}" />
+                        <TextBlock Margin="10, 10, 0, 0"
+                                   Text="{Binding DateOfCompletion,
+                            StringFormat=Дата окончания работ: {0:d}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Malfunctions,
+                            StringFormat=Список неисправностей: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 5"
+                                   Text="{Binding IsReady,
+                            StringFormat=Статус готовности: {0}}" />
+                        <Separator Height="5"
+                                   Margin="10, 5, 0, 0"
+                                   Background="Black" />
+
+                        <!-- информация по клиенту -->
+
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="2. Данные по клиенту:"
+                                   FontWeight="Bold" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Client.Person.Name,
+                            StringFormat=Имя клиента: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Client.Person.Surname,
+                            StringFormat=Фамилия клиента: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Client.Person.Patronymic,
+                            StringFormat=Отчество клиента: {0}}" />
+                        <Separator Height="5"
+                                   Margin="10, 5, 0, 0"
+                                   Background="Black" />
+
+                        <!-- данные по рабочему -->
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="3. Данные по мастеру:"
+                                   FontWeight="Bold" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Worker.Person.Name,
+                            StringFormat=Имя мастера: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Worker.Person.Surname,
+                            StringFormat=Фамилия мастера: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Worker.Person.Patronymic,
+                            StringFormat=Отчество мастера: {0}}" />
+                        <Separator Height="5"
+                                   Margin="10, 5, 0, 0"
+                                   Background="Black" />
+
+                        <!-- Данные по авто -->
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="4. Данные по автомобилю:"
+                                   FontWeight="Bold" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Car.StateNumber,
+                            StringFormat=Номер авто: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Car.Mark.Title,
+                            StringFormat=Марка авто: {0}}" />
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Car.Mark.Model,
+                            StringFormat=Модель авто: {0}}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
         <Border>
             <Border.Background>
-                <ImageBrush ImageSource="Images/mainbackground.png" Opacity="0.2"/>
+                <ImageBrush ImageSource="Images/mainbackground.png" Opacity="0.2" />
             </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -25,62 +114,87 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- основные команды приложения -->
-                <Border Grid.Column="0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-
+                <Border Grid.Column="0"
+                        Background="White">
+                    <StackPanel>
                         <!-- добавить новый заказ -->
-                        <Button Grid.Row="0"
-                                x:Name="BtAppendOrder"
-                                Content="+"
-                                Margin="10"
-                                ToolTip="Оформление нового заказа" />
+                        <Button x:Name="BtAppendOrder"
+                                Margin="5"
+                                ToolTip="Оформление нового заказа"
+                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <materialDesign:PackIcon
+                                Kind="Add"
+                                Height="44"
+                                Width="44" />
+                        </Button>
 
                         <!-- запросы -->
-                        <Button Grid.Row="1"
-                                x:Name="BtQueries"
-                                Content="Q"
-                                Margin="10"
-                                ToolTip="Оформление нового заказа" />
+                        <Button x:Name="BtQueries"
+                                Margin="5"
+                                ToolTip="Запросы"
+                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <materialDesign:PackIcon
+                                Kind="ClipboardList"
+                                Height="44"
+                                Width="44" />
+                        </Button>
 
                         <!-- о приложении -->
-                        <Button Grid.Row="2"
-                                x:Name="BtAboutProgram"
-                                Content="!"
-                                Margin="10"
-                                ToolTip="Оформление нового заказа" />
+                        <Button x:Name="BtAboutProgram"
+                                Margin="5"
+                                ToolTip="О приложении"
+                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <materialDesign:PackIcon
+                                Kind="About"
+                                Height="44"
+                                Width="44" />
+                        </Button>
+
+                        <Separator Margin="10" />
+
+                        <!-- завершить ремонт -->
+                        <Button x:Name="BtGetReady"
+                                Margin="5"
+                                ToolTip="Завершить ремонт автомобиля"
+                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <materialDesign:PackIcon
+                                Kind="Check"
+                                Height="44"
+                                Width="44" />
+                        </Button>
+
+                        <Separator Margin="10" />
 
                         <!-- выход из приложения -->
-                        <Button Grid.Row="11"
-                                x:Name="BtExit"
-                                Content="X"
-                                Margin="10"
-                                ToolTip="Оформление нового заказа" />
-                    </Grid>
+                        <Button x:Name="BtExit"
+                                Margin="5"
+                                ToolTip="Выход из приложения"
+                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <materialDesign:PackIcon
+                                Kind="ExitToApp"
+                                Height="44"
+                                Width="44" />
+                        </Button>
+                    </StackPanel>
                 </Border>
 
                 <!-- список заявок -->
                 <ListView Grid.Column="1"
                           x:Name="LvOrders"
-                          Margin="10">
-                    <!-- сделать элементы для хранение заявок -->
+                          Margin="5, 10, 10, 10"
+                          ItemTemplate="{DynamicResource OrderCards}"
+                          ItemsSource="{Binding Orders}"
+                          SelectedItem="{Binding SelectedRepairOrder}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
                 </ListView>
 
                 <!-- контейнер для отображения клиентов, работников, машин -->
-                <Border Grid.Column="2">
+                <Border Grid.Column="2"
+                        Background="White">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="10*" />
@@ -104,28 +218,48 @@
                                Grid.ColumnSpan="2"
                                Content="Клиенты:"
                                Margin="10, 0"
-                               FontWeight="Bold"/>
-                        <ListBox Grid.Column="0"
+                               FontWeight="Bold" />
+                        <DataGrid Grid.Column="0"
                                  Grid.Row="1"
                                  Grid.ColumnSpan="2"
                                  x:Name="LbClients"
-                                 Margin="10, 0, 10, 10">
-                            <!-- сделать элемент для отображения клиентов -->
-                        </ListBox>
+                                 Margin="10, 0, 10, 10"
+                                 ItemsSource="{Binding Clients}"
+                                 SelectedItem="{Binding SelectedClient}"
+                                 BorderThickness="1"
+                                 BorderBrush="Black"
+                                 AutoGenerateColumns="False"
+                                 SelectionMode="Single"
+                                 CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Person.Surname}"
+                                                    Header="Фамилия Клиента"
+                                                    Width="1*"/>
+                                <DataGridTextColumn Binding="{Binding Person.Name}"
+                                                    Header="Имя Клиента"
+                                                    Width="1*"/>
+                                <DataGridTextColumn Binding="{Binding Person.Patronymic}"
+                                                    Header="Отчество Клиента"
+                                                    Width="1*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                         <Button Grid.Column="0"
                                 Grid.Row="2"
                                 x:Name="BtAppendClient"
+                                Content="Добавить клиента"
                                 Margin="10"
-                                ToolTip="Добавить клиента">
-                            <Image Source="Images/person_add.png"/>
-                        </Button>
+                                ToolTip="Добавить клиента"
+                                Background="{DynamicResource SecondaryAccentBrush}"
+                                BorderBrush="Transparent"/>
                         <Button Grid.Column="1"
                                 Grid.Row="2"
                                 x:Name="BtChangeClient"
                                 Margin="10"
-                                ToolTip="Изменить данные о клиенте">
-                            <Image Source="Images/change.png"/>
-                        </Button>
+                                Content="Изменить данные"
+                                ToolTip="Изменить данные о выбранном клиенте"
+                                CommandParameter="{Binding Path = SelectedClient}"
+                                Background="{DynamicResource SecondaryAccentBrush}"
+                                BorderBrush="Transparent"/>
 
                         <!-- Работа с работниками -->
                         <Label Grid.Column="0"
@@ -133,56 +267,96 @@
                                Grid.ColumnSpan="2"
                                Content="Работники:"
                                Margin="10, 0"
-                               FontWeight="Bold"/>
-                        <ListBox Grid.Column="0"
+                               FontWeight="Bold" />
+                        <DataGrid Grid.Column="0"
                                  Grid.Row="4"
                                  Grid.ColumnSpan="2"
                                  x:Name="LbWorkers"
-                                 Margin="10, 0, 10, 10">
-                            <!-- сделать элемент для отображения работников -->
-                        </ListBox>
+                                 Margin="10, 0, 10, 10"
+                                 ItemsSource="{Binding Workers}"
+                                 SelectedItem="{Binding SelectedWorker}"
+                                 BorderThickness="1"
+                                 BorderBrush="Black"
+                                 AutoGenerateColumns="False"
+                                 SelectionMode="Single"
+                                 CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Person.Surname}"
+                                                    Header="Фамилия мастера"
+                                                    Width="1*"/>
+                                <DataGridTextColumn Binding="{Binding Person.Name}"
+                                                    Header="Имя мастера"
+                                                    Width="1*"/>
+                                <DataGridTextColumn Binding="{Binding Person.Patronymic}"
+                                                    Header="Отчество мастера"
+                                                    Width="1*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                         <Button Grid.Column="0"
                                 Grid.Row="5"
                                 x:Name="BtAppendWorker"
                                 Margin="10"
-                                ToolTip="Добавить работника">
-                            <Image Source="Images/person_add.png"/>
-                        </Button>
+                                ToolTip="Нанять нового работника"
+                                Content="Добавить работника"
+                                Background="{DynamicResource SecondaryAccentBrush}"
+                                BorderBrush="Transparent"/>
                         <Button Grid.Column="1"
                                 Grid.Row="5"
                                 x:Name="BtRemoveWorker"
                                 Margin="10"
-                                ToolTip="Уволить работника">
-                            <Image Source="Images/person_remove.png"/>
-                        </Button>
+                                Content="Удалить работника"
+                                ToolTip="Уволить выбранного работника работника"
+                                CommandParameter="{Binding Path = SelectedWorker}"
+                                Background="{DynamicResource SecondaryAccentBrush}"
+                                BorderBrush="Transparent"/>
                         <!-- работа с авто -->
                         <Label Grid.Column="0"
                                Grid.Row="6"
                                Grid.ColumnSpan="2"
                                Content="Машины:"
                                Margin="10, 0"
-                               FontWeight="Bold"/>
-                        <ListBox Grid.Column="0"
+                               FontWeight="Bold" />
+                        <DataGrid Grid.Column="0"
                                  Grid.Row="7"
                                  Grid.ColumnSpan="2"
                                  x:Name="LbCars"
-                                 Margin="10, 0, 10, 10">
-                            <!-- сделать элемент для отображения клиентов -->
-                        </ListBox>
+                                 Margin="10, 0, 10, 10"
+                                 ItemsSource="{Binding Cars}"
+                                 SelectedItem="{Binding SelectedCar}"
+                                 BorderThickness="1"
+                                 BorderBrush="Black"
+                                 AutoGenerateColumns="False"
+                                 SelectionMode="Single"
+                                 CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding StateNumber}"
+                                                    Header="Гос. номер"
+                                                    Width="1*"/>
+                                <DataGridTextColumn Binding="{Binding Mark.Title}"
+                                                    Header="Марка"
+                                                    Width="1*"/>
+                                <DataGridTextColumn Binding="{Binding Mark.Model}"
+                                                    Header="Модель"
+                                                    Width="1*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                         <Button Grid.Column="0"
                                 Grid.Row="8"
                                 x:Name="BtAppendCar"
                                 Margin="10"
-                                ToolTip="Добавить автомобиль">
-                            <Image Source="Images/add.png"/>
-                        </Button>
+                                Content="Добавить автомобиль"
+                                ToolTip="Добавить автомобиль в базу"
+                                Background="{DynamicResource SecondaryAccentBrush}"
+                                BorderBrush="Transparent" />
                         <Button Grid.Column="1"
                                 Grid.Row="8"
                                 x:Name="BtChangeCar"
                                 Margin="10"
-                                ToolTip="Изменить данные об автомобиле">
-                            <Image Source="Images/change.png"/>
-                        </Button>
+                                Content="Изменить данные"
+                                ToolTip="Изменить данные о выбранном автомобиле"
+                                CommandParameter="{Binding Path = SelectedCar}"
+                                Background="{DynamicResource SecondaryAccentBrush}"
+                                BorderBrush="Transparent" />
                     </Grid>
                 </Border>
             </Grid>

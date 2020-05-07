@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Maintenance.Services;
+using Maintenance.ViewModels;
 
 namespace Maintenance
 {
@@ -20,8 +22,13 @@ namespace Maintenance
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MaintenanceVeiwModel _maintenanceVeiwModel;
+
         public MainWindow() {
             InitializeComponent();
+
+            _maintenanceVeiwModel = new MaintenanceVeiwModel(this, new MainWindowOpenWindowService());
+            this.DataContext = _maintenanceVeiwModel;
         }
 
         /// <summary>
