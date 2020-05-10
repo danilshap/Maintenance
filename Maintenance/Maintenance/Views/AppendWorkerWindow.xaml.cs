@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Maintenance.Models;
 
 namespace Maintenance.Views
 {
@@ -19,7 +20,7 @@ namespace Maintenance.Views
     /// </summary>
     public partial class AppendWorkerWindow : Window
     {
-        public AppendWorkerWindow()
+        public AppendWorkerWindow(Worker worker)
         {
             InitializeComponent();
         }

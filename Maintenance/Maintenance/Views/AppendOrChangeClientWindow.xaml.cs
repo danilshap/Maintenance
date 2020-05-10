@@ -11,16 +11,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Maintenance.Models;
 
 namespace Maintenance.Views
 {
     /// <summary>
     /// Логика взаимодействия для AppendOrChangeClientWindow.xaml
     /// </summary>
-    public partial class AppendOrChangeClientWindow : Window
-    {
-        public AppendOrChangeClientWindow()
-        {
+    public partial class AppendOrChangeClientWindow : Window {
+        public AppendOrChangeClientWindow(Client client, bool mode) {
             InitializeComponent();
         }
     }

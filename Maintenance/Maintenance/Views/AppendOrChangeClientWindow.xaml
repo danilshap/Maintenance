@@ -4,9 +4,70 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Maintenance.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="AppendOrChangeClientWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="__"
+        Height="710"
+        Width="600"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        FontSize="16"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        Icon="../Images/application_icon.png">
+    <StackPanel>
+        <TextBlock Margin="10"
+                   Text="Имя:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите имя клиента"
+            TabIndex="0"/>
+        <TextBlock Margin="10"
+                   Text="Фамилия:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите фамилию клиента"
+            TabIndex="1"/>
+        <TextBlock Margin="10"
+                   Text="Отчество:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите отчество клиента"
+            TabIndex="2"/>
+        <TextBlock Margin="10"
+                   Text="Паспорт:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите паспорт клиента"
+            TabIndex="3"/>
+        <TextBlock Margin="10"
+                   Text="Дата рождения:"/>
+        <DatePicker
+            Margin="10, 0"
+            Padding="10, 0"
+            materialDesign:HintAssist.Hint="введите дату рождения клиента"
+            TabIndex="4"/>
+        <TextBlock Margin="10"
+                   Text="Улица проживания:"/>
+        <TextBox Margin="10, 0"
+                 materialDesign:HintAssist.Hint="введите улицу проживания клиента"
+                 TabIndex="5"/>
+        <TextBlock Margin="10"
+                   Text="Дом проживания:"/>
+        <TextBox Margin="10, 0"
+                 materialDesign:HintAssist.Hint="введите дом проживания клиента"
+                 TabIndex="6"/>
+        <TextBlock Margin="10"
+                   Text="Квартира проживания:"/>
+        <TextBox Margin="10, 0"
+                 materialDesign:HintAssist.Hint="введите квартиру проживания клиента"
+                 TabIndex="7"/>
+        <Separator Margin="10"
+                   Height="3"/>
+        <Button Margin="10"
+                Content="Добавить клиента"
+                TabIndex="8"/>
+        <Button Margin="10"
+                Content="Отмена"
+                TabIndex="9"/>
+    </StackPanel>
 </Window>

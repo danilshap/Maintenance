@@ -78,14 +78,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controllers\DatabaseContext.cs" />
+    <Compile Include="Controllers\RelayCommand.cs" />
     <Compile Include="Services\IWindowOpenService.cs" />
     <Compile Include="Services\MainWindowOpenWindowService.cs" />
     <Compile Include="ViewModels\MaintenanceVeiwModel.cs" />
     <Compile Include="Views\AboutApplicationWindow.xaml.cs">
       <DependentUpon>AboutApplicationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AppendCarWindow.xaml.cs">
-      <DependentUpon>AppendCarWindow.xaml</DependentUpon>
+    <Compile Include="Views\AppendOrChangeCarWindow.xaml.cs">
+      <DependentUpon>AppendOrChangeCarWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AppendOrChangeClientWindow.xaml.cs">
       <DependentUpon>AppendOrChangeClientWindow.xaml</DependentUpon>
@@ -115,13 +116,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AppendCarWindow.xaml">
+    <Page Include="Views\AppendOrChangeCarWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AppendOrChangeClientWindow.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AppendRepairRequestWindow.xaml">
       <SubType>Designer</SubType>
@@ -178,6 +179,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\help.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -11,15 +11,16 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Maintenance.Models;
 
 namespace Maintenance.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AppendCarWindow.xaml
+    /// Логика взаимодействия для AppendOrChangeCarWindow.xaml
     /// </summary>
-    public partial class AppendCarWindow : Window
+    public partial class AppendOrChangeCarWindow : Window
     {
-        public AppendCarWindow()
+        public AppendOrChangeCarWindow(Car car, bool mode)
         {
             InitializeComponent();
         }

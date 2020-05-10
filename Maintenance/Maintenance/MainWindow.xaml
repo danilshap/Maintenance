@@ -121,6 +121,7 @@
                         <Button x:Name="BtAppendOrder"
                                 Margin="5"
                                 ToolTip="Оформление нового заказа"
+                                Command="{Binding AppendRequest}"
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="Add"
@@ -132,6 +133,7 @@
                         <Button x:Name="BtQueries"
                                 Margin="5"
                                 ToolTip="Запросы"
+                                Command="{Binding RequestWindow}"
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="ClipboardList"
@@ -143,6 +145,7 @@
                         <Button x:Name="BtAboutProgram"
                                 Margin="5"
                                 ToolTip="О приложении"
+                                Command="{Binding AboutApplicationWindow}"
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="About"
@@ -169,11 +172,12 @@
                         <Button x:Name="BtExit"
                                 Margin="5"
                                 ToolTip="Выход из приложения"
+                                Command="{Binding QuitCommand}"
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="ExitToApp"
                                 Height="44"
-                                Width="44" />
+                                Width="44"/>
                         </Button>
                     </StackPanel>
                 </Border>
@@ -219,7 +223,7 @@
                                Content="Клиенты:"
                                Margin="10, 0"
                                FontWeight="Bold" />
-                        <DataGrid Grid.Column="0"
+                        <ListView Grid.Column="0"
                                  Grid.Row="1"
                                  Grid.ColumnSpan="2"
                                  x:Name="LbClients"
@@ -228,27 +232,31 @@
                                  SelectedItem="{Binding SelectedClient}"
                                  BorderThickness="1"
                                  BorderBrush="Black"
-                                 AutoGenerateColumns="False"
-                                 SelectionMode="Single"
-                                 CanUserAddRows="False">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Person.Surname}"
-                                                    Header="Фамилия Клиента"
-                                                    Width="1*"/>
-                                <DataGridTextColumn Binding="{Binding Person.Name}"
-                                                    Header="Имя Клиента"
-                                                    Width="1*"/>
-                                <DataGridTextColumn Binding="{Binding Person.Patronymic}"
-                                                    Header="Отчество Клиента"
-                                                    Width="1*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                 SelectionMode="Single">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Person.Surname}"
+                                        Header="Фамилия Клиента"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Person.Name}"
+                                        Header="Имя Клиента"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Person.Patronymic}"
+                                        Header="Отчество Клиента"
+                                        Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                         <Button Grid.Column="0"
                                 Grid.Row="2"
                                 x:Name="BtAppendClient"
                                 Content="Добавить клиента"
                                 Margin="10"
                                 ToolTip="Добавить клиента"
+                                Command="{Binding AppendClient}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 BorderBrush="Transparent"/>
                         <Button Grid.Column="1"
@@ -257,6 +265,7 @@
                                 Margin="10"
                                 Content="Изменить данные"
                                 ToolTip="Изменить данные о выбранном клиенте"
+                                Command="{Binding ChangeClient}"
                                 CommandParameter="{Binding Path = SelectedClient}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 BorderBrush="Transparent"/>
@@ -268,7 +277,7 @@
                                Content="Работники:"
                                Margin="10, 0"
                                FontWeight="Bold" />
-                        <DataGrid Grid.Column="0"
+                        <ListView Grid.Column="0"
                                  Grid.Row="4"
                                  Grid.ColumnSpan="2"
                                  x:Name="LbWorkers"
@@ -277,27 +286,31 @@
                                  SelectedItem="{Binding SelectedWorker}"
                                  BorderThickness="1"
                                  BorderBrush="Black"
-                                 AutoGenerateColumns="False"
-                                 SelectionMode="Single"
-                                 CanUserAddRows="False">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Person.Surname}"
-                                                    Header="Фамилия мастера"
-                                                    Width="1*"/>
-                                <DataGridTextColumn Binding="{Binding Person.Name}"
-                                                    Header="Имя мастера"
-                                                    Width="1*"/>
-                                <DataGridTextColumn Binding="{Binding Person.Patronymic}"
-                                                    Header="Отчество мастера"
-                                                    Width="1*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                 SelectionMode="Single">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Person.Surname}"
+                                        Header="Фамилия мастера"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Person.Name}"
+                                        Header="Имя мастера"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Person.Patronymic}"
+                                        Header="Отчество мастера"
+                                        Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                         <Button Grid.Column="0"
                                 Grid.Row="5"
                                 x:Name="BtAppendWorker"
                                 Margin="10"
                                 ToolTip="Нанять нового работника"
                                 Content="Добавить работника"
+                                Command="{Binding AppendWorker}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 BorderBrush="Transparent"/>
                         <Button Grid.Column="1"
@@ -306,6 +319,7 @@
                                 Margin="10"
                                 Content="Удалить работника"
                                 ToolTip="Уволить выбранного работника работника"
+                                Command="{Binding RemoveWorker}"
                                 CommandParameter="{Binding Path = SelectedWorker}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 BorderBrush="Transparent"/>
@@ -316,7 +330,7 @@
                                Content="Машины:"
                                Margin="10, 0"
                                FontWeight="Bold" />
-                        <DataGrid Grid.Column="0"
+                        <ListView Grid.Column="0"
                                  Grid.Row="7"
                                  Grid.ColumnSpan="2"
                                  x:Name="LbCars"
@@ -325,27 +339,31 @@
                                  SelectedItem="{Binding SelectedCar}"
                                  BorderThickness="1"
                                  BorderBrush="Black"
-                                 AutoGenerateColumns="False"
-                                 SelectionMode="Single"
-                                 CanUserAddRows="False">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding StateNumber}"
-                                                    Header="Гос. номер"
-                                                    Width="1*"/>
-                                <DataGridTextColumn Binding="{Binding Mark.Title}"
-                                                    Header="Марка"
-                                                    Width="1*"/>
-                                <DataGridTextColumn Binding="{Binding Mark.Model}"
-                                                    Header="Модель"
-                                                    Width="1*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                 SelectionMode="Single">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding StateNumber}"
+                                        Header="Гос. номер"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Mark.Title}"
+                                        Header="Марка"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Mark.Model}"
+                                        Header="Модель"
+                                        Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                         <Button Grid.Column="0"
                                 Grid.Row="8"
                                 x:Name="BtAppendCar"
                                 Margin="10"
                                 Content="Добавить автомобиль"
                                 ToolTip="Добавить автомобиль в базу"
+                                Command="{Binding AppendCar}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 BorderBrush="Transparent" />
                         <Button Grid.Column="1"
@@ -354,6 +372,7 @@
                                 Margin="10"
                                 Content="Изменить данные"
                                 ToolTip="Изменить данные о выбранном автомобиле"
+                                Command="{Binding ChangeCar}"
                                 CommandParameter="{Binding Path = SelectedCar}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 BorderBrush="Transparent" />

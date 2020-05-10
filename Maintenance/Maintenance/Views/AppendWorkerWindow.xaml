@@ -4,9 +4,64 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Maintenance.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="AppendWorkerWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="Добавление работника"
+        Height="570"
+        Width="600"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        FontSize="16"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        Icon="../Images/application_icon.png">
+    <StackPanel>
+        <TextBlock Margin="10"
+                   Text="Имя:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите имя работника"
+            TabIndex="0"
+            Padding="10, 0"/>
+        <TextBlock Margin="10"
+                   Text="Фамилия:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите фамилию работника"
+            TabIndex="1"
+            Padding="10, 0"/>
+        <TextBlock Margin="10"
+                   Text="Отчество:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите отчество работника"
+            TabIndex="2"
+            Padding="10, 0"/>
+        <TextBlock Margin="10"
+                   Text="Паспорт:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите паспорт работника"
+            TabIndex="3"
+            Padding="10, 0"/>
+        <TextBlock Margin="10"
+                   Text="Специальность:"/>
+        <ComboBox
+            Margin="10, 0"
+            TabIndex="4"
+            Padding="10, 0"/>
+        <TextBlock Margin="10"
+                   Text="Разряд:"/>
+        <ComboBox
+            Margin="10, 0"
+            TabIndex="5"
+            Padding="10, 0"/>
+        <Separator Height="3"
+                   Margin="10"/>
+        <Button Margin="10"
+                Content="Добавить работника"
+                TabIndex="6"/>
+        <Button Margin="10"
+                Content="Отмена"
+                TabIndex="7"/>
+    </StackPanel>
 </Window>
