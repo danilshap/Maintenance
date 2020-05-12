@@ -11,6 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Maintenance.Controllers;
+using Maintenance.Models;
+using Maintenance.Services;
+using Maintenance.ViewModels;
 
 namespace Maintenance.Views
 {
@@ -19,9 +23,14 @@ namespace Maintenance.Views
     /// </summary>
     public partial class AppendRepairRequestWindow : Window
     {
-        public AppendRepairRequestWindow()
-        {
+        private AppendRequestViewModel _viewModel;
+        public RepairOrder NewOrder { get; set; }
+
+        public AppendRepairRequestWindow(DatabaseContext context) {
             InitializeComponent();
-        }
+
+            _viewModel = new AppendRequestViewModel(new AppendRequestOpenWindowService(), context, this);
+            this.DataContext = _viewModel;
+        } // AppendRepairRequestWindow
     }
 }

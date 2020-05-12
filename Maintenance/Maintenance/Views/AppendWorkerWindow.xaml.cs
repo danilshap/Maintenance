@@ -11,7 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Maintenance.Controllers;
 using Maintenance.Models;
+using Maintenance.ViewModels;
 
 namespace Maintenance.Views
 {
@@ -20,9 +22,13 @@ namespace Maintenance.Views
     /// </summary>
     public partial class AppendWorkerWindow : Window
     {
-        public AppendWorkerWindow(Worker worker)
-        {
+        private AppendWorkerViewModel _viewModel;
+
+        public AppendWorkerWindow(Worker worker, DatabaseContext context) {
             InitializeComponent();
+
+            _viewModel = new AppendWorkerViewModel(worker, this, context);
+            this.DataContext = _viewModel;
         }
     }
 }

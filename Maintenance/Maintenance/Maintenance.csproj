@@ -79,8 +79,13 @@
     </ApplicationDefinition>
     <Compile Include="Controllers\DatabaseContext.cs" />
     <Compile Include="Controllers\RelayCommand.cs" />
+    <Compile Include="Services\AppendRequestOpenWindowService.cs" />
     <Compile Include="Services\IWindowOpenService.cs" />
     <Compile Include="Services\MainWindowOpenWindowService.cs" />
+    <Compile Include="ViewModels\AppendOrChangeCarViewModel.cs" />
+    <Compile Include="ViewModels\AppendOrChangeClientViewModel.cs" />
+    <Compile Include="ViewModels\AppendRequestViewModel.cs" />
+    <Compile Include="ViewModels\AppendWorkerViewModel.cs" />
     <Compile Include="ViewModels\MaintenanceVeiwModel.cs" />
     <Compile Include="Views\AboutApplicationWindow.xaml.cs">
       <DependentUpon>AboutApplicationWindow.xaml</DependentUpon>
@@ -177,9 +182,7 @@
     <Resource Include="Images\person_remove.png" />
     <Resource Include="Images\remove.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\help.png" />
   </ItemGroup>

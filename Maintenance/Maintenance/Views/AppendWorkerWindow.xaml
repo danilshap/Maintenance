@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Добавление работника"
-        Height="570"
+        Height="580"
         Width="600"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -21,40 +21,46 @@
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите имя работника"
             TabIndex="0"
-            Padding="10, 0"/>
+            Padding="10, 0"
+            Text="{Binding Path=Worker.Person.Name}"/>
         <TextBlock Margin="10"
                    Text="Фамилия:"/>
         <TextBox
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите фамилию работника"
             TabIndex="1"
-            Padding="10, 0"/>
+            Padding="10, 0"
+            Text="{Binding Path=Worker.Person.Surname}"/>
         <TextBlock Margin="10"
                    Text="Отчество:"/>
         <TextBox
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите отчество работника"
             TabIndex="2"
-            Padding="10, 0"/>
+            Padding="10, 0"
+            Text="{Binding Path=Worker.Person.Patronymic}"/>
         <TextBlock Margin="10"
                    Text="Паспорт:"/>
         <TextBox
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите паспорт работника"
             TabIndex="3"
-            Padding="10, 0"/>
+            Padding="10, 0"
+            Text="{Binding Path=Worker.Person.Passport}"/>
         <TextBlock Margin="10"
                    Text="Специальность:"/>
         <ComboBox
             Margin="10, 0"
             TabIndex="4"
-            Padding="10, 0"/>
+            ItemsSource="{Binding Specialties}"
+            SelectedItem="{Binding SelectedSpecialty}"/>
         <TextBlock Margin="10"
                    Text="Разряд:"/>
         <ComboBox
             Margin="10, 0"
             TabIndex="5"
-            Padding="10, 0"/>
+            ItemsSource="{Binding Discharges}"
+            SelectedItem="{Binding SelectedDischarges}"/>
         <Separator Height="3"
                    Margin="10"/>
         <Button Margin="10"

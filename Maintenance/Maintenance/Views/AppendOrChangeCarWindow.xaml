@@ -21,35 +21,40 @@
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите марку авто"
                 Padding="10, 0"
-                TabIndex="0"/>
+                TabIndex="0"
+                Text="{Binding Path=Car.Mark.Title}"/>
             <TextBlock Margin="10"
                        Text="Модель автомобиля:"/>
             <TextBox
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите модель авто"
                 Padding="10, 0"
-                TabIndex="1"/>
+                TabIndex="1"
+                Text="{Binding Path=Car.Mark.Model}"/>
             <TextBlock Margin="10"
                        Text="Гос. номер автомобиля:"/>
             <TextBox
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите гос. номер"
                 Padding="10, 0"
-                TabIndex="2"/>
+                TabIndex="2"
+                Text="{Binding Path=Car.StateNumber}"/>
             <TextBlock Margin="10"
                        Text="Цвет автомобиля:"/>
             <TextBox
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите цвет автомобиля"
                 Padding="10, 0"
-                TabIndex="3"/>
+                TabIndex="3"
+                Text="{Binding Path=Car.Color}"/>
             <TextBlock Margin="10"
                        Text="Год выпуска автомобиля:"/>
             <TextBox
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите год выпуска автомобиля"
                 Padding="10, 0"
-                TabIndex="4"/>
+                TabIndex="4"
+                Text="{Binding Path=Car.YearOfIssue}"/>
             <!-- работа с клиентоми -->
             <TextBlock Text="Клиенты:"
                        Margin="10, 0"/>
@@ -81,8 +86,10 @@
             </ListView>
             <Separator Margin="10"
                        Height="3"/>
-            <Button Margin="10"
+            <Button x:Name="BtAccept"
+                    Margin="10"
                     Content="Добавить авто"
-                    TabIndex="6"/>
+                    TabIndex="6"
+                    Command="{Binding Close}"/>
     </StackPanel>
 </Window>

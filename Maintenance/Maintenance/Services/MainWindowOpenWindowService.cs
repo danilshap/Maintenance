@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Maintenance.Controllers;
 using Maintenance.Models;
 using Maintenance.Views;
 
@@ -10,10 +11,10 @@ namespace Maintenance.Services
 {
     public class MainWindowOpenWindowService : IWindowOpenService {
         // открытие окна для добавление заявки на ремонт
-        public RepairOrder OpenAppendOrderWindow() {
-            AppendRepairRequestWindow window = new AppendRepairRequestWindow();
+        public RepairOrder OpenAppendOrderWindow(DatabaseContext context) {
+            AppendRepairRequestWindow window = new AppendRepairRequestWindow(context);
             window.ShowDialog();
-            return null;
+            return window.NewOrder;
         } // OpenAppendOrderWindow
 
         // открытие окна для добавление клиента
@@ -23,14 +24,14 @@ namespace Maintenance.Services
         } // OpenAppendClientWindow
 
         // открытие окна для добавления автомобиля
-        public void OpenAppendOrChangeCarWindow(Car car, bool mode) {
-            AppendOrChangeCarWindow window = new AppendOrChangeCarWindow(car, mode);
+        public void OpenAppendOrChangeCarWindow(Car car, DatabaseContext context, bool mode) {
+            AppendOrChangeCarWindow window = new AppendOrChangeCarWindow(car, context, mode);
             window.ShowDialog();
         } // OpenAppendCarWindow
 
         // открытие окна для добавления работника
-        public void OpenAppendWorkerWindow(Worker worker) {
-            AppendWorkerWindow window = new AppendWorkerWindow(worker);
+        public void OpenAppendWorkerWindow(Worker worker, DatabaseContext context) {
+            AppendWorkerWindow window = new AppendWorkerWindow(worker, context);
             window.ShowDialog();
         } // OpenAppendWorkerWindow
 

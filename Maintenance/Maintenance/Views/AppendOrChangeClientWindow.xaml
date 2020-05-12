@@ -20,54 +20,66 @@
         <TextBox
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите имя клиента"
-            TabIndex="0"/>
+            TabIndex="0"
+            Text="{Binding Path=Client.Person.Name}"/>
         <TextBlock Margin="10"
                    Text="Фамилия:"/>
         <TextBox
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите фамилию клиента"
-            TabIndex="1"/>
+            TabIndex="1"
+            Text="{Binding Path=Client.Person.Surname}"/>
         <TextBlock Margin="10"
                    Text="Отчество:"/>
         <TextBox
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите отчество клиента"
-            TabIndex="2"/>
+            TabIndex="2"
+            Text="{Binding Path=Client.Person.Patronymic}"/>
         <TextBlock Margin="10"
                    Text="Паспорт:"/>
         <TextBox
             Margin="10, 0"
             materialDesign:HintAssist.Hint="введите паспорт клиента"
-            TabIndex="3"/>
+            TabIndex="3"
+            Text="{Binding Path=Client.Person.Passport}"/>
         <TextBlock Margin="10"
                    Text="Дата рождения:"/>
         <DatePicker
             Margin="10, 0"
             Padding="10, 0"
             materialDesign:HintAssist.Hint="введите дату рождения клиента"
-            TabIndex="4"/>
+            TabIndex="4"
+            DisplayDate="{Binding Path=Client.DateOfBorn}"
+            SelectedDate="{Binding Path=Client.DateOfBorn}"/>
         <TextBlock Margin="10"
                    Text="Улица проживания:"/>
         <TextBox Margin="10, 0"
                  materialDesign:HintAssist.Hint="введите улицу проживания клиента"
-                 TabIndex="5"/>
+                 TabIndex="5"
+                 Text="{Binding Path=Client.Address.Street}"/>
         <TextBlock Margin="10"
                    Text="Дом проживания:"/>
         <TextBox Margin="10, 0"
                  materialDesign:HintAssist.Hint="введите дом проживания клиента"
-                 TabIndex="6"/>
+                 TabIndex="6"
+                 Text="{Binding Path=Client.Address.Building}"/>
         <TextBlock Margin="10"
                    Text="Квартира проживания:"/>
         <TextBox Margin="10, 0"
                  materialDesign:HintAssist.Hint="введите квартиру проживания клиента"
-                 TabIndex="7"/>
+                 TabIndex="7"
+                 Text="{Binding Path=Client.Address.Flat}"/>
         <Separator Margin="10"
                    Height="3"/>
-        <Button Margin="10"
+        <Button x:Name="BtAccept"
+                Margin="10"
                 Content="Добавить клиента"
-                TabIndex="8"/>
+                TabIndex="8"
+                Command="{Binding Path=Close}"/>
         <Button Margin="10"
                 Content="Отмена"
-                TabIndex="9"/>
+                TabIndex="9"
+                Command="{Binding Path=Close}"/>
     </StackPanel>
 </Window>

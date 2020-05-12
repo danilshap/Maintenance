@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Maintenance.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Оформления заявки на ремонт"
         Height="900"
@@ -34,8 +35,7 @@
                     <RowDefinition Height="80*"/>
                     <RowDefinition Height="20*"/>
                 </Grid.RowDefinitions>
-                <ListView Grid.Column="0"
-                          Grid.Row="0"
+                <ListView Grid.Row="0"
                           x:Name="LbClients"
                           Margin="10"
                           ItemsSource="{Binding Clients}"
@@ -57,23 +57,21 @@
                                 DisplayMemberBinding="{Binding Person.Patronymic}"
                                 Header="Отчество Клиента"
                                 Width="auto"/>
-                            <GridViewColumn
-                                DisplayMemberBinding="{Binding Person.Passport}"
-                                Header="Паспорт Клиента"
-                                Width="auto"/>
                         </GridView>
                     </ListView.View>
                 </ListView>
                 <Button Grid.Row="1"
                         Margin="10"
                         Content="Добавить клиента"
+                        Command="{Binding Path=AppendClient}"
                         Background="{DynamicResource SecondaryAccentBrush}"
                         BorderBrush="Transparent"/>
             </Grid>
         </GroupBox>
 
         <!-- данные пл авто -->
-        <GroupBox Grid.Column="1"
+        <GroupBox Grid.Row="0"
+                  Grid.Column="1"
                   Margin="10"
                   Header="Данные по авто">
             <Grid>
@@ -84,7 +82,7 @@
                 <ListView Grid.Column="0"
                           Grid.Row="0"
                           x:Name="LbCars"
-                          Margin="10"
+                          Margin="10, 0, 10, 10"
                           ItemsSource="{Binding Cars}"
                           SelectedItem="{Binding SelectedCar}"
                           BorderThickness="1"
@@ -109,7 +107,8 @@
                 </ListView>
                 <Button Grid.Row="1"
                         Margin="10"
-                        Content="Добавить клиента"
+                        Content="Добавить авто"
+                        Command="{Binding Path=AppendCar}"
                         Background="{DynamicResource SecondaryAccentBrush}"
                         BorderBrush="Transparent"/>
             </Grid>
@@ -134,42 +133,48 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0"
                            Grid.Column="0"
-                           Margin="10, 5"
+                           Margin="10,8,10,7"
                            Text="Дата подачи заявки:"
                            VerticalAlignment="Center"
-                           FontSize="20"/>
+                           FontSize="14" Grid.ColumnSpan="2"/>
                 <DatePicker Grid.Row="0"
                             Grid.Column="1"
                             Margin="10, 5"
                             BorderThickness="1"
-                            FontSize="20"/>
+                            FontSize="14"
+                            DisplayDate="{Binding Path=DateOfTheApplication}"
+                            SelectedDate="{Binding Order.DateOfTheApplication}"/>
                 <TextBlock Grid.Row="1"
                            Grid.Column="0"
-                           Margin="10, 5"
+                           Margin="10,7,10,8"
                            Text="Выбор мастера для работа:"
                            VerticalAlignment="Center"
-                           FontSize="20"/>
+                           FontSize="14" Grid.ColumnSpan="2"/>
                 <ComboBox Grid.Row="1"
-                          Grid.Column="1"
+                          Grid.Column="2"
                           Margin="10, 5"
-                          FontSize="20"/>
+                          FontSize="14"
+                          ItemsSource="{Binding Workers}"
+                          SelectedItem="{Binding SelectedWorker}"/>
                 <TextBlock Grid.Row="2"
                            Grid.Column="0"
                            Margin="10, 5"
                            Text="Список неисправностей:"
-                           FontSize="20"/>
+                           FontSize="14" Grid.ColumnSpan="2"/>
                 <TextBox Grid.Row="2"
-                         Grid.Column="1"
+                         Grid.Column="2"
                          BorderThickness="1"
-                         Margin="10, 5"/>
+                         Margin="10, 5"
+                         Text="{Binding Path=Order.Malfunctions}"/>
                 <TextBlock Grid.Row="3"
                            Grid.Column="0"
                            Grid.ColumnSpan="2"
-                           Margin="10, 5"
-                           FontSize="20"
-                           HorizontalAlignment="Center"
+                           Margin="5"
                            VerticalAlignment="Center"
-                           Text="Примерное время ремонта ..."/>
+                           HorizontalAlignment="Center"
+                           Text="{Binding Path=Order.DateOfCompletion,
+                    StringFormat=Примерное время завершения ремонта {0:D}
+                    , Mode=TwoWay}"/>
             </Grid>
         </GroupBox>
 
@@ -178,12 +183,14 @@
                 Grid.Column="0"
                 Margin="10"
                 Content="Оформить заявку"
+                Command="{Binding Path=Accept}"
                 Background="{DynamicResource SecondaryAccentBrush}"
                 BorderBrush="Transparent"/>
         <Button Grid.Row="2"
                 Grid.Column="1"
                 Margin="10"
                 Content="Отмена"
+                Command="{Binding Path=Cencel}"
                 Background="{DynamicResource SecondaryAccentBrush}"
                 BorderBrush="Transparent"/>
     </Grid>

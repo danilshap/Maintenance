@@ -138,7 +138,7 @@ namespace Maintenance.ViewModels
         public RelayCommand AppendRequest => _appendRequest ??
             (_appendRequest = new RelayCommand(obj => {
                 // приводим к типу для доступа к функциям которые не реализованны в интерфейсе
-                RepairOrder neworder = (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrderWindow();
+                RepairOrder neworder = (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrderWindow(_context);
                 if (neworder == null) return;
                 // добавление новой заявки в базу данных и в коллекцию
                 AppendNewRequest(neworder);
@@ -184,7 +184,7 @@ namespace Maintenance.ViewModels
             (_appendWorker = new RelayCommand(obj => {
                 Worker newWorker = new Worker();    // создание нового клиента
                 // Clients.Insert(0, newClient);   // вставка этого клиента в 0 позицию
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendWorkerWindow(newWorker);
+                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendWorkerWindow(newWorker, _context);
                 AppendNewWorker(newWorker);
             }));
 
@@ -201,7 +201,7 @@ namespace Maintenance.ViewModels
             (_appendCar = new RelayCommand(obj => {
                 Car newCar = new Car();    // создание нового клиента
                 // Clients.Insert(0, newClient);   // вставка этого клиента в 0 позицию
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeCarWindow(newCar, true);
+                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeCarWindow(newCar, _context, true);
                 AppendNewCar(newCar);
             }));
 
@@ -209,7 +209,7 @@ namespace Maintenance.ViewModels
         private RelayCommand _changeCar;
         public RelayCommand ChangeCar => _changeCar ??
             (_changeCar = new RelayCommand(obj => {
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeCarWindow(SelectedCar, false);
+                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeCarWindow(SelectedCar, _context, false);
             }));
 
         // закрыть приложение

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Maintenance.Controllers;
 using Maintenance.Models;
 
 namespace Maintenance.Services
@@ -13,6 +14,6 @@ namespace Maintenance.Services
         void OpenAppendOrChangeClientWindow(Client client, bool mode);
 
         // открытие окна для автомобиля
-        void OpenAppendOrChangeCarWindow(Car car, bool mode);
+        void OpenAppendOrChangeCarWindow(Car car, DatabaseContext context, bool mode);
     } // IWindowOpenService
 }

@@ -48,6 +48,13 @@ namespace Maintenance.Controllers
         // получить данные по запросам на ремнт
         public IList<RepairOrder> GetOrders() => _db.RepairOrders.Select(order => order).ToList();
 
+        // получить имя фамилию и отчиство всех работников
+        public IList<string> GetWorkerStr() => GetWorkers().Select(w => $"{w.Person.Surname} {w.Person.Name[0]}.{w.Person.Patronymic[0]}.").ToList();
+        
+
+        // полчить специальности работников
+        public IList<string> GetSpecialtyStr() => GetSpecialties().Select(s => s.Title).ToList();
+
         #endregion
     } // DatabaseContext
 }
