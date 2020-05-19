@@ -166,15 +166,6 @@
                          BorderThickness="1"
                          Margin="10, 5"
                          Text="{Binding Path=Order.Malfunctions}"/>
-                <TextBlock Grid.Row="3"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="2"
-                           Margin="5"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Text="{Binding Path=Order.DateOfCompletion,
-                    StringFormat=Примерное время завершения ремонта {0:D}
-                    , Mode=TwoWay}"/>
             </Grid>
         </GroupBox>
 

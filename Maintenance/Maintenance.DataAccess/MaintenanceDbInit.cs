@@ -365,13 +365,13 @@ namespace Maintenance.DataAccess
                 {
                     Person = persons[10],
                     Specialty = specialties[0],
-                    Discharge = 1,
+                    Discharge = "1",
                     IsWorkNow = true
                 },
                 new Worker {
                     Person = persons[9],
                     Specialty = specialties[1],
-                    Discharge = 1,
+                    Discharge = "1",
                     IsWorkNow = false
                 },
             };

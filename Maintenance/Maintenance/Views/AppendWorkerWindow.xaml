@@ -65,9 +65,11 @@
                    Margin="10"/>
         <Button Margin="10"
                 Content="Добавить работника"
-                TabIndex="6"/>
+                TabIndex="6"
+                Command="{Binding Close}"/>
         <Button Margin="10"
                 Content="Отмена"
-                TabIndex="7"/>
+                TabIndex="7"
+                Command="{Binding Close}"/>
     </StackPanel>
 </Window>

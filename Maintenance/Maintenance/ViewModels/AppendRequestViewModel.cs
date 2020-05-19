@@ -23,8 +23,6 @@ namespace Maintenance.ViewModels
 
         private AppendRepairRequestWindow _window;
 
-        public AppendRequestViewModel() { }
-
         public AppendRequestViewModel(IWindowOpenService windowOpenService, DatabaseContext context, AppendRepairRequestWindow window) {
             _windowOpenService = windowOpenService;
             _window = window;
@@ -46,18 +44,27 @@ namespace Maintenance.ViewModels
                 Worker = FindWorker(),
                 IsReady = false
             };
-
-            Order.DateOfCompletion = CalculateDateOfCompletion();
         } // AppendRequestViewModel
 
-        // расчет даты завершения
-        private DateTime CalculateDateOfCompletion() => DateTime.Now + new TimeSpan(Order.Malfunctions
-                       .Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Length);
+        private async void AppendClientInDb(Client client) {
+            await Task.Run(() => { _context.AppendClient(client); });
+
+            // добавление в список
+            Clients.Insert(0, client);
+            SelectedClient = Clients[0];
+        }
+
+        private async void AppendCarInDb(Car car) {
+            await Task.Run(() => { _context.AppendCar(car); });
+
+            // добавляем в список
+            Cars.Insert(0, car);
+            SelectedCar = Cars[0];
+        }
 
         // поиск работника по выбранному работнику в combobox
         private Worker FindWorker() => _context.GetWorkers()[Workers.ToList().FindIndex(w => w == SelectedWorker)];
         
-
         private DatabaseContext _context;
 
         // коллеция клиентов
@@ -82,8 +89,7 @@ namespace Maintenance.ViewModels
         private Client _selectedClient;
 
         // выбранный в коллекции авто
-        public Car SelectedCar
-        {
+        public Car SelectedCar {
             get => _selectedCar;
             set
             {
@@ -113,7 +119,7 @@ namespace Maintenance.ViewModels
                 // новый клиент
                 Client newclient = new Client {
                     Person = new Person
-                        {Name = "Имя", Surname = "Фамилия", Patronymic = "Отчество", Passport = "Паспорт"},
+                        {Id = -1, Name = "Имя", Surname = "Фамилия", Patronymic = "Отчество", Passport = "Паспорт"},
                     Address = new Address {Street = "Улица", Building = "Дом", Flat = 0},
                     DateOfBorn = DateTime.Now
                 };
@@ -121,10 +127,9 @@ namespace Maintenance.ViewModels
                 // открытие окна
                 (_windowOpenService as AppendRequestOpenWindowService)?.OpenAppendOrChangeClientWindow(newclient, true);
                 if (newclient.Person.Passport == "Паспорт") return;
-                
-                // добавление в список
-                Clients.Insert(0, newclient);
-                SelectedClient = Clients[0];
+
+                // добавление данных в БД
+                AppendClientInDb(newclient);
             }));
 
         // открыть окно для добавление заявки
@@ -132,6 +137,7 @@ namespace Maintenance.ViewModels
         public RelayCommand AppendCar => _appendCar ??
             (_appendCar = new RelayCommand(obj => {
                 Car newcar = new Car {
+                    Id = -1,
                     Mark = new Mark { Model = "Модель", Title = "Марка"},
                     Color = "Цвет",
                     StateNumber = "Номер",
@@ -141,11 +147,8 @@ namespace Maintenance.ViewModels
                 // открытие окна
                 (_windowOpenService as AppendRequestOpenWindowService)?.OpenAppendOrChangeCarWindow(newcar, _context, true);
                 if (newcar.StateNumber == "Номер") return;
-                
 
-                // добавляем в список
-                Cars.Insert(0, newcar);
-                SelectedCar = Cars[0];
+                AppendCarInDb(newcar);
             }));
 
         // отмена команды
@@ -159,7 +162,16 @@ namespace Maintenance.ViewModels
         // отмена команды
         private RelayCommand _accept;
         public RelayCommand Accept => _accept ??
-            (_accept = new RelayCommand(obj => {
+            (_accept = new RelayCommand(obj =>
+            {
+                Order.Client = SelectedClient;
+                Order.Car = SelectedCar;
+                Order.Worker = FindWorker();
+
+                Order.DateOfCompletion = DateTime.Now + TimeSpan.FromDays(Order.Malfunctions
+                                             .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Length);
+                
+
                 _window.NewOrder = Order;
                 _window.Close();
             }));

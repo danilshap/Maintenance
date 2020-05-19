@@ -19,8 +19,8 @@
         <DataTemplate x:Key="OrderCards">
             <Border BorderBrush="Black"
                     BorderThickness="1"
-                    Width="450"
-                    Height="420"
+                    Width="400"
+                    Height="500"
                     Background="{DynamicResource MaterialDesignPaper}"
                     ToolTip="Заявка на ремонт">
                 <ScrollViewer>
@@ -39,6 +39,8 @@
                                    Text="{Binding DateOfCompletion,
                             StringFormat=Дата окончания работ: {0:d}}" />
                         <TextBlock Margin="10, 5, 0, 0"
+                                   Height="auto"
+                                   TextWrapping="Wrap"
                                    Text="{Binding Malfunctions,
                             StringFormat=Список неисправностей: {0}}" />
                         <TextBlock Margin="10, 5, 0, 5"
@@ -159,6 +161,8 @@
                         <Button x:Name="BtGetReady"
                                 Margin="5"
                                 ToolTip="Завершить ремонт автомобиля"
+                                Command="{Binding ChangeStatusRepairOrder}"
+                                CommandParameter="{Binding SelectedRepairOrder}"
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="Check"
@@ -182,19 +186,16 @@
                     </StackPanel>
                 </Border>
 
-                <!-- список заявок -->
-                <ListView Grid.Column="1"
-                          x:Name="LvOrders"
-                          Margin="5, 10, 10, 10"
-                          ItemTemplate="{DynamicResource OrderCards}"
-                          ItemsSource="{Binding Orders}"
-                          SelectedItem="{Binding SelectedRepairOrder}">
-                    <ListView.ItemsPanel>
+                <ListBox Grid.Column="1"
+                         ItemTemplate ="{DynamicResource OrderCards}"
+                         ItemsSource="{Binding Orders, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                         SelectedItem="{Binding SelectedRepairOrder, Mode=TwoWay}">
+                    <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel />
+                            <WrapPanel/>
                         </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                </ListView>
+                    </ListBox.ItemsPanel>
+                </ListBox>
 
                 <!-- контейнер для отображения клиентов, работников, машин -->
                 <Border Grid.Column="2"

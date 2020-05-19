@@ -24,30 +24,32 @@ namespace Maintenance.ViewModels
             _context = context;
             Car = car;
 
-            Clients = new ObservableCollection<Client>(_context.GetClients());
+            Persons = new ObservableCollection<Person>(_context.GetPersons());
 
-            SelectedClient = Clients[0];
+            SelectedPerson = Persons[0];
         } // AppendOrChangeCarViewModel
 
         // контекст базы данных
         private DatabaseContext _context;
         // коллеция клиентов
-        public ObservableCollection<Client> Clients { get; set; }
+        public ObservableCollection<Person> Persons { get; set; }
 
         // выбранный в коллекции клиент
-        public Client SelectedClient {
-            get => _selectedClient;
+        public Person SelectedPerson
+        {
+            get => _selectedPerson;
             set {
-                _selectedClient = value;
+                _selectedPerson = value;
                 OnPropertyChanged(); // "SelectedClient"
             } // set
-        } // SelectedClient
-        private Client _selectedClient;
+        } // SelectedPerson
+        private Person _selectedPerson;
 
         // отмена команды
         private RelayCommand _close;
         public RelayCommand Close => _close ??
                                      (_close = new RelayCommand(obj => {
+                                         Car.Owner = SelectedPerson;
                                          _window.Close();
                                      }));
 

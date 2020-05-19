@@ -1,7 +1,8 @@
 Maintenance/.vs
 Maintenance/Maintenance/bin
 Maintenance/Maintenance/obj
-Maintenance\Maintenance.Models\bin
-Maintenance\Maintenance.Models\obj
-Maintenance\Maintenance.DataAccess\bin
-Maintenance\Maintenance.DataAccess\obj
+Maintenance/Maintenance.Models/bin
+Maintenance/Maintenance.Models/obj
+Maintenance/Maintenance.DataAccess/bin
+Maintenance/Maintenance.DataAccess/obj
+Maintenance/packages

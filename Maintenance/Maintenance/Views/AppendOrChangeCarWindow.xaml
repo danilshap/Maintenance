@@ -18,6 +18,7 @@
             <TextBlock Margin="10"
                        Text="Марка автомобиля:"/>
             <TextBox
+                x:Name="TbMark"
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите марку авто"
                 Padding="10, 0"
@@ -26,6 +27,7 @@
             <TextBlock Margin="10"
                        Text="Модель автомобиля:"/>
             <TextBox
+                x:Name="TbModel"
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите модель авто"
                 Padding="10, 0"
@@ -50,6 +52,7 @@
             <TextBlock Margin="10"
                        Text="Год выпуска автомобиля:"/>
             <TextBox
+                x:Name="TbYearOfIssue"
                 Margin="10"
                 materialDesign:HintAssist.Hint="введите год выпуска автомобиля"
                 Padding="10, 0"
@@ -60,8 +63,8 @@
                        Margin="10, 0"/>
             <ListView x:Name="LbClients"
                       Margin="10"
-                      ItemsSource="{Binding Clients}"
-                      SelectedItem="{Binding SelectedClient}"
+                      ItemsSource="{Binding Persons}"
+                      SelectedItem="{Binding SelectedPerson}"
                       BorderThickness="1"
                       BorderBrush="Black"
                       SelectionMode="Single"
@@ -70,15 +73,15 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn
-                            DisplayMemberBinding="{Binding Person.Surname}"
+                            DisplayMemberBinding="{Binding Surname}"
                             Header="Фамилия Клиента"
                             Width="auto"/>
                         <GridViewColumn
-                            DisplayMemberBinding="{Binding Person.Name}"
+                            DisplayMemberBinding="{Binding Name}"
                             Header="Имя Клиента"
                             Width="auto"/>
                         <GridViewColumn
-                            DisplayMemberBinding="{Binding Person.Patronymic}"
+                            DisplayMemberBinding="{Binding Patronymic}"
                             Header="Отчество Клиента"
                             Width="auto"/>
                     </GridView>

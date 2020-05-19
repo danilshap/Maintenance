@@ -138,9 +138,6 @@ namespace Maintenance.DataAccess
             // настройка таблицы работников
             #region Worker
             modelBuilder.Entity<Worker>()
-                .Property(w => w.Discharge)
-                .IsRequired();
-            modelBuilder.Entity<Worker>()
                 .Property(w => w.IsWorkNow)
                 .IsRequired();
             modelBuilder.Entity<Worker>()
@@ -149,6 +146,11 @@ namespace Maintenance.DataAccess
             modelBuilder.Entity<Worker>()
                 .HasMany(w => w.RepairOrders)
                 .WithRequired(r => r.Worker);
+            modelBuilder.Entity<Worker>()
+                .Property(w => w.Discharge)
+                .IsUnicode()
+                .IsRequired()
+                .HasMaxLength(20);
             #endregion
 
             // настройка таблицы заказов

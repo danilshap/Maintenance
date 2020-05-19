@@ -27,10 +27,16 @@ namespace Maintenance.Views
         public AppendOrChangeCarWindow(Car car, DatabaseContext context, bool mode) {
             InitializeComponent();
 
-            (this.Title, BtAccept.Content) = mode ? ("Добавление машины", "Добавить машину") : ("Изменение машины", "Принять ихзменения");
+            IsChangeMode(mode);
 
             _viewModel = new AppendOrChangeCarViewModel(this, context, car);
             this.DataContext = _viewModel;
+        }
+
+        private void IsChangeMode(bool mode) {
+            (this.Title, BtAccept.Content) = mode ? ("Добавление машины", "Добавить машину") : ("Изменение машины", "Принять ихзменения");
+
+            TbMark.IsEnabled = TbModel.IsEnabled = TbYearOfIssue.IsEnabled = mode;
         }
     }
 }

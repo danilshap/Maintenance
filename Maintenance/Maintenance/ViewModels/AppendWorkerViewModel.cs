@@ -32,7 +32,7 @@ namespace Maintenance.ViewModels
                 "1", "2", "3", "4"
             };
 
-            SelectedDischarges = Discharges[0];
+            SelectedDischarges = Discharges.ToList().Find(d => d == worker.Discharge);
             SelectedSpecialty = Specialties[0];
         } // AppendWorkerViewModel
 
@@ -62,10 +62,18 @@ namespace Maintenance.ViewModels
             get => _selectedDischarges;
             set {
                 _selectedDischarges = value;
+                this.Worker.Discharge = _selectedDischarges;
                 OnPropertyChanged(); // "SelectedWorker"
             } // set
         } // SelectedWorker
         private string _selectedDischarges;
+
+        // отмена команды
+        private RelayCommand _close;
+        public RelayCommand Close => _close ??
+                                     (_close = new RelayCommand(obj => {
+                                         _window.Close();
+                                     }));
 
         // ---------------------------------------------------------------------------
         // реализация интерфейса INotifyPropertyChanged - взял из прошлых работ

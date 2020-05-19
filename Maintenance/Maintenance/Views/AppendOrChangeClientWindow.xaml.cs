@@ -25,12 +25,17 @@ namespace Maintenance.Views
         public AppendOrChangeClientWindow(Client client, bool mode) {
             InitializeComponent();
 
-            this.Title = mode ? "Добавление клиента" : "Изменение клиента";
-            BtAccept.Content = mode ? "Добавить клиента" : "Принять изменение";
-
-
+            IsChangeWindow(mode);
+            
             _viewModel = new AppendOrChangeClientViewModel(client, this);
             this.DataContext = _viewModel;
-        }
+        } // AppendOrChangeClientWindow
+
+        // проверка, окно открыто по доавблению или по изменению
+        private void IsChangeWindow(bool mode) {
+            this.Title = mode ? "Добавление клиента" : "Изменение клиента";
+            BtAccept.Content = mode ? "Добавить клиента" : "Принять изменение";
+            TbPassport.IsEnabled = DpDateOfBorn.IsEnabled = mode;
+        } // IsChangeWindow
     }
 }
