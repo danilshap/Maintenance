@@ -21,6 +21,7 @@ namespace Maintenance.Controllers
         private int _countOfMarks;
         private int _countOfCars;
         private int _countOfSpecialty;
+        private int _countOfWorkersStatuses;
         private int _countOfWorkers;
         private int _countOfOrders;
 
@@ -41,6 +42,7 @@ namespace Maintenance.Controllers
             _countOfSpecialty = _db.Specialties.ToList().Count;
             _countOfWorkers = _db.Workers.ToList().Count;
             _countOfOrders = _db.RepairOrders.ToList().Count;
+            _countOfWorkersStatuses = _db.WorkerStatuses.ToList().Count;
         } // DatabaseContext
 
         #region Получение данных
@@ -63,16 +65,21 @@ namespace Maintenance.Controllers
         // получить данные по специальностям
         public IList<Specialty> GetSpecialties() => _db.Specialties.Select(specialty => specialty).ToList();
 
+        public IList<WorkerStatus> GetStatuses() => _db.WorkerStatuses.Select(status => status).ToList();
+
         // получить данные по работникам
-        public IList<Worker> GetWorkers() => _db.Workers.Select(worker => worker).ToList();
+        public IList<Worker> GetWorkersNotFired() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status != "Уволен").ToList();
+        public IList<Worker> GetWorkersAtWorkAndFree() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status == "На работе. Свободен").ToList();
 
         // получить данные по запросам на ремнт
         public IList<RepairOrder> GetOrders() => _db.RepairOrders.Select(order => order).ToList();
 
-        // получить имя фамилию и отчиство всех работников
-        public IList<string> GetWorkerStr() => GetWorkers()
-            .Select(w => $"{w.Person.Surname} {w.Person.Name[0]}.{w.Person.Patronymic[0]}.").ToList();
+        // получить данные по неисправностям
+        public IList<Malfunction> GetMalfunctions() => _db.Malfunctions.Select(malfunction => malfunction).ToList();
 
+        // получить имя фамилию и отчество всех работников
+        public IList<string> GetWorkerStr() => GetWorkersAtWorkAndFree()
+            .Select(w => $"{w.Person.Surname} {w.Person.Name[0]}.{w.Person.Patronymic[0]}.").ToList();
 
         // полчить специальности работников
         public IList<string> GetSpecialtyStr() => GetSpecialties().Select(s => s.Title).ToList();
@@ -101,21 +108,23 @@ namespace Maintenance.Controllers
 
         // добавление данных по клиенту
         public void AppendClient(Client client) {
+            // поиск данных по персоне
             var person = _db.Persons.ToList().Find(p => p.Passport == client.Person.Passport);
+            // поиск данных по адресу
             var address = _db.Addresses.ToList().Find(a => a.Street == client.Address.Street &&
                                                            a.Building == client.Address.Building &&
                                                            a.Flat == client.Address.Flat);
 
             // если у нас не нашлось данных то мы добавяем их и присваеваем новые данных
-            if (person == null)
-            {
+            if (person == null) {
+                // добавление данных о персоне
                 AppendPersonData(client.Person);
+                // переприсваеваем значение которое мы только что добавили
                 person = _db.Persons.ToList()[_countOfPersons - 1];
-            }
+            } // if
 
             // если у нас не нашлось данных то мы их добавляем и присваеваем это значение
-            if (address == null)
-            {
+            if (address == null) {
                 AppendAddress(client.Address);
                 address = _db.Addresses.ToList()[_countOfAddresses - 1];
             } // if
@@ -176,51 +185,51 @@ namespace Maintenance.Controllers
 
         // добавление данных по работнику
         public void AppendWorker(Worker worker) {
-            var person = _db.Persons.ToList().Find(p => p.Passport == worker.Person.Passport);
-            var specialty = _db.Specialties.ToList().Find(s => s.Title.ToLower() == worker.Specialty.Title.ToLower());
+            //var person = _db.Persons.ToList().Find(p => p.Passport == worker.Person.Passport);
+            //var specialty = _db.Specialties.ToList().Find(s => s.Title.ToLower() == worker.Specialty.Title.ToLower());
 
-            // если мы не нашли данные о специальнсотях то добавляем их и переприсваеваем ссылку
-            if (person == null)
-            {
-                AppendPersonData(worker.Person);
-                person = _db.Persons.ToList()[_countOfPersons - 1];
-            }
+            //// если мы не нашли данные о специальнсотях то добавляем их и переприсваеваем ссылку
+            //if (person == null) {
+            //    AppendPersonData(worker.Person);
+            //    person = _db.Persons.ToList()[_countOfPersons - 1];
+            //}
 
-            // если мы не нашли данные о специальностях то добавляем их и переприсваеваем ссылку
-            if (specialty == null)
-            {
-                AppendSpecialty(worker.Specialty);
-                specialty = _db.Specialties.ToList()[_countOfSpecialty - 1];
-            }
+            //// если мы не нашли данные о специальностях то добавляем их и переприсваеваем ссылку
+            //if (specialty == null) {
+            //    AppendSpecialty(worker.Specialty);
+            //    specialty = _db.Specialties.ToList()[_countOfSpecialty - 1];
+            //}
 
-            // добавление данных в БД
-            _db.Workers.Add(new Worker
-            {
-                Person = person,
-                Specialty = specialty,
-                IsWorkNow = false,
-                Discharge = worker.Discharge
-            });
-            _db.SaveChanges();
+            //// добавление данных в БД
+            //_db.Workers.Add(new Worker {
+            //    Person = person,
+            //    Specialty = specialty,
+            //    Status = worker.Status,
+            //    Discharge = worker.Discharge
+            //});
+            //_db.SaveChanges();
 
-            ++_countOfWorkers;
+            //++_countOfWorkers;
         }
 
         // добавление данных по заявке
         public void AppendOrder(RepairOrder order) {
            
-            _db.RepairOrders.Add(new RepairOrder {
-                Client = _db.Clients.ToList().Find(c => c.Id == order.Client.Id),
-                Car = _db.Cars.ToList().Find(c => c.Id == order.Car.Id),
-                Worker = order.Worker,
-                IsReady = order.IsReady,
-                DateOfCompletion = order.DateOfCompletion,
-                DateOfTheApplication = order.DateOfTheApplication,
-                Malfunctions = order.Malfunctions
-            });
-            _db.SaveChanges();
+            //_db.RepairOrders.Add(new RepairOrder {
+            //    Client = _db.Clients.ToList().Find(c => c.Id == order.Client.Id),
+            //    Car = _db.Cars.ToList().Find(c => c.Id == order.Car.Id),
+            //    Worker = order.Worker,
+            //    IsReady = order.IsReady,
+            //    DateOfCompletion = order.DateOfCompletion,
+            //    DateOfTheApplication = order.DateOfTheApplication,
+            //    Malfunctions = order.Malfunctions
+            //});
+            //_db.SaveChanges();
 
-            ++_countOfOrders;
+            //// изменяем статус работника - работает сейчас
+            //ChangeWorker(order.Worker, _db.WorkerStatuses.ToList()[0]);
+
+            //++_countOfOrders;
         }
 
         #endregion
@@ -321,26 +330,42 @@ namespace Maintenance.Controllers
             _db.SaveChanges();
         } // ChangeCar
 
+        // изменение данных по работнику
+        public void ChangeWorker(Worker worker, WorkerStatus status) {
+            var templWorker = _db.Workers.First(w => w.Id == worker.Id);
+            var templStatus = _db.WorkerStatuses.First(w => w.Id == status.Id);
+
+            if(templWorker == null) throw new Exception("Проблема с данными по работнику");
+            if(templStatus == null) throw new Exception("Проблема с данными по статусу работника");
+
+            templWorker.Status = templStatus;
+
+            _db.SaveChanges();
+        }
+
         // изменение статуса по заявке
         public void ChangeOrder(RepairOrder order) {
             var templorder = _db.RepairOrders.First(o => o.Id == order.Id);
 
             if(templorder == null) throw new Exception("Проблема с данными по заявкам");
 
-            templorder.IsReady = order.IsReady;
+            // меняем статус на "готов"
+            templorder.IsReady = true;
+
+            // статус работника изменился
+            ChangeWorker(templorder.Worker, _db.WorkerStatuses.ToList()[1]);
 
             _db.SaveChanges();
         }
-
         #endregion
 
-        // удаление данных о работнике
+        // увольнение данных о работнике
         public Task RemoveWorker(Worker worker) => Task.Run(() => {
             var templworker = _db.Workers.First(w => w.Id == worker.Id);
 
             if (templworker == null) throw new Exception("Проблема с данными о работнике");
 
-            _db.Workers.Remove(templworker);
+            templworker.Status = _db.WorkerStatuses.ToList()[2];
             _db.SaveChanges();
         }); // RemoveWorker
 

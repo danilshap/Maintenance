@@ -19,8 +19,6 @@ namespace Maintenance.ViewModels
         private AppendWorkerWindow _window;
 
         // конструктор
-        public AppendWorkerViewModel() {}
-
         public AppendWorkerViewModel(Worker worker, AppendWorkerWindow window, DatabaseContext context)
         {
             Worker = worker;
@@ -32,8 +30,11 @@ namespace Maintenance.ViewModels
                 "1", "2", "3", "4"
             };
 
-            SelectedDischarges = Discharges.ToList().Find(d => d == worker.Discharge);
-            SelectedSpecialty = Specialties[0];
+            var templDisc = Discharges.ToList().Find(d => d == worker.Discharge);
+            _selectedSpecialty = templDisc == null ? null : templDisc;
+
+            var templSpec = Specialties.ToList().Find(s => s == worker?.Specialty?.Title);
+            _selectedSpecialty = templSpec == null ? null : templSpec;
         } // AppendWorkerViewModel
 
         private DatabaseContext _context;
@@ -51,6 +52,7 @@ namespace Maintenance.ViewModels
             get => _selectedSpecialty;
             set {
                 _selectedSpecialty = value;
+                this.Worker.Specialty = _context.GetSpecialties().First(s => s.Title == _selectedSpecialty);
                 OnPropertyChanged(); // "SelectedClient"
             } // set
         } // SelectedClient
@@ -72,6 +74,10 @@ namespace Maintenance.ViewModels
         private RelayCommand _close;
         public RelayCommand Close => _close ??
                                      (_close = new RelayCommand(obj => {
+                                         // мы должны присвоить работнику
+                                         Worker.Status = _context.GetStatuses()[1];
+                                         
+                                         // закрытие окна
                                          _window.Close();
                                      }));
 

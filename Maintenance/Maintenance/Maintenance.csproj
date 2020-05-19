@@ -80,7 +80,9 @@
     <Compile Include="Controllers\DatabaseContext.cs" />
     <Compile Include="Controllers\RelayCommand.cs" />
     <Compile Include="Services\AppendRequestOpenWindowService.cs" />
+    <Compile Include="Services\IOpenDialogWindow.cs" />
     <Compile Include="Services\IWindowOpenService.cs" />
+    <Compile Include="Services\MainWindowOpenDialogService.cs" />
     <Compile Include="Services\MainWindowOpenWindowService.cs" />
     <Compile Include="ViewModels\AppendOrChangeCarViewModel.cs" />
     <Compile Include="ViewModels\AppendOrChangeClientViewModel.cs" />

@@ -12,10 +12,13 @@ namespace Maintenance.Models
         public virtual Address Address { get; set; }    // ссылка на данные по адресу
         public DateTime DateOfBorn { get; set; }    // дата рождения клиента
         public virtual ICollection<RepairOrder> RepairOrders { get; set; }  // коллекция на ссылок по заявкам
+        public string TelephoneNumber { get; set; } // номер телефона
+        public List<DateTime> AppealDates { get; set; } // даты обращения
 
         // конструктор
         public Client() {
             RepairOrders = new HashSet<RepairOrder>();
+            AppealDates = new List<DateTime>();
         } // Client
     } // Client
 }

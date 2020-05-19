@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="__"
-        Height="710"
+        Height="730"
         Width="600"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
@@ -36,6 +36,13 @@
             materialDesign:HintAssist.Hint="введите отчество клиента"
             TabIndex="2"
             Text="{Binding Path=Client.Person.Patronymic}"/>
+        <TextBlock Margin="10"
+                   Text="Номер телефона:"/>
+        <TextBox
+            Margin="10, 0"
+            materialDesign:HintAssist.Hint="введите номер телефона клиента"
+            TabIndex="2"
+            Text="{Binding Path=Client.TelephoneNumber}"/>
         <TextBlock Margin="10"
                    Text="Паспорт:"/>
         <TextBox
@@ -78,10 +85,6 @@
                 Margin="10"
                 Content="Добавить клиента"
                 TabIndex="8"
-                Command="{Binding Path=Close}"/>
-        <Button Margin="10"
-                Content="Отмена"
-                TabIndex="9"
                 Command="{Binding Path=Close}"/>
     </StackPanel>
 </Window>

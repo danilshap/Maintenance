@@ -170,55 +170,73 @@ namespace Maintenance.DataAccess
                 {
                     Person = persons[0],
                     Address = addresses[0],
-                    DateOfBorn = new DateTime(1998, 9, 16)
+                    DateOfBorn = new DateTime(1998, 9, 16),
+                    TelephoneNumber = "+7 (975) 541-59-19",
+                    AppealDates = new List<DateTime>{DateTime.Now}
                 }, 
                 new Client
                 {
                     Person = persons[1],
                     Address = addresses[1],
-                    DateOfBorn = new DateTime(1982, 7, 9)
+                    DateOfBorn = new DateTime(1982, 7, 9),
+                    TelephoneNumber = "+7 (964) 159-40-73",
+                    AppealDates = new List<DateTime>()
                 }, 
                 new Client
                 {
                     Person = persons[2],
                     Address = addresses[2],
-                    DateOfBorn = new DateTime(1952, 1, 3)
+                    DateOfBorn = new DateTime(1952, 1, 3),
+                    TelephoneNumber = "+7 (992) 968-68-48",
+                    AppealDates = new List<DateTime>()
                 }, 
                 new Client
                 {
                     Person = persons[3],
                     Address = addresses[3],
-                    DateOfBorn = new DateTime(1974, 6, 8)
+                    DateOfBorn = new DateTime(1974, 6, 8),
+                    TelephoneNumber = "+7 (946) 131-72-22",
+                    AppealDates = new List<DateTime>()
                 }, 
                 new Client
                 {
                     Person = persons[4],
                     Address = addresses[4],
-                    DateOfBorn = new DateTime(1966, 1, 11)
+                    DateOfBorn = new DateTime(1966, 1, 11),
+                    TelephoneNumber = "+7 (917) 153-55-81",
+                    AppealDates = new List<DateTime>()
                 }, 
                 new Client
                 {
                     Person = persons[5],
                     Address = addresses[5],
-                    DateOfBorn = new DateTime(1952, 6, 6)
+                    DateOfBorn = new DateTime(1952, 6, 6),
+                    TelephoneNumber = "+7 (939) 861-10-53",
+                    AppealDates = new List<DateTime>()
                 }, 
                 new Client
                 {
                     Person = persons[6],
                     Address = addresses[6],
-                    DateOfBorn = new DateTime(1976, 8, 15)
+                    DateOfBorn = new DateTime(1976, 8, 15),
+                    TelephoneNumber = "+7 (955) 248-57-13",
+                    AppealDates = new List<DateTime>()
                 }, 
                 new Client
                 {
                     Person = persons[7],
                     Address = addresses[7],
-                    DateOfBorn = new DateTime(1950, 6, 9)
+                    DateOfBorn = new DateTime(1950, 6, 9),
+                    TelephoneNumber = "+7 (947) 544-31-99",
+                    AppealDates = new List<DateTime>()
                 }, 
                 new Client
                 {
                     Person = persons[8],
                     Address = addresses[8],
-                    DateOfBorn = new DateTime(1957, 3, 26)
+                    DateOfBorn = new DateTime(1957, 3, 26),
+                    TelephoneNumber = "+7 (954) 179-57-68",
+                    AppealDates = new List<DateTime>()
                 }, 
             };
             foreach (var client in clients)
@@ -358,38 +376,81 @@ namespace Maintenance.DataAccess
             foreach (var spesoalty in specialties)
                 context.Specialties.Add(spesoalty);
 
-            // создание работников - 2
-            Worker[] workers =
+            // создание статусов для работников - 4
+            WorkerStatus[] workerStatuses =
             {
+                new WorkerStatus
+                {
+                    Status = "Работает в данный момент"
+                },
+                new WorkerStatus
+                {
+                    Status = "На работе. Свободен"
+                },
+                new WorkerStatus
+                {
+                    Status = "Уволен"
+                },
+                new WorkerStatus {
+                    Status = "В отпуске"
+                }, 
+            };
+            foreach (var statuses in workerStatuses)
+                context.WorkerStatuses.Add(statuses);
+
+            // создание работников - 2
+            Worker[] workers = {
                 new Worker
                 {
                     Person = persons[10],
                     Specialty = specialties[0],
                     Discharge = "1",
-                    IsWorkNow = true
+                    Status = workerStatuses[0],
+                    WorkExperience = 5
                 },
                 new Worker {
                     Person = persons[9],
                     Specialty = specialties[1],
                     Discharge = "1",
-                    IsWorkNow = false
+                    Status = workerStatuses[1],
+                    WorkExperience = 2
                 },
             };
             foreach (var worker in workers)
                 context.Workers.Add(worker);
 
-            // создание заявок - 1
-            RepairOrder[] repairOrders =
-            {
-                new RepairOrder
+            // создание неисправностей - 3
+            Malfunction[] malfunctions = {
+                new Malfunction {
+                    Title = "Ремонт АКПП",
+                    Price = 100000,
+                    TimeToFix = 48
+                }, 
+                new Malfunction
                 {
+                    Title = "Развал/Схождение",
+                    Price = 2000,
+                    TimeToFix = 1
+                }, 
+                new Malfunction {
+                    Title = "Ремонт ГБЦ",
+                    Price = 20000,
+                    TimeToFix = 4
+                }, 
+            };
+            foreach (var malfunction in malfunctions)
+                context.Malfunctions.Add(malfunction);
+
+            // создание заявок - 1
+            RepairOrder[] repairOrders = {
+                new RepairOrder {
                     Client = clients[0],
                     Worker = workers[0],
                     Car = cars[0],
                     IsReady = false,
-                    Malfunctions = "стук в двигателе",
+                    Malfunctions = new List<Malfunction>{malfunctions[0]},
                     DateOfTheApplication = DateTime.Now,
-                    DateOfCompletion = DateTime.Now + TimeSpan.FromDays(2)
+                    DateOfCompletion = DateTime.Now + TimeSpan.FromHours(malfunctions[0].TimeToFix + 12),
                 }, 
             };
             foreach (var order in repairOrders)

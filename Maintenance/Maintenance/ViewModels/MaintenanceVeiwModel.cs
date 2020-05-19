@@ -25,44 +25,94 @@ namespace Maintenance.ViewModels
 
         // сервис для открытия окон
         private IWindowOpenService _windowOpenService;
+        // сервис для открытия диалоговых окон
+        private IOpenDialogWindow _openDialogWindow;
 
         // конструктор
-        public MaintenanceVeiwModel(MainWindow window, IWindowOpenService service) {
+        public MaintenanceVeiwModel(MainWindow window, IWindowOpenService service,
+            IOpenDialogWindow openDialogWindow) {
             _window = window;
             _windowOpenService = service;
+            _openDialogWindow = openDialogWindow;
 
             _context = new DatabaseContext();
 
             RefreshData();
         } // MaintenanceVeiwModel - конструктор
 
-        // добавление заявки в базу данных и в коллекция для отображения
-        public async void AppendNewRequest(RepairOrder order) {
-            await Task.Run(() => _context.AppendOrder(order));
+        // проверка данных при добавлении клиента
+        public bool IsCorrectClientData(Client clientData) =>
+            clientData?.Person?.Name == string.Empty ||
+            clientData?.Person?.Surname == string.Empty ||
+            clientData?.Person?.Patronymic == string.Empty ||
+            clientData?.Person?.Passport == string.Empty ||
+            clientData?.Address?.Street == string.Empty ||
+            clientData?.Address?.Building == string.Empty ||
+            clientData?.DateOfBorn == DateTime.MinValue ||
+            clientData?.TelephoneNumber == string.Empty;
 
-            Orders.Add(order);
+        // проверка данных при добавлении работника
+        public bool IsCorrectWorkerData(Worker workerData) =>
+            workerData?.Person?.Name == string.Empty ||
+            workerData?.Person?.Surname == string.Empty ||
+            workerData?.Person?.Patronymic == string.Empty ||
+            workerData?.Person?.Passport == string.Empty ||
+            workerData?.Specialty == null ||
+            workerData?.Discharge == string.Empty;
 
-            if(Clients.ToList().Find(c => c.Person.Passport == order.Client.Person.Passport) == null) Clients.Add(order.Client);
-            if(Cars.ToList().Find(c => c.StateNumber == order.Car.StateNumber) == null) Cars.Add(order.Car);
-        } // AppendNewRequest
+        // -----------------------------------------------------------------------------
+
+        #region Обновление данных
 
         // обновление данных из базы данных
         public void RefreshData() {
             Orders = new ObservableCollection<RepairOrder>(_context.GetOrders());
             Clients = new ObservableCollection<Client>(_context.GetClients());
             Cars = new ObservableCollection<Car>(_context.GetCars());
-            Workers = new ObservableCollection<Worker>(_context.GetWorkers());
+            Workers = new ObservableCollection<Worker>(_context.GetWorkersNotFired());
         } // RefreshData
 
+        // переприсвоение данных по работнику
+        public void RefreshWorkerData(Worker worker) {
+            int templIndex = Workers.ToList().FindIndex(w => w.Person.Passport == worker.Person.Passport);
+            Workers.Remove(worker);
+            Workers.Insert(templIndex, worker);
+        } // RefreshWorkerData
+
+        // обновление данных по заявке на ремонт
+        public void RefreshOrderData(RepairOrder order) {
+            Orders.Remove(SelectedRepairOrder);
+            order.IsReady = true;
+            Orders.Insert(order.Id - 1, order);
+        } // RefreshOrderData
+
+        #endregion
+
+        // -----------------------------------------------------------------------------
+
+        #region Асинхронная работа с БД
+
+        // добавление заявки в базу данных и в коллекция для отображения
+        public async void AppendNewRequest(RepairOrder order) {
+            await Task.Run(() => _context.AppendOrder(order));
+
+            order.Id = Orders.Count;
+            Orders.Add(order);
+
+            if(Clients.ToList().Find(c => c.Person.Passport == order.Client.Person.Passport) == null) Clients.Add(order.Client);
+            if(Cars.ToList().Find(c => c.StateNumber == order.Car.StateNumber) == null) Cars.Add(order.Car);
+
+            // переприсвоение данных по работнику после изменения его статуса
+            RefreshWorkerData(order.Worker);
+        } // AppendNewRequest
+        
         // добавление нового клиента в базу данных и в коллекию для отображения
         public async void AppendNewClient(Client client) {
-            // проверка на правильность данных
-            if (client == null || (
-                client.Person.Passport == "Паспорт" ||
-                client.DateOfBorn.Date == DateTime.Now.Date)) return;
-
             // проверка существует ли такой клиент
-            if (_context.IsExistClient(client)) return;
+            if (_context.IsExistClient(client)) {
+                _openDialogWindow.OpenErrorWindow("Клиент с таким паспортом уже существует");
+                return;
+            } // if
 
             // ассинхронное добавление клиента в базу данных
             await Task.Run(() => _context.AppendClient(client));
@@ -74,11 +124,11 @@ namespace Maintenance.ViewModels
 
         // добавление нового клиента в базу данных и в коллекцию для отображения
         public async void AppendNewWorker(Worker worker) {
-            // проверка на правильность данных
-            if (worker == null || worker.Person.Passport == "Паспорт") return;
-
             // проверка существует ли такой работник
-            if (_context.IsExistWorker(worker)) return;
+            if (_context.IsExistWorker(worker)) {
+                _openDialogWindow.OpenErrorWindow("Работник с таким паспортом уже существует");
+                return;
+            } // if
 
             // добавление данных в базу данных
             await Task.Run(() => _context.AppendWorker(worker));
@@ -91,11 +141,13 @@ namespace Maintenance.ViewModels
         // увольнение работника
         public async void RemoveWorkerByValue() {
             // сохраняем данные для дальнейшей работы с БД
-            var car = SelectedCar;
+            var worker = SelectedWorker;
 
+            // ассинхронное увольнение работника (смена статуса работника на уволен)
             await Task.Run(() => _context.RemoveWorker(SelectedWorker));
 
-            Cars.Remove(car);
+            // удаляем из коллекции
+            Workers.Remove(worker);
         } // RemoveWorker
 
         // добавление новой машины в базу данных
@@ -115,22 +167,14 @@ namespace Maintenance.ViewModels
 
         // изменение данных в по клиенту в БД
         public async void ChangeClientInDb() {
-            try {
-                await Task.Run(() => _context.ChangeClient(SelectedClient));
-            } // try
-            catch (Exception ex) {
-
-            } // catch
+            try { await Task.Run(() => _context.ChangeClient(SelectedClient)); } // try
+            catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
         } // ChangeClientInDb
 
         // изменение данных по автомобилю в БД
         public async void ChangeCarInDb() {
-            try {
-                await Task.Run(() => _context.ChangeCar(SelectedCar));
-            } // try
-            catch (Exception e) {
-                
-            } // catch
+            try { await Task.Run(() => _context.ChangeCar(SelectedCar)); } // try
+            catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
         } // ChangeCarInDb
 
         // изменение статуса готовности автомобиля
@@ -139,15 +183,21 @@ namespace Maintenance.ViewModels
             try {
                 await Task.Run(() => _context.ChangeOrder(SelectedRepairOrder));
 
-                var templorder = SelectedRepairOrder;
-                Orders.Remove(SelectedRepairOrder);
-                templorder.IsReady = !templorder.IsReady;
-                Orders.Insert(templorder.Id - 1, templorder);
+                // переприсваивание данных по заявке на ремонт
+                var templOrder = SelectedRepairOrder;
+                RefreshOrderData(templOrder);
+
+                // переприсвоение данных по работнику после изменения его статуса
+                RefreshWorkerData(templOrder.Worker);
             } // try
             catch (Exception ex) {
-
+                _openDialogWindow.OpenErrorWindow(ex.Message);
             } // catch
         } // ChangeStatus
+
+        #endregion
+
+        // -----------------------------------------------------------------------------
 
         // переменная для доступа к базе данных
         private DatabaseContext _context;
@@ -242,13 +292,15 @@ namespace Maintenance.ViewModels
         public RelayCommand AppendClient => _appendClient ??
             (_appendClient = new RelayCommand(obj => {
                 // новый клиент
-                Client newСlient = new Client {
-                    Person = new Person
-                        { Name = "Имя", Surname = "Фамилия", Patronymic = "Отчество", Passport = "Паспорт" },
-                    Address = new Address { Street = "Улица", Building = "Дом", Flat = 0 },
-                    DateOfBorn = DateTime.Now
-                };
+                Client newСlient = new Client();
+                // открытие окна добавления клиента
                 (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeClientWindow(newСlient, true);
+                // проверка на корректность данных
+                if (IsCorrectClientData(newСlient)) {
+                    _openDialogWindow.OpenMessageWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
+                    return;
+                }
+                // асинхронное добавление данных в БД
                 AppendNewClient(newСlient);
             }));
 
@@ -271,14 +323,15 @@ namespace Maintenance.ViewModels
         private RelayCommand _appendWorker;
         public RelayCommand AppendWorker => _appendWorker ??
             (_appendWorker = new RelayCommand(obj => {
-                Worker newWorker = new Worker {
-                    Person = new Person
-                        { Name = "Имя", Surname = "Фамилия", Patronymic = "Отчество", Passport = "Паспорт" },
-                    IsWorkNow = false,
-                    Discharge = "4",
-                    Specialty = _context.GetSpecialties()[0]
-                };
+                // создание данных о работнике
+                Worker newWorker = new Worker{WorkExperience = 0};
+                // открытие окна для создания работника
                 (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendWorkerWindow(newWorker, _context);
+                if (IsCorrectWorkerData(newWorker)) {
+                    _openDialogWindow.OpenMessageWindow("Данные по работнику не могут быть добавлены, потому что вы не заполнили все поля");
+                    return;
+                } // if
+                // проверка корректности данных
                 AppendNewWorker(newWorker);
             }));
 

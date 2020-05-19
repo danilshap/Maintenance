@@ -20,7 +20,7 @@
             <Border BorderBrush="Black"
                     BorderThickness="1"
                     Width="400"
-                    Height="500"
+                    Height="520"
                     Background="{DynamicResource MaterialDesignPaper}"
                     ToolTip="Заявка на ремонт">
                 <ScrollViewer>
@@ -39,10 +39,29 @@
                                    Text="{Binding DateOfCompletion,
                             StringFormat=Дата окончания работ: {0:d}}" />
                         <TextBlock Margin="10, 5, 0, 0"
-                                   Height="auto"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Malfunctions,
-                            StringFormat=Список неисправностей: {0}}" />
+                                   Text="Список неисправностей:"/>
+                        <Expander Header="Список неисправностей"
+                                  Margin="10, 5, 10, 0">
+                            <ListView ItemsSource="{Binding Malfunctions}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            DisplayMemberBinding="{Binding Title}"
+                                            Header="Название неисправности"
+                                            Width="auto"/>
+                                        <GridViewColumn
+                                            DisplayMemberBinding="{Binding Price}"
+                                            Header="Стоимость, руб."
+                                            Width="auto"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Expander>
+                        <Separator Margin="10, 0"/>
+                        <!-- Цена заказа -->
+                        <TextBlock Margin="10, 5, 0, 0"
+                                   Text="{Binding Price,
+                            StringFormat=Цена ремонта: {0} руб.}" />
                         <TextBlock Margin="10, 5, 0, 5"
                                    Text="{Binding IsReady,
                             StringFormat=Статус готовности: {0}}" />
@@ -98,6 +117,9 @@
                         <TextBlock Margin="10, 5, 0, 0"
                                    Text="{Binding Car.Mark.Model,
                             StringFormat=Модель авто: {0}}" />
+                        <Separator Height="5"
+                                   Margin="10, 5, 0, 0"
+                                   Background="White" />
                     </StackPanel>
                 </ScrollViewer>
             </Border>
@@ -231,7 +253,7 @@
                                  Margin="10, 0, 10, 10"
                                  ItemsSource="{Binding Clients}"
                                  SelectedItem="{Binding SelectedClient}"
-                                 BorderThickness="1"
+                                 BorderThickness="5"
                                  BorderBrush="Black"
                                  SelectionMode="Single">
                             <ListView.View>
@@ -301,6 +323,10 @@
                                     <GridViewColumn
                                         DisplayMemberBinding="{Binding Person.Patronymic}"
                                         Header="Отчество мастера"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Status.Status}"
+                                        Header="Статус работника"
                                         Width="auto"/>
                                 </GridView>
                             </ListView.View>

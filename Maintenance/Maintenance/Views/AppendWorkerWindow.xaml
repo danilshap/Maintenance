@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Добавление работника"
-        Height="580"
+        Height="620"
         Width="600"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -61,14 +61,17 @@
             TabIndex="5"
             ItemsSource="{Binding Discharges}"
             SelectedItem="{Binding SelectedDischarges}"/>
+        <TextBlock Margin="10"
+                   Text="Стаж работы:"/>
+        <TextBox Margin="10"
+                 materialDesign:HintAssist.Hint="введите стаж работы"
+                 TabIndex="6"
+                 Padding="10, 0"
+                 Text="{Binding Path=Worker.WorkExperience}"/>
         <Separator Height="3"
                    Margin="10"/>
         <Button Margin="10"
                 Content="Добавить работника"
-                TabIndex="6"
-                Command="{Binding Close}"/>
-        <Button Margin="10"
-                Content="Отмена"
                 TabIndex="7"
                 Command="{Binding Close}"/>
     </StackPanel>

@@ -39,7 +39,7 @@ namespace Maintenance.ViewModels
             Order = new RepairOrder {
                 Client = SelectedClient,
                 Car = SelectedCar,
-                Malfunctions = string.Empty,
+                Malfunctions = new List<Malfunction>(),
                 DateOfTheApplication = DateTime.Now,
                 Worker = FindWorker(),
                 IsReady = false
@@ -63,7 +63,7 @@ namespace Maintenance.ViewModels
         }
 
         // поиск работника по выбранному работнику в combobox
-        private Worker FindWorker() => _context.GetWorkers()[Workers.ToList().FindIndex(w => w == SelectedWorker)];
+        private Worker FindWorker() => _context.GetWorkersNotFired()[Workers.ToList().FindIndex(w => w == SelectedWorker)];
         
         private DatabaseContext _context;
 
@@ -167,9 +167,6 @@ namespace Maintenance.ViewModels
                 Order.Client = SelectedClient;
                 Order.Car = SelectedCar;
                 Order.Worker = FindWorker();
-
-                Order.DateOfCompletion = DateTime.Now + TimeSpan.FromDays(Order.Malfunctions
-                                             .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Length);
                 
 
                 _window.NewOrder = Order;

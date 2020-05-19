@@ -20,8 +20,10 @@ namespace Maintenance.DataAccess
         public DbSet<Mark> Marks { get; set; }                  // коллекция марок автомобилей
         public DbSet<Car> Cars { get; set; }                    // количество машины
         public DbSet<Specialty> Specialties { get; set; }       // коллекция специальностей
+        public DbSet<WorkerStatus> WorkerStatuses { get; set; }       // коллекция статусов работника
         public DbSet<Worker> Workers { get; set; }              // коллекция работников
         public DbSet<RepairOrder> RepairOrders { get; set; }    // коллекция заявок на ремонт
+        public DbSet<Malfunction> Malfunctions { get; set; }    // коллекция неисправностей
 
         // настройка базы данных
         protected override void OnModelCreating(DbModelBuilder modelBuilder) {
@@ -77,6 +79,10 @@ namespace Maintenance.DataAccess
             modelBuilder.Entity<Client>()
                 .Property(c => c.DateOfBorn)
                 .IsRequired();
+            modelBuilder.Entity<Client>()
+                .Property(c => c.TelephoneNumber)
+                .IsRequired()
+                .HasMaxLength(20);
             modelBuilder.Entity<Client>()
                 .HasRequired(c => c.Person)
                 .WithOptional(p => p.Client);
@@ -135,14 +141,26 @@ namespace Maintenance.DataAccess
                 .WithRequired(w => w.Specialty);
             #endregion
 
+            // настройка таблицы статусов работника
+            #region WorkerStatus
+            modelBuilder.Entity<WorkerStatus>()
+                .Property(ws => ws.Status)
+                .IsRequired()
+                .IsUnicode()
+                .HasMaxLength(50);
+            modelBuilder.Entity<WorkerStatus>()
+                .HasMany(ws => ws.Workers)
+                .WithRequired(w => w.Status);
+            #endregion
+
             // настройка таблицы работников
             #region Worker
             modelBuilder.Entity<Worker>()
-                .Property(w => w.IsWorkNow)
-                .IsRequired();
-            modelBuilder.Entity<Worker>()
                 .HasRequired(c => c.Person)
                 .WithOptional(p => p.Worker);
+            modelBuilder.Entity<Worker>()
+                .Property(w => w.WorkExperience)
+                .IsRequired();
             modelBuilder.Entity<Worker>()
                 .HasMany(w => w.RepairOrders)
                 .WithRequired(r => r.Worker);
@@ -153,13 +171,23 @@ namespace Maintenance.DataAccess
                 .HasMaxLength(20);
             #endregion
 
-            // настройка таблицы заказов
-            #region RepairOrder
-            modelBuilder.Entity<RepairOrder>()
-                .Property(ro => ro.Malfunctions)
+            // список неисправностей
+            #region Malfunction
+            modelBuilder.Entity<Malfunction>()
+                .Property(m => m.Title)
                 .IsRequired()
                 .IsUnicode()
-                .HasMaxLength(350);
+                .HasMaxLength(100);
+            modelBuilder.Entity<Malfunction>()
+                .Property(m => m.TimeToFix)
+                .IsRequired();
+            modelBuilder.Entity<Malfunction>()
+                .Property(m => m.Price)
+                .IsRequired();
+            #endregion
+            
+            // настройка таблицы заказов
+            #region RepairOrder
             modelBuilder.Entity<RepairOrder>()
                 .Property(ro => ro.IsReady)
                 .IsRequired();
@@ -170,6 +198,12 @@ namespace Maintenance.DataAccess
                 .Property(ro => ro.DateOfTheApplication)
                 .IsRequired();
             #endregion
+
+            // настройка внешних ключей для свзи многие к многим
+            modelBuilder.Entity<Malfunction>()
+                .HasMany(m => m.RepairOrders)
+                .WithMany(r => r.Malfunctions)
+                .Map(t => t.MapLeftKey("MalfunctionId").MapRightKey("RepairOrderId").ToTable("MalfunctionRepairOrder"));
         } // OnModelCreating
     } // MaintenanceDbContext
 }

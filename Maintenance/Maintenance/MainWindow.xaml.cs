@@ -27,7 +27,7 @@ namespace Maintenance
         public MainWindow() {
             InitializeComponent();
 
-            _maintenanceVeiwModel = new MaintenanceVeiwModel(this, new MainWindowOpenWindowService());
+            _maintenanceVeiwModel = new MaintenanceVeiwModel(this, new MainWindowOpenWindowService(), new MainWindowOpenDialogService());
             this.DataContext = _maintenanceVeiwModel;
         }
     } // MainWindow
