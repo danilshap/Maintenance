@@ -8,12 +8,12 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Оформления заявки на ремонт"
-        Height="900"
+        Height="700"
         Width="1200"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Icon="../Images/application_icon.png"
-        FontSize="16"
+        FontSize="11"
         FontFamily="{materialDesign:MaterialDesignFont}">
     <Grid>
         <Grid.RowDefinitions>
@@ -42,6 +42,7 @@
                           SelectedItem="{Binding SelectedClient}"
                           BorderThickness="1"
                           BorderBrush="Black"
+                          FontSize="11"
                           SelectionMode="Single">
                     <ListView.View>
                         <GridView>
@@ -61,7 +62,8 @@
                     </ListView.View>
                 </ListView>
                 <Button Grid.Row="1"
-                        Margin="10"
+                        Margin="10, 5"
+                        FontSize="11"
                         Content="Добавить клиента"
                         Command="{Binding Path=AppendClient}"
                         Background="{DynamicResource SecondaryAccentBrush}"
@@ -86,6 +88,7 @@
                           ItemsSource="{Binding Cars}"
                           SelectedItem="{Binding SelectedCar}"
                           BorderThickness="1"
+                          FontSize="11"
                           BorderBrush="Black"
                           SelectionMode="Single">
                     <ListView.View>
@@ -108,6 +111,7 @@
                 <Button Grid.Row="1"
                         Margin="10"
                         Content="Добавить авто"
+                        FontSize="11"
                         Command="{Binding Path=AppendCar}"
                         Background="{DynamicResource SecondaryAccentBrush}"
                         BorderBrush="Transparent"/>
@@ -129,19 +133,19 @@
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="40*"/>
-                    <RowDefinition Height="10*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0"
                            Grid.Column="0"
                            Margin="10,8,10,7"
                            Text="Дата подачи заявки:"
                            VerticalAlignment="Center"
-                           FontSize="14" Grid.ColumnSpan="2"/>
+                           FontSize="11"
+                           Grid.ColumnSpan="2"/>
                 <DatePicker Grid.Row="0"
                             Grid.Column="1"
                             Margin="10, 5"
                             BorderThickness="1"
-                            FontSize="14"
+                            FontSize="11"
                             DisplayDate="{Binding Path=DateOfTheApplication}"
                             SelectedDate="{Binding Order.DateOfTheApplication}"/>
                 <TextBlock Grid.Row="1"
@@ -149,23 +153,34 @@
                            Margin="10,7,10,8"
                            Text="Выбор мастера для работа:"
                            VerticalAlignment="Center"
-                           FontSize="14" Grid.ColumnSpan="2"/>
+                           FontSize="11" Grid.ColumnSpan="2"/>
                 <ComboBox Grid.Row="1"
-                          Grid.Column="2"
+                          Grid.Column="1"
                           Margin="10, 5"
-                          FontSize="14"
+                          FontSize="11"
                           ItemsSource="{Binding Workers}"
                           SelectedItem="{Binding SelectedWorker}"/>
                 <TextBlock Grid.Row="2"
                            Grid.Column="0"
                            Margin="10, 5"
-                           Text="Список неисправностей:"
-                           FontSize="14" Grid.ColumnSpan="2"/>
-                <TextBox Grid.Row="2"
-                         Grid.Column="2"
-                         BorderThickness="1"
-                         Margin="10, 5"
-                         Text="{Binding Path=Order.Malfunctions}"/>
+                           Text="Список неисправностей (выберите из списка одну или несколько неисправностей):"
+                           FontSize="11" Grid.ColumnSpan="2"/>
+                <DataGrid Grid.Row="2"
+                          Grid.Column="1"
+                          x:Name="DgMalfunctions"
+                          SelectionMode="Extended"
+                          AutoGenerateColumns="False"
+                          FontSize="11"
+                          ItemsSource="{Binding Malfunctions}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Описание"
+                                            Binding="{Binding Path=Title}"/>
+                        <DataGridTextColumn Header="Стоимость, руб."
+                                            Binding="{Binding Path=Price}"/>
+                        <DataGridTextColumn Header="Время на ремонт, ч."
+                                            Binding="{Binding Path=TimeToFix}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </GroupBox>
 
@@ -175,6 +190,7 @@
                 Margin="10"
                 Content="Оформить заявку"
                 Command="{Binding Path=Accept}"
+                FontSize="11"
                 Background="{DynamicResource SecondaryAccentBrush}"
                 BorderBrush="Transparent"/>
         <Button Grid.Row="2"
@@ -182,6 +198,7 @@
                 Margin="10"
                 Content="Отмена"
                 Command="{Binding Path=Cencel}"
+                FontSize="11"
                 Background="{DynamicResource SecondaryAccentBrush}"
                 BorderBrush="Transparent"/>
     </Grid>

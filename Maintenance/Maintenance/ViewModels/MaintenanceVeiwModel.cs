@@ -35,30 +35,13 @@ namespace Maintenance.ViewModels
             _windowOpenService = service;
             _openDialogWindow = openDialogWindow;
 
-            _context = new DatabaseContext();
+            Orders = new ObservableCollection<RepairOrder>();
+            Clients = new ObservableCollection<Client>();
+            Cars = new ObservableCollection<Car>();
+            Workers = new ObservableCollection<Worker>();
 
-            RefreshData();
+            _context = new DatabaseContext(this);
         } // MaintenanceVeiwModel - конструктор
-
-        // проверка данных при добавлении клиента
-        public bool IsCorrectClientData(Client clientData) =>
-            clientData?.Person?.Name == string.Empty ||
-            clientData?.Person?.Surname == string.Empty ||
-            clientData?.Person?.Patronymic == string.Empty ||
-            clientData?.Person?.Passport == string.Empty ||
-            clientData?.Address?.Street == string.Empty ||
-            clientData?.Address?.Building == string.Empty ||
-            clientData?.DateOfBorn == DateTime.MinValue ||
-            clientData?.TelephoneNumber == string.Empty;
-
-        // проверка данных при добавлении работника
-        public bool IsCorrectWorkerData(Worker workerData) =>
-            workerData?.Person?.Name == string.Empty ||
-            workerData?.Person?.Surname == string.Empty ||
-            workerData?.Person?.Patronymic == string.Empty ||
-            workerData?.Person?.Passport == string.Empty ||
-            workerData?.Specialty == null ||
-            workerData?.Discharge == string.Empty;
 
         // -----------------------------------------------------------------------------
 
@@ -66,10 +49,10 @@ namespace Maintenance.ViewModels
 
         // обновление данных из базы данных
         public void RefreshData() {
-            Orders = new ObservableCollection<RepairOrder>(_context.GetOrders());
-            Clients = new ObservableCollection<Client>(_context.GetClients());
-            Cars = new ObservableCollection<Car>(_context.GetCars());
-            Workers = new ObservableCollection<Worker>(_context.GetWorkersNotFired());
+            _context.GetOrders().ToList().ForEach(o => Orders.Add(o));
+            _context.GetClients().ToList().ForEach(c => Clients.Add(c));
+            _context.GetCars().ToList().ForEach(c => Cars.Add(c));
+            _context.GetWorkersNotFired().ToList().ForEach(w => Workers.Add(w));
         } // RefreshData
 
         // переприсвоение данных по работнику
@@ -81,9 +64,7 @@ namespace Maintenance.ViewModels
 
         // обновление данных по заявке на ремонт
         public void RefreshOrderData(RepairOrder order) {
-            Orders.Remove(SelectedRepairOrder);
-            order.IsReady = true;
-            Orders.Insert(order.Id - 1, order);
+            Orders[SelectedRepairOrder.Id - 1].IsReady = true;
         } // RefreshOrderData
 
         #endregion
@@ -114,7 +95,7 @@ namespace Maintenance.ViewModels
                 return;
             } // if
 
-            // ассинхронное добавление клиента в базу данных
+            // асинхронное добавление клиента в базу данных
             await Task.Run(() => _context.AppendClient(client));
 
             // добавление данных в контейнер для отображения
@@ -143,7 +124,7 @@ namespace Maintenance.ViewModels
             // сохраняем данные для дальнейшей работы с БД
             var worker = SelectedWorker;
 
-            // ассинхронное увольнение работника (смена статуса работника на уволен)
+            // асинхронное увольнение работника (смена статуса работника на уволен)
             await Task.Run(() => _context.RemoveWorker(SelectedWorker));
 
             // удаляем из коллекции
@@ -152,10 +133,11 @@ namespace Maintenance.ViewModels
 
         // добавление новой машины в базу данных
         public async void AppendNewCar(Car car) {
-            // проверка на корректность данных
-            if(car == null || car.StateNumber == "Регистрационный номер") return;
-
-            if (_context.IsExistNumber(car)) return;
+            // если добавленная машина имеет номер который уже есть бд, то мы останавливаем обработку
+            if (_context.IsExistNumber(car)) {
+                _openDialogWindow.OpenErrorWindow($"Номер \"{car.StateNumber}\" уже существует. Невозможно добавить новое авто");
+                return;
+            };
 
             // добавление данных в базу данных
             await Task.Run(() => _context.AppendCar(car));
@@ -264,6 +246,10 @@ namespace Maintenance.ViewModels
         private RelayCommand _appendRequest;
         public RelayCommand AppendRequest => _appendRequest ??
             (_appendRequest = new RelayCommand(obj => {
+                if (!_context.IsHaveFreeWorkers()) {
+                    _openDialogWindow.OpenMessageWindow("В данный момент нет свободных работников");
+                    return;
+                }
                 // приводим к типу для доступа к функциям которые не реализованны в интерфейсе
                 RepairOrder neworder = (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrderWindow(_context);
                 if (neworder == null) return;
@@ -296,7 +282,7 @@ namespace Maintenance.ViewModels
                 // открытие окна добавления клиента
                 (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeClientWindow(newСlient, true);
                 // проверка на корректность данных
-                if (IsCorrectClientData(newСlient)) {
+                if (_context.IsCorrectClientData(newСlient)) {
                     _openDialogWindow.OpenMessageWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
                     return;
                 }
@@ -327,7 +313,7 @@ namespace Maintenance.ViewModels
                 Worker newWorker = new Worker{WorkExperience = 0};
                 // открытие окна для создания работника
                 (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendWorkerWindow(newWorker, _context);
-                if (IsCorrectWorkerData(newWorker)) {
+                if (_context.IsCorrectWorkerData(newWorker)) {
                     _openDialogWindow.OpenMessageWindow("Данные по работнику не могут быть добавлены, потому что вы не заполнили все поля");
                     return;
                 } // if
@@ -346,13 +332,16 @@ namespace Maintenance.ViewModels
         private RelayCommand _appendCar;
         public RelayCommand AppendCar => _appendCar ??
             (_appendCar = new RelayCommand(obj => {
-                Car newCar = new Car { 
-                    Mark = new Mark { Model = "Model", Title = "Mark"},
-                    Color = "Цвет",
-                    StateNumber = "Регистрационный номер",
-                    YearOfIssue = 2000
-                };
+                // создание новой переменной
+                Car newCar = new Car();
+                // открытие окна
                 (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeCarWindow(newCar, _context, true);
+                // проверка корректности данных
+                if (_context.IsCorrectCarData(newCar)) {
+                    _openDialogWindow.OpenMessageWindow("Данные по авто не могут быть добавлены, потому что вы не заполнили все поля");
+                    return;
+                }
+                // добавление данных в базу данных
                 AppendNewCar(newCar);
             }));
 

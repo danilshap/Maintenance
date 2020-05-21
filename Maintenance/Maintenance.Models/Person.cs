@@ -1,17 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Maintenance.Models
 {
-    public class Person {
+    public class Person: INotifyPropertyChanged {
         public int Id { get; set; } // id человека
-        public string Surname { get; set; } // фамилия
-        public string Name { get; set; } // имя
-        public string Patronymic { get; set; }  // отчество
-        public string Passport { get; set; }    // паспорт
+
+        // фамилия
+        private string _surname;
+        public string Surname {
+            get => _surname;
+            set {
+                _surname = value;
+                OnPropertyChanged();
+            } // set
+        } // Surname
+
+        // имя
+        private string _name;
+        public string Name {
+            get => _name;
+            set {
+                _name = value;
+                OnPropertyChanged();
+            } // set
+        } // Name
+
+        // отчество
+        private string _patronymic;
+        public string Patronymic {
+            get => _patronymic;
+            set {
+                _patronymic = value;
+                OnPropertyChanged();
+            } // set
+        } // Patronymic
+
+        // паспорт
+        private string _passport;
+        public string Passport {
+            get => _passport;
+            set {
+                _passport = value;
+                OnPropertyChanged();
+            } // set
+        } // Passport
 
         // в данном случае используется 1 к 1 потому что клиент может быть только один
         // с такими данными (уникальность по id и уникальность по пасспорту)
@@ -25,5 +63,11 @@ namespace Maintenance.Models
         public Person() {
             Cars = new HashSet<Car>();
         } // People - конструктор
+
+        // -----------------------------------------------------------------------------
+        // реализация интерфейса INotifyPropertyChanged - взял из прошлых работ
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName]string prop = "") =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     } // People
 }

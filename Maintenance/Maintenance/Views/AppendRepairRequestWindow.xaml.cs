@@ -29,7 +29,7 @@ namespace Maintenance.Views
         public AppendRepairRequestWindow(DatabaseContext context) {
             InitializeComponent();
 
-            _viewModel = new AppendRequestViewModel(new AppendRequestOpenWindowService(), context, this);
+            _viewModel = new AppendRequestViewModel(new AppendRequestOpenWindowService(), new DefaultDialogService(), context, this);
             this.DataContext = _viewModel;
         } // AppendRepairRequestWindow
     }

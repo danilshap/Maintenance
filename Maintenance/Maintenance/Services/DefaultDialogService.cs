@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Maintenance.Services
 {
-    public class MainWindowOpenDialogService: IOpenDialogWindow {
+    public class DefaultDialogService: IOpenDialogWindow {
         // вывод информации для пользователя
         public void OpenMessageWindow(string message) => MessageBox.Show(message, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
 

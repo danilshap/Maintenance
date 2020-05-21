@@ -21,32 +21,41 @@ namespace Maintenance.ViewModels
         // запрос на заявку
         public RepairOrder Order { get; set; }
 
+        // ссылка на окно
         private AppendRepairRequestWindow _window;
 
-        public AppendRequestViewModel(IWindowOpenService windowOpenService, DatabaseContext context, AppendRepairRequestWindow window) {
+        // сервис для диалоговых окон
+        private IOpenDialogWindow _openDialogWindow;
+
+        public AppendRequestViewModel(IWindowOpenService windowOpenService, IOpenDialogWindow openDialogWindow, DatabaseContext context, AppendRepairRequestWindow window) {
             _windowOpenService = windowOpenService;
             _window = window;
+            _openDialogWindow = openDialogWindow;
 
             _context = context;
             Clients = new ObservableCollection<Client>(context.GetClients());
             Cars = new ObservableCollection<Car>(context.GetCars());
             Workers = new ObservableCollection<string>(context.GetWorkerStr());
+            Malfunctions = new ObservableCollection<Malfunction>(context.GetMalfunctions());
 
             SelectedClient = Clients[0];
             SelectedCar = Cars[0];
             SelectedWorker = Workers[0];
 
             Order = new RepairOrder {
-                Client = SelectedClient,
-                Car = SelectedCar,
-                Malfunctions = new List<Malfunction>(),
-                DateOfTheApplication = DateTime.Now,
-                Worker = FindWorker(),
-                IsReady = false
+                IsReady = false,
+                DateOfTheApplication = DateTime.Now
             };
         } // AppendRequestViewModel
 
+        // добавление данных по клиентам в базу данных
         private async void AppendClientInDb(Client client) {
+            // проверка существует ли такой клиент
+            if (_context.IsExistClient(client)) {
+                _openDialogWindow.OpenErrorWindow("Клиент с таким паспортом уже существует");
+                return;
+            } // if
+
             await Task.Run(() => { _context.AppendClient(client); });
 
             // добавление в список
@@ -54,7 +63,14 @@ namespace Maintenance.ViewModels
             SelectedClient = Clients[0];
         }
 
+        // добавление данных по автомобилям в базу данных
         private async void AppendCarInDb(Car car) {
+            // если добавленная машина имеет номер который уже есть бд, то мы останавливаем обработку
+            if (_context.IsExistNumber(car)) {
+                _openDialogWindow.OpenErrorWindow($"Номер \"{car.StateNumber}\" уже существует. Невозможно добавить новое авто");
+                return;
+            };
+
             await Task.Run(() => { _context.AppendCar(car); });
 
             // добавляем в список
@@ -63,7 +79,7 @@ namespace Maintenance.ViewModels
         }
 
         // поиск работника по выбранному работнику в combobox
-        private Worker FindWorker() => _context.GetWorkersNotFired()[Workers.ToList().FindIndex(w => w == SelectedWorker)];
+        private Worker FindWorker() => _context.GetWorkersAtWorkAndFree()[Workers.ToList().FindIndex(w => w == SelectedWorker)];
         
         private DatabaseContext _context;
 
@@ -73,15 +89,16 @@ namespace Maintenance.ViewModels
         // коллеция авто
         public ObservableCollection<Car> Cars { get; set; }
 
+        // список неисправностей
+        public ObservableCollection<Malfunction> Malfunctions { get; set; }
+
         // коллеция работников
         public ObservableCollection<string> Workers { get; set; }
         
         // выбранный в коллекции клиент
-        public Client SelectedClient
-        {
+        public Client SelectedClient {
             get => _selectedClient;
-            set
-            {
+            set {
                 _selectedClient = value;
                 OnPropertyChanged(); // "SelectedClient"
             } // set
@@ -91,8 +108,7 @@ namespace Maintenance.ViewModels
         // выбранный в коллекции авто
         public Car SelectedCar {
             get => _selectedCar;
-            set
-            {
+            set {
                 _selectedCar = value;
                 OnPropertyChanged(); // "SelectedCar"
             } // set
@@ -100,11 +116,9 @@ namespace Maintenance.ViewModels
         private Car _selectedCar;
 
         // выбранный в коллекции работник
-        public string SelectedWorker
-        {
+        public string SelectedWorker {
             get => _selectedWorker;
-            set
-            {
+            set {
                 _selectedWorker = value;
                 OnPropertyChanged(); // "SelectedWorker"
             } // set
@@ -117,16 +131,14 @@ namespace Maintenance.ViewModels
             (_appendClient = new RelayCommand(obj =>
             {
                 // новый клиент
-                Client newclient = new Client {
-                    Person = new Person
-                        {Id = -1, Name = "Имя", Surname = "Фамилия", Patronymic = "Отчество", Passport = "Паспорт"},
-                    Address = new Address {Street = "Улица", Building = "Дом", Flat = 0},
-                    DateOfBorn = DateTime.Now
-                };
-
+                Client newclient = new Client();
                 // открытие окна
                 (_windowOpenService as AppendRequestOpenWindowService)?.OpenAppendOrChangeClientWindow(newclient, true);
-                if (newclient.Person.Passport == "Паспорт") return;
+                // проверка данных
+                if (_context.IsCorrectClientData(newclient)) {
+                    _openDialogWindow.OpenMessageWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
+                    return;
+                }
 
                 // добавление данных в БД
                 AppendClientInDb(newclient);
@@ -136,19 +148,18 @@ namespace Maintenance.ViewModels
         private RelayCommand _appendCar;
         public RelayCommand AppendCar => _appendCar ??
             (_appendCar = new RelayCommand(obj => {
-                Car newcar = new Car {
-                    Id = -1,
-                    Mark = new Mark { Model = "Модель", Title = "Марка"},
-                    Color = "Цвет",
-                    StateNumber = "Номер",
-                    YearOfIssue = DateTime.Now.Year
-                };
+                Car newCar = new Car();
                 
                 // открытие окна
-                (_windowOpenService as AppendRequestOpenWindowService)?.OpenAppendOrChangeCarWindow(newcar, _context, true);
-                if (newcar.StateNumber == "Номер") return;
+                (_windowOpenService as AppendRequestOpenWindowService)?.OpenAppendOrChangeCarWindow(newCar, _context, true);
+                // проверка корректности данных
+                if (_context.IsCorrectCarData(newCar)) {
+                    _openDialogWindow.OpenMessageWindow("Данные по авто не могут быть добавлены, потому что вы не заполнили все поля");
+                    return;
+                }
 
-                AppendCarInDb(newcar);
+                // добавление данных в базу данных
+                AppendCarInDb(newCar);
             }));
 
         // отмена команды
@@ -162,13 +173,25 @@ namespace Maintenance.ViewModels
         // отмена команды
         private RelayCommand _accept;
         public RelayCommand Accept => _accept ??
-            (_accept = new RelayCommand(obj =>
-            {
+            (_accept = new RelayCommand(obj => {
+                // присваивание данных по клиенту
                 Order.Client = SelectedClient;
+                // присваивание данных по автомобилю
                 Order.Car = SelectedCar;
+                // поиск работника по id
                 Order.Worker = FindWorker();
-                
 
+                // получение выбранных неисправностей из DataGrid
+                var templMalfunction = new List<Malfunction>();
+                foreach (var value in _window.DgMalfunctions.SelectedItems) {
+                    Malfunction selected = value as Malfunction;
+                    templMalfunction.Add(selected);
+                } // foreach
+
+                // присваивание данных по выбранным неисправностям
+                Order.Malfunctions = templMalfunction;
+
+                // присваивание окну переменной заказа/заявки на ремонт
                 _window.NewOrder = Order;
                 _window.Close();
             }));

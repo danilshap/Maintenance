@@ -7,11 +7,10 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Техобслуживание"
-        Height="900"
-        Width="1560"
-        ResizeMode="NoResize"
+        Height="768"
+        Width="1300"
         WindowStartupLocation="CenterScreen"
-        FontSize="16"
+        FontSize="11"
         Icon="Images/application_icon.png"
         FontFamily="{materialDesign:MaterialDesignFont}">
     <Window.Resources>
@@ -19,8 +18,8 @@
         <DataTemplate x:Key="OrderCards">
             <Border BorderBrush="Black"
                     BorderThickness="1"
-                    Width="400"
-                    Height="520"
+                    Width="300"
+                    Height="420"
                     Background="{DynamicResource MaterialDesignPaper}"
                     ToolTip="Заявка на ремонт">
                 <ScrollViewer>
@@ -40,9 +39,14 @@
                             StringFormat=Дата окончания работ: {0:d}}" />
                         <TextBlock Margin="10, 5, 0, 0"
                                    Text="Список неисправностей:"/>
-                        <Expander Header="Список неисправностей"
-                                  Margin="10, 5, 10, 0">
-                            <ListView ItemsSource="{Binding Malfunctions}">
+                        <Expander Margin="10, 5, 10, 0"
+                                  FontSize="11">
+                            <Expander.Header>
+                                <TextBlock Text="Список неисправностей"
+                                           FontSize="11"/>
+                            </Expander.Header>
+                            <ListView ItemsSource="{Binding Malfunctions}"
+                                      FontSize="11">
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn
@@ -133,8 +137,8 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="60*" />
-                    <ColumnDefinition Width="35*" />
+                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="40*" />
                 </Grid.ColumnDefinitions>
 
                 <!-- основные команды приложения -->
@@ -143,20 +147,20 @@
                     <StackPanel>
                         <!-- добавить новый заказ -->
                         <Button x:Name="BtAppendOrder"
-                                Margin="5"
+                                Margin="0, 5, 0, 0"
                                 ToolTip="Оформление нового заказа"
                                 Command="{Binding AppendRequest}"
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="Add"
-                                Height="44"
-                                Width="44" />
+                                Height="40"
+                                Width="40" />
                         </Button>
 
                         <!-- запросы -->
                         <Button x:Name="BtQueries"
-                                Margin="5"
                                 ToolTip="Запросы"
+                                Margin="0, 5"
                                 Command="{Binding RequestWindow}"
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
@@ -250,6 +254,7 @@
                                  Grid.Row="1"
                                  Grid.ColumnSpan="2"
                                  x:Name="LbClients"
+                                 FontSize="11"
                                  Margin="10, 0, 10, 10"
                                  ItemsSource="{Binding Clients}"
                                  SelectedItem="{Binding SelectedClient}"
@@ -278,6 +283,7 @@
                                 x:Name="BtAppendClient"
                                 Content="Добавить клиента"
                                 Margin="10"
+                                FontSize="11"
                                 ToolTip="Добавить клиента"
                                 Command="{Binding AppendClient}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
@@ -287,6 +293,7 @@
                                 x:Name="BtChangeClient"
                                 Margin="10"
                                 Content="Изменить данные"
+                                FontSize="11"
                                 ToolTip="Изменить данные о выбранном клиенте"
                                 Command="{Binding ChangeClient}"
                                 CommandParameter="{Binding Path = SelectedClient}"
@@ -305,6 +312,7 @@
                                  Grid.ColumnSpan="2"
                                  x:Name="LbWorkers"
                                  Margin="10, 0, 10, 10"
+                                 FontSize="11"
                                  ItemsSource="{Binding Workers}"
                                  SelectedItem="{Binding SelectedWorker}"
                                  BorderThickness="1"
@@ -336,6 +344,7 @@
                                 x:Name="BtAppendWorker"
                                 Margin="10"
                                 ToolTip="Нанять нового работника"
+                                FontSize="11"
                                 Content="Добавить работника"
                                 Command="{Binding AppendWorker}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
@@ -345,6 +354,7 @@
                                 x:Name="BtRemoveWorker"
                                 Margin="10"
                                 Content="Удалить работника"
+                                FontSize="11"
                                 ToolTip="Уволить выбранного работника работника"
                                 Command="{Binding RemoveWorker}"
                                 CommandParameter="{Binding Path = SelectedWorker}"
@@ -360,6 +370,7 @@
                         <ListView Grid.Column="0"
                                  Grid.Row="7"
                                  Grid.ColumnSpan="2"
+                                 FontSize="11"
                                  x:Name="LbCars"
                                  Margin="10, 0, 10, 10"
                                  ItemsSource="{Binding Cars}"
@@ -390,6 +401,8 @@
                                 Margin="10"
                                 Content="Добавить автомобиль"
                                 ToolTip="Добавить автомобиль в базу"
+                                FontSize="11"
+                                
                                 Command="{Binding AppendCar}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 BorderBrush="Transparent" />
@@ -398,6 +411,7 @@
                                 x:Name="BtChangeCar"
                                 Margin="10"
                                 Content="Изменить данные"
+                                FontSize="11"
                                 ToolTip="Изменить данные о выбранном автомобиле"
                                 Command="{Binding ChangeCar}"
                                 CommandParameter="{Binding Path = SelectedCar}"

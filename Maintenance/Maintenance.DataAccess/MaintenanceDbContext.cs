@@ -192,9 +192,6 @@ namespace Maintenance.DataAccess
                 .Property(ro => ro.IsReady)
                 .IsRequired();
             modelBuilder.Entity<RepairOrder>()
-                .Property(ro => ro.DateOfCompletion)
-                .IsRequired();
-            modelBuilder.Entity<RepairOrder>()
                 .Property(ro => ro.DateOfTheApplication)
                 .IsRequired();
             #endregion

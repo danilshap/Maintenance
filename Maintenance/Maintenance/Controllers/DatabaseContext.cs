@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Maintenance.DataAccess;
 using Maintenance.Models;
+using Maintenance.ViewModels;
 
 namespace Maintenance.Controllers
 {
@@ -25,15 +27,30 @@ namespace Maintenance.Controllers
         private int _countOfWorkers;
         private int _countOfOrders;
 
-        // конструктор
-        public DatabaseContext()
-        {
-            // создание базы данных
-            Database.SetInitializer(new MaintenanceDbInit());
+        // ссылка на viewModel для присвоения данных в асинхронном режиме
+        private MaintenanceVeiwModel _veiwModel;
 
+        // конструктор
+        public DatabaseContext(MaintenanceVeiwModel veiwModel) {
+            _veiwModel = veiwModel;
+
+            // асинхронная инициализация с БД
+            Initialize();
+        } // DatabaseContext
+
+        // асинхронная инициализация БД
+        public async void Initialize() {
+            Database.SetInitializer(new MaintenanceDbInit());
             _db = new MaintenanceDbContext();
             _db.Database.Initialize(false);
 
+            await Task.Run(SetCountersData);
+
+            _veiwModel.RefreshData();
+        }
+
+        // назначение счетчикам кол-во данных в коллекциях
+        public void SetCountersData() {
             _countOfPersons = _db.Persons.ToList().Count;
             _countOfAddresses = _db.Addresses.ToList().Count;
             _countOfClients = _db.Clients.ToList().Count;
@@ -43,7 +60,7 @@ namespace Maintenance.Controllers
             _countOfWorkers = _db.Workers.ToList().Count;
             _countOfOrders = _db.RepairOrders.ToList().Count;
             _countOfWorkersStatuses = _db.WorkerStatuses.ToList().Count;
-        } // DatabaseContext
+        }
 
         #region Получение данных
 
@@ -89,8 +106,7 @@ namespace Maintenance.Controllers
         #region Добавление данных
 
         // добавление данных по персоне
-        public void AppendPersonData(Person person)
-        {
+        public void AppendPersonData(Person person) {
             _db.Persons.Add(person);
             _db.SaveChanges();
 
@@ -98,13 +114,22 @@ namespace Maintenance.Controllers
         }
 
         // добавление данных по адресу
-        public void AppendAddress(Address address)
-        {
+        public void AppendAddress(Address address) {
             _db.Addresses.Add(address);
             _db.SaveChanges();
 
             ++_countOfAddresses;
         }
+
+        // добавление даты обращения клиенту
+        public void AppendClientDate(Client client) {
+            var templClient = GetClients().ToList().Find(c => c.Id == client.Id);
+
+            if (templClient == null) throw new Exception("Проблема с данными о клиенте");
+
+            templClient.AppealDates.Add(DateTime.Now);
+            _db.SaveChanges();
+        } // AppendClientDate
 
         // добавление данных по клиенту
         public void AppendClient(Client client) {
@@ -130,11 +155,11 @@ namespace Maintenance.Controllers
             } // if
 
             // формируем новую переменную чтобы правильно ссылаться на переменные
-            _db.Clients.Add(new Client
-            {
+            _db.Clients.Add(new Client {
                 Person = person,
                 Address = address,
-                DateOfBorn = client.DateOfBorn
+                DateOfBorn = client.DateOfBorn,
+                TelephoneNumber = client.TelephoneNumber
             });
             // сохранение изменений
             _db.SaveChanges();
@@ -155,14 +180,12 @@ namespace Maintenance.Controllers
         public void AppendCar(Car car) {
             var mark = _db.Marks.ToList().Find(m => m.Title == car.Mark.Title && m.Model == car.Mark.Model);
 
-            if (mark == null)
-            {
+            if (mark == null) {
                 AppendMark(car.Mark);
                 mark = _db.Marks.ToList()[_countOfMarks - 1];
             } // if
 
-            _db.Cars.Add(new Car
-            {
+            _db.Cars.Add(new Car {
                 Mark = mark,
                 Owner = car.Owner,
                 Color = car.Color,
@@ -185,51 +208,61 @@ namespace Maintenance.Controllers
 
         // добавление данных по работнику
         public void AppendWorker(Worker worker) {
-            //var person = _db.Persons.ToList().Find(p => p.Passport == worker.Person.Passport);
-            //var specialty = _db.Specialties.ToList().Find(s => s.Title.ToLower() == worker.Specialty.Title.ToLower());
+            var person = _db.Persons.ToList().Find(p => p.Passport == worker.Person.Passport);
+            var specialty = _db.Specialties.ToList().Find(s => s.Title.ToLower() == worker.Specialty.Title.ToLower());
+            var status = _db.WorkerStatuses.ToList().Find(s => s.Status == worker.Status.Status);
 
-            //// если мы не нашли данные о специальнсотях то добавляем их и переприсваеваем ссылку
-            //if (person == null) {
-            //    AppendPersonData(worker.Person);
-            //    person = _db.Persons.ToList()[_countOfPersons - 1];
-            //}
+            // если мы не нашли данные о специальнсотях то добавляем их и переприсваеваем ссылку
+            if (person == null) {
+                AppendPersonData(worker.Person);
+                person = _db.Persons.ToList()[_countOfPersons - 1];
+            }
 
-            //// если мы не нашли данные о специальностях то добавляем их и переприсваеваем ссылку
-            //if (specialty == null) {
-            //    AppendSpecialty(worker.Specialty);
-            //    specialty = _db.Specialties.ToList()[_countOfSpecialty - 1];
-            //}
+            // если мы не нашли данные о специальностях то добавляем их и переприсваеваем ссылку
+            if (specialty == null) {
+                AppendSpecialty(worker.Specialty);
+                specialty = _db.Specialties.ToList()[_countOfSpecialty - 1];
+            }
 
-            //// добавление данных в БД
-            //_db.Workers.Add(new Worker {
-            //    Person = person,
-            //    Specialty = specialty,
-            //    Status = worker.Status,
-            //    Discharge = worker.Discharge
-            //});
-            //_db.SaveChanges();
+            // добавление данных в БД
+            _db.Workers.Add(new Worker {
+                Person = person,
+                Specialty = specialty,
+                Status = status,
+                Discharge = worker.Discharge,
+                WorkExperience = worker.WorkExperience,
+            });
+            _db.SaveChanges();
 
-            //++_countOfWorkers;
+            ++_countOfWorkers;
         }
 
         // добавление данных по заявке
         public void AppendOrder(RepairOrder order) {
-           
-            //_db.RepairOrders.Add(new RepairOrder {
-            //    Client = _db.Clients.ToList().Find(c => c.Id == order.Client.Id),
-            //    Car = _db.Cars.ToList().Find(c => c.Id == order.Car.Id),
-            //    Worker = order.Worker,
-            //    IsReady = order.IsReady,
-            //    DateOfCompletion = order.DateOfCompletion,
-            //    DateOfTheApplication = order.DateOfTheApplication,
-            //    Malfunctions = order.Malfunctions
-            //});
-            //_db.SaveChanges();
+            // создание новой заявки/заказа на ремонт
+            RepairOrder newOrder = new RepairOrder {
+                Client = GetClients().ToList().Find(c => c.Id == order.Client.Id),
+                Car = _db.Cars.ToList().Find(c => c.Id == order.Car.Id),
+                Worker = order.Worker,
+                IsReady = order.IsReady,
+                DateOfTheApplication = order.DateOfTheApplication,
+            };
 
-            //// изменяем статус работника - работает сейчас
-            //ChangeWorker(order.Worker, _db.WorkerStatuses.ToList()[0]);
+            foreach (var value in order.Malfunctions)
+            {
+                Malfunction templValue = _db.Malfunctions.First(m => m.Id == value.Id);
+                newOrder.Malfunctions.Add(templValue);
+            }
 
-            //++_countOfOrders;
+            _db.RepairOrders.Add(newOrder);
+            _db.SaveChanges();
+
+            // изменяем статус работника - работает сейчас
+            ChangeWorker(order.Worker, _db.WorkerStatuses.ToList()[0]);
+            // добавляем клиенту дату обращения
+            AppendClientDate(order.Client);
+
+            ++_countOfOrders;
         }
 
         #endregion
@@ -272,6 +305,38 @@ namespace Maintenance.Controllers
         // проверка на существование работника
         public bool IsExistNumber(Car car) =>
             _db.Cars.ToList().Find(c => c.StateNumber == car.StateNumber) != null;
+
+        // проверка данных при добавлении клиента
+        public bool IsCorrectClientData(Client clientData) =>
+            clientData?.Person?.Name == string.Empty ||
+            clientData?.Person?.Surname == string.Empty ||
+            clientData?.Person?.Patronymic == string.Empty ||
+            clientData?.Person?.Passport == string.Empty ||
+            clientData?.Address?.Street == string.Empty ||
+            clientData?.Address?.Building == string.Empty ||
+            clientData?.DateOfBorn == DateTime.MinValue ||
+            clientData?.TelephoneNumber == string.Empty;
+
+        // проверка данных при добавлении автомобиля
+        public bool IsCorrectCarData(Car carData) =>
+            carData?.Mark?.Model == String.Empty ||
+            carData?.Mark?.Title == String.Empty ||
+            carData?.Owner == null ||
+            carData?.Color == String.Empty ||
+            carData?.StateNumber == String.Empty ||
+            carData?.YearOfIssue == 0;
+
+        // проверка данных при добавлении работника
+        public bool IsCorrectWorkerData(Worker workerData) =>
+            workerData?.Person?.Name == string.Empty ||
+            workerData?.Person?.Surname == string.Empty ||
+            workerData?.Person?.Patronymic == string.Empty ||
+            workerData?.Person?.Passport == string.Empty ||
+            workerData?.Specialty?.Title == string.Empty ||
+            workerData?.Specialty == null ||
+            workerData?.Discharge == string.Empty;
+
+        public bool IsHaveFreeWorkers() => GetWorkersAtWorkAndFree().Count >= 1;
 
         #endregion
 
@@ -357,9 +422,8 @@ namespace Maintenance.Controllers
 
             _db.SaveChanges();
         }
-        #endregion
 
-        // увольнение данных о работнике
+        // изменение статуса работника
         public Task RemoveWorker(Worker worker) => Task.Run(() => {
             var templworker = _db.Workers.First(w => w.Id == worker.Id);
 
@@ -368,6 +432,56 @@ namespace Maintenance.Controllers
             templworker.Status = _db.WorkerStatuses.ToList()[2];
             _db.SaveChanges();
         }); // RemoveWorker
+        #endregion
+
+        #region Запросы и Отчеты
+
+        // запрос №1: Фамилия, имя, отчество и адрес владельца автомобиля с данным номером государственной регистрации?
+        public Client Query01(string stateNumber) => _db.Clients.First(p => p.Person.Passport == _db.Cars.First(c => c.StateNumber.ToLower() == stateNumber.ToLower()).Owner.Passport);
+
+        // запрос №2: Марка и год выпуска автомобиля данного владельца?
+        public Car Query02(Person person)=> _db.Cars.First(c => c.Owner.Passport == person.Passport);
+
+        // запрос №3: Перечень устраненных неисправностей в автомобиле данного владельца
+        public List<Malfunction> Query03(Person owner) {
+            var malfunction = _db.RepairOrders.Where(ro => ro.Car.Owner.Passport == owner.Passport)
+                .Select(ro => ro)
+                .Distinct()
+                .Select(ro => ro.Malfunctions)
+                .ToList();
+            List<Malfunction> response = new List<Malfunction>();
+            malfunction.ForEach(m => m.ToList().ForEach(mm => response.Add(mm)));
+            return response;
+        }
+
+        // запрос №4: Фамилия, имя, отчество работника станции, устранявшего данную неисправность в автомобиле данного клиента, и время ее устранения?
+        public (Worker worker, int malfunctionTimeToFix) Query04(string malfunctionTitle, Client client) {
+            RepairOrder templOrder = _db.RepairOrders.First(ro =>
+                ro.Client.Person.Passport == client.Person.Passport &&
+                ro.Malfunctions.ToList().Find(m => m.Title == malfunctionTitle) != null);
+
+            return (templOrder.Worker, templOrder.Malfunctions.First(m => m.Title == malfunctionTitle).TimeToFix);
+        }
+
+        // запрос #5: Фамилия, имя, отчество клиентов, сдавших в ремонт автомобили с указанным типом неисправности?
+        public List<Client> Query05(string malfunctionTitle) => _db.RepairOrders
+            .Where(ro =>ro.Malfunctions.Contains(GetMalfunctions().ToList().Find(m => m.Title == malfunctionTitle)))
+            .Select(ro => ro.Client)
+            .ToList();
+
+        // запрос #6: Самая распространенная неисправность в автомобилях указанной марки?
+        public List<Malfunction> Query06(Mark mark) {
+            return null;
+        }
+
+        // запрос #7: Количество рабочих каждой специальности на станции?
+        public IList Query07() {
+            return null;
+        }
+
+        #endregion
+
+
 
     } // DatabaseContext
 }

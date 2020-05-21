@@ -82,13 +82,14 @@
     <Compile Include="Services\AppendRequestOpenWindowService.cs" />
     <Compile Include="Services\IOpenDialogWindow.cs" />
     <Compile Include="Services\IWindowOpenService.cs" />
-    <Compile Include="Services\MainWindowOpenDialogService.cs" />
+    <Compile Include="Services\DefaultDialogService.cs" />
     <Compile Include="Services\MainWindowOpenWindowService.cs" />
     <Compile Include="ViewModels\AppendOrChangeCarViewModel.cs" />
     <Compile Include="ViewModels\AppendOrChangeClientViewModel.cs" />
     <Compile Include="ViewModels\AppendRequestViewModel.cs" />
     <Compile Include="ViewModels\AppendWorkerViewModel.cs" />
     <Compile Include="ViewModels\MaintenanceVeiwModel.cs" />
+    <Compile Include="ViewModels\ReceiptViewModel.cs" />
     <Compile Include="Views\AboutApplicationWindow.xaml.cs">
       <DependentUpon>AboutApplicationWindow.xaml</DependentUpon>
     </Compile>
@@ -103,6 +104,9 @@
     </Compile>
     <Compile Include="Views\AppendWorkerWindow.xaml.cs">
       <DependentUpon>AppendWorkerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReceiptWindow.xaml.cs">
+      <DependentUpon>ReceiptWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RequestWindow.xaml.cs">
       <DependentUpon>RequestWindow.xaml</DependentUpon>
@@ -136,6 +140,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AppendWorkerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReceiptWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -177,17 +185,7 @@
   <ItemGroup>
     <Resource Include="Images\application_icon.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\add.png" />
-    <Resource Include="Images\change.png" />
-    <Resource Include="Images\person_add.png" />
-    <Resource Include="Images\person_remove.png" />
-    <Resource Include="Images\remove.png" />
-  </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Resource Include="Images\help.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

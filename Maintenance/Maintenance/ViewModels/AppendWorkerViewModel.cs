@@ -22,6 +22,8 @@ namespace Maintenance.ViewModels
         public AppendWorkerViewModel(Worker worker, AppendWorkerWindow window, DatabaseContext context)
         {
             Worker = worker;
+            Worker.Person = new Person();
+            
             _window = window;
             _context = context;
 
@@ -31,7 +33,7 @@ namespace Maintenance.ViewModels
             };
 
             var templDisc = Discharges.ToList().Find(d => d == worker.Discharge);
-            _selectedSpecialty = templDisc == null ? null : templDisc;
+            _selectedDischarges = templDisc == null ? null : templDisc;
 
             var templSpec = Specialties.ToList().Find(s => s == worker?.Specialty?.Title);
             _selectedSpecialty = templSpec == null ? null : templSpec;
@@ -76,7 +78,7 @@ namespace Maintenance.ViewModels
                                      (_close = new RelayCommand(obj => {
                                          // мы должны присвоить работнику
                                          Worker.Status = _context.GetStatuses()[1];
-                                         
+
                                          // закрытие окна
                                          _window.Close();
                                      }));

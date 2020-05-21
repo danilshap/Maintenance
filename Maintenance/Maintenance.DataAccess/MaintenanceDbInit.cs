@@ -450,7 +450,6 @@ namespace Maintenance.DataAccess
                     IsReady = false,
                     Malfunctions = new List<Malfunction>{malfunctions[0]},
                     DateOfTheApplication = DateTime.Now,
-                    DateOfCompletion = DateTime.Now + TimeSpan.FromHours(malfunctions[0].TimeToFix + 12),
                 }, 
             };
             foreach (var order in repairOrders)
