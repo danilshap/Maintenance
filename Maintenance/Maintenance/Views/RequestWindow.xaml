@@ -7,14 +7,454 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Отчеты и обращение к базе данных"
-        Height="900"
-        Width="1560"
+        Height="700"
+        Width="1260"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         FontSize="16"
         Icon="../Images/application_icon.png"
         FontFamily="{materialDesign:MaterialDesignFont}">
     <Grid>
-        
+        <TabControl>
+            <TabItem Header="Запрос 1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0"
+                              Header="Входящие данные"
+                              Margin="10">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+								           FontSize="14"
+								           TextWrapping="Wrap">
+									Фамилия, имя, отчество и адрес владельца автомобиля с данным номером государственной регистрации
+                            </TextBlock>
+
+                            <Separator Margin="10, 0"/>
+
+                            <TextBlock Text="Государственный номер автомобиля:"
+                                           Margin="10"
+                                           FontSize="14"/>
+
+                            <ComboBox Margin="10"
+                                         Padding="5, 0"
+                                         FontSize="14"
+                                         ItemsSource="{Binding Query01Data}"
+                                         SelectedItem="{Binding Query01SelectedNumber}"/>
+
+                            <Button Margin="10"
+								        Content="Поиск"
+								        FontSize="11"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1"
+					          Header="Результат"
+					          Margin="10">
+                        <StackPanel VerticalAlignment="Center">
+                            <!-- фамилия клиента -->
+                            <TextBlock Margin="10"
+							           Text="{Binding Path=Query01Result.Person.Surname, StringFormat=Фамилия клиента: {0}}"/>
+
+                            <!-- имя клиента -->
+                            <TextBlock Margin="10"
+							           Text="{Binding Path=Query01Result.Person.Name, StringFormat=Имя клиента: {0}}"/>
+
+                            <!-- отчество клиента -->
+                            <TextBlock Margin="10"
+                                       Text="{Binding Path=Query01Result.Person.Patronymic, StringFormat=Отчество клиента: {0}}"/>
+
+                            <!-- улица проживания -->
+                            <TextBlock Margin="10"
+							           Text="{Binding Path=Query01Result.Address.Street, StringFormat=Улица проживания: {0}}"/>
+
+                            <!-- дом проживания -->
+                            <TextBlock Margin="10"
+                                       Text="{Binding Path=Query01Result.Address.Building, StringFormat=Дом: {0}}"/>
+
+                            <!-- квартира проживания -->
+                            <TextBlock Margin="10"
+                                       Text="{Binding Path=Query01Result.Address.Flat, StringFormat=Квартира: {0}}"/>
+
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Запрос 2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0"
+					          Header="Входящие данные"
+					          Margin="10">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Марка и год выпуска автомобиля данного владельца"/>
+
+                            <Separator Margin="10, 0"/>
+
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Выберите клиента:"/>
+
+                            <ListView FontSize="11"
+                                      Height="200"
+							          Margin="10, 0, 10, 10"
+							          ItemsSource="{Binding Query02Owners}"
+							          SelectedItem="{Binding Query02SelectedOwner}"
+							          BorderThickness="5"
+							          BorderBrush="Black"
+							          SelectionMode="Single">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+											DisplayMemberBinding="{Binding Surname}"
+											Header="Фамилия"
+											Width="auto"/>
+                                        <GridViewColumn
+											DisplayMemberBinding="{Binding Name}"
+											Header="Имя"
+											Width="auto"/>
+                                        <GridViewColumn
+											DisplayMemberBinding="{Binding Patronymic}"
+											Header="Отчество"
+											Width="auto"/>
+                                        <GridViewColumn
+	                                        DisplayMemberBinding="{Binding Passport}"
+	                                        Header="Паспорт"
+	                                        Width="auto"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+
+                            <Button Margin="10"
+                                    Content="Поиск"
+                                    FontSize="11"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1"
+                              Margin="10"
+                              Header="Результат">
+                        <ListView Margin="10"
+                                  ItemsSource="{Binding Query2Result}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Mark.Title}"
+                                                        Header="Марка автомобиля"
+                                                        Width="auto"/>
+                                    <GridViewColumn DisplayMemberBinding="{Binding YearOfIssue}"
+                                                        Header="Год выпуска"
+                                                        Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Запрос 3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0"
+                              Margin="10"
+                              Header="Входящие данные">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Перечень устраненных неисправностей в автомобиле данного владельца"/>
+
+                            <Separator Margin="10, 0"/>
+
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Выберите владельца для поиска:"/>
+
+                            <ListView FontSize="11"
+                                      Height="200"
+                                      Margin="10, 0, 10, 10"
+                                      ItemsSource="{Binding Query03Owners}"
+                                      SelectedItem="{Binding Query03SelectedOwner}"
+                                      SelectionMode="Single">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            DisplayMemberBinding="{Binding Surname}"
+                                            Header="Фамилия"
+                                            Width="auto"/>
+                                        <GridViewColumn
+                                            DisplayMemberBinding="{Binding Name}"
+                                            Header="Имя"
+                                            Width="auto"/>
+                                        <GridViewColumn
+                                            DisplayMemberBinding="{Binding Patronymic}"
+                                            Header="Отчество"
+                                            Width="auto"/>
+                                        <GridViewColumn
+                                            DisplayMemberBinding="{Binding Passport}"
+                                            Header="Паспорт"
+                                            Width="auto"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <Button Margin="10"
+                                    Content="Поиск"
+                                    FontSize="11"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1"
+                              Margin="10"
+                              Header="Результат">
+                        <ListView FontSize="11"
+                                  Margin="10"
+                                  ItemsSource="{Binding Query03Result}"
+                                  SelectionMode="Single">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Title}"
+                                        Header="Неисправность"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding Price}"
+                                        Header="Стоимость"
+                                        Width="auto"/>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding TimeToFix}"
+                                        Header="Время на ремонт"
+                                        Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Запрос 4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0"
+                              Margin="10"
+                              Header="Входящие данные">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Фамилия, имя, отчество работника станции, устранявшего данную неисправность в автомобиле данного клиента, и время ее устранения?"/>
+
+                            <Separator Margin="10, 0"/>
+
+                            <TextBlock Margin="10"
+                                       Text="Выберите неисправность:"/>
+
+                            <ComboBox Margin="10"
+                                      ItemsSource="{Binding Query04Malfunctions}"
+                                      SelectedItem="{Binding Query04SelectedMalfunction}"/>
+
+                            <TextBlock Margin="10"
+                                       Text="Выберите клиента:"/>
+
+                            <ListView Margin="10"
+                                      Height="200"
+                                      FontSize="11"
+                                      ItemsSource="{Binding Query04Owners}"
+                                      SelectedItem="{Binding Query04SelectedOwner}"
+                                      SelectionMode="Single">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Person.Surname}"
+                                                        Header="Фамилия"
+                                                        Width="auto"/>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Person.Name}"
+                                                        Header="Имя"
+                                                        Width="auto"/>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Person.Patronymic}"
+                                                        Header="Отчество"
+                                                        Width="auto"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <Button Margin="10"
+                                    Content="Поиск"
+                                    FontSize="11"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1"
+                              Margin="10"
+                              Header="Результат">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+                                       Text="{Binding Path=Query04Result.worker.Person.Surname, StringFormat=Фамилия работника: {0}}"/>
+
+                            <TextBlock Margin="10"
+                                       Text="{Binding Path=Query04Result.worker.Person.Name, StringFormat=Имя работника: {0}}"/>
+
+                            <TextBlock Margin="10"
+                                       Text="{Binding Path=Query04Result.worker.Person.Patronymic}"/>
+
+                            <TextBlock Margin="10"
+                                       Text="{Binding Path=Query04Result.malfunctionTimeToFix, StringFormat=Время ремонта: {0}}"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Запрос 5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0"
+                              Margin="10"
+                              Header="Входящие данные">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Фамилия, имя, отчество клиентов, сдавших в ремонт автомобили с указанным типом неисправности"/>
+
+                            <Separator Margin="10, 0"/>
+
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Выберите неисправность"/>
+
+                            <ComboBox Margin="10"
+                                      ItemsSource="{Binding Query05Malfunctions}"
+                                      SelectedItem="{Binding Query05SelectedMalfunction}"/>
+
+                            <Button Margin="10"
+                                    Content="Поиск"
+                                    FontSize="11"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1"
+                              Margin="10"
+                              Header="Результат">
+                        <ListView Margin="10"
+                                  ItemsSource="{Binding Query05ResultClients}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Person.Surname}"
+                                                    Header="Фамилия"
+                                                    Width="auto"/>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Person.Name}"
+                                                    Header="Имя"
+                                                    Width="auto"/>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Person.Patronymic}"
+                                                    Header="Отчество"
+                                                    Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Запрос 6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0"
+                              Margin="10"
+                              Header="Входные данные">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Самая распространенная неисправность в автомобилях указанной марки"/>
+                            <Separator/>
+
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="Выберите марку:"/>
+
+                            <ComboBox Margin="10"
+                                      FontSize="14"
+                                      ItemsSource="{Binding Query06Marks}"
+                                      SelectedItem="{Binding Query06SelectedMark}"/>
+
+                            <Button Margin="10"
+                                    Content="Поиск"
+                                    FontSize="11"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1"
+                              Margin="10"
+                              Header="Результат">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="{Binding Path=Query06Result.Title, StringFormat=Неисправность: {0}}"/>
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="{Binding Path=Query06Result.Price, StringFormat=Стоимость: {0}}"/>
+                            <TextBlock Margin="10"
+                                       FontSize="14"
+                                       Text="{Binding Path=Query06Result.TimeToFix, StringFormat=Затрачиваемое время на устранение неисправности: {0} ч.}"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Запрос 7">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="95*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Margin="10, 5"
+                               FontSize="14"
+                               Text="Количество рабочих каждой специальности на станции"/>
+
+                    <ListView Grid.Row="1"
+                              Margin="10"
+                              FontSize="14"
+                              SelectionMode="Single"
+                              ItemsSource="{Binding Query07Result}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn DisplayMemberBinding="{Binding title}"
+                                                Header="Специальность"
+                                                Width="auto" />
+                                <GridViewColumn DisplayMemberBinding="{Binding count}"
+                                                Header="Количество рабочих"
+                                                Width="auto" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Месячный отчет">
+                <!-- Размещение контейнера для отчета (пока что не придумал) -->
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>
