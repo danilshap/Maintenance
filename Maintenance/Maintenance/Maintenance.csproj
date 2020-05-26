@@ -77,9 +77,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controllers\CheckController.cs" />
     <Compile Include="Controllers\DatabaseContext.cs" />
     <Compile Include="Controllers\RelayCommand.cs" />
+    <Compile Include="Models\MonthReport.cs" />
     <Compile Include="Services\AppendRequestOpenWindowService.cs" />
+    <Compile Include="Services\IMainWindowOpenWindowService.cs" />
     <Compile Include="Services\IOpenDialogWindow.cs" />
     <Compile Include="Services\IWindowOpenService.cs" />
     <Compile Include="Services\DefaultDialogService.cs" />

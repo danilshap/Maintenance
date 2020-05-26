@@ -15,6 +15,7 @@ using System.Windows.Input;
 using Maintenance.Controllers;
 using Maintenance.Models;
 using Maintenance.Services;
+using System.Diagnostics;
 
 namespace Maintenance.ViewModels
 {
@@ -24,12 +25,12 @@ namespace Maintenance.ViewModels
         private MainWindow _window;
 
         // сервис для открытия окон
-        private IWindowOpenService _windowOpenService;
+        private IMainWindowOpenWindowService _windowOpenService;
         // сервис для открытия диалоговых окон
         private IOpenDialogWindow _openDialogWindow;
 
         // конструктор
-        public MaintenanceVeiwModel(MainWindow window, IWindowOpenService service,
+        public MaintenanceVeiwModel(MainWindow window, IMainWindowOpenWindowService service,
             IOpenDialogWindow openDialogWindow) {
             _window = window;
             _windowOpenService = service;
@@ -42,6 +43,12 @@ namespace Maintenance.ViewModels
 
             _context = new DatabaseContext(this);
         } // MaintenanceVeiwModel - конструктор
+
+        // получение чека после оформления данных
+        private void GetOrderToCheck(RepairOrder order) {
+            CheckController _check = new CheckController(order);
+            _check.SaveToFile();
+        } // GetOrderToCheck
 
         // -----------------------------------------------------------------------------
 
@@ -251,7 +258,7 @@ namespace Maintenance.ViewModels
                     return;
                 }
                 // приводим к типу для доступа к функциям которые не реализованны в интерфейсе
-                RepairOrder neworder = (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrderWindow(_context);
+                RepairOrder neworder = _windowOpenService.OpenAppendOrderWindow(_context);
                 if (neworder == null) return;
                 // добавление новой заявки в базу данных и в коллекцию
                 AppendNewRequest(neworder);
@@ -261,16 +268,14 @@ namespace Maintenance.ViewModels
         private RelayCommand _requestWindow;
         public RelayCommand RequestWindow => _requestWindow ??
             (_requestWindow = new RelayCommand(obj => {
-                bool isChangeData = (_windowOpenService as MainWindowOpenWindowService).OpenRequestWindow();
-                if (!isChangeData) return;
-                RefreshData();
+                _windowOpenService.OpenRequestWindow();
             }));
 
         // открыть окно для просмотра информации о приложении
         private RelayCommand _aboutApplicationWindow;
         public RelayCommand AboutApplicationWindow => _aboutApplicationWindow ??
             (_aboutApplicationWindow = new RelayCommand(obj => {
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAboutApplicationWindow();
+                _windowOpenService?.OpenAboutApplicationWindow();
             }));
 
         // открыть окно для просмотра информации о приложении
@@ -280,7 +285,7 @@ namespace Maintenance.ViewModels
                 // новый клиент
                 Client newСlient = new Client();
                 // открытие окна добавления клиента
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeClientWindow(newСlient, true);
+                _windowOpenService.OpenAppendOrChangeClientWindow(newСlient, true);
                 // проверка на корректность данных
                 if (_context.IsCorrectClientData(newСlient)) {
                     _openDialogWindow.OpenMessageWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
@@ -296,7 +301,7 @@ namespace Maintenance.ViewModels
             (_changeClient = new RelayCommand(obj => {
                 // создание временной переменной для корректировки данных при изменении
                 var templClient = SelectedClient;
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeClientWindow(SelectedClient, false);
+                _windowOpenService.OpenAppendOrChangeClientWindow(SelectedClient, false);
                 // проверяем изменились ли данные-идентификаторы
                 // если у нас не совпадает с измененным и этот паспорт уже существует то мы кидаем исключение
                 if (templClient.Person.Passport == SelectedClient.Person.Passport &&
@@ -312,7 +317,7 @@ namespace Maintenance.ViewModels
                 // создание данных о работнике
                 Worker newWorker = new Worker{WorkExperience = 0};
                 // открытие окна для создания работника
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendWorkerWindow(newWorker, _context);
+                _windowOpenService.OpenAppendWorkerWindow(newWorker, _context);
                 if (_context.IsCorrectWorkerData(newWorker)) {
                     _openDialogWindow.OpenMessageWindow("Данные по работнику не могут быть добавлены, потому что вы не заполнили все поля");
                     return;
@@ -335,7 +340,7 @@ namespace Maintenance.ViewModels
                 // создание новой переменной
                 Car newCar = new Car();
                 // открытие окна
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeCarWindow(newCar, _context, true);
+                _windowOpenService.OpenAppendOrChangeCarWindow(newCar, _context, true);
                 // проверка корректности данных
                 if (_context.IsCorrectCarData(newCar)) {
                     _openDialogWindow.OpenMessageWindow("Данные по авто не могут быть добавлены, потому что вы не заполнили все поля");
@@ -351,7 +356,7 @@ namespace Maintenance.ViewModels
             (_changeCar = new RelayCommand(obj => {
                 // создание временной переменной для корректирования данных при изменении
                 var templCar = SelectedCar;
-                (_windowOpenService as MainWindowOpenWindowService)?.OpenAppendOrChangeCarWindow(SelectedCar, _context, false);
+                _windowOpenService.OpenAppendOrChangeCarWindow(SelectedCar, _context, false);
                 // если изменения отличаются от временной переменной, и при этом переменная присутствует то мы уведомляем
                 // пользователя об ошибке
                 if (templCar.StateNumber == SelectedCar.StateNumber && _context.IsExistNumber(SelectedCar)) return;

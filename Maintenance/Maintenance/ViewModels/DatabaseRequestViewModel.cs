@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -25,7 +26,30 @@ namespace Maintenance.ViewModels
             _window = window;
             _context = context;
             _openDialogWindow = openDialogWindow;
+
+            SetValues();
         } // DatabaseRequestViewModel
+
+        private void SetValues() {
+            Query01Data = new List<string>();
+            Query01Result = new Client();
+
+            Query02Owners = new List<Person>();
+
+            Query03Owners = new List<Person>();
+
+            Query04Malfunctions = new List<string>();
+            Query04Owners = new List<Person>();
+            Query04Result = new ObservableCollection<(Worker worker, string malfunctionTimeToFix)>();
+
+            Query05Malfunctions = new List<string>();
+            Query05ResultClients = new ObservableCollection<Client>();
+
+            Query06Marks = new List<string>();
+            Query06Result = new Malfunction();
+
+            Query07Result = new ObservableCollection<(string title, int count)>();
+        }
 
         #region Данные для запросов
 
@@ -95,7 +119,82 @@ namespace Maintenance.ViewModels
             } // set
         } // Query3Result
 
+        // 4. данные для запроса 4
+        // список неисправностей
+        public List<string> Query04Malfunctions { get; set; }
+        // выбранная неисправность
+        private string _query04SelectedMalfunction;
+        public string Query04SelectedMalfunction {
+            get => _query04SelectedMalfunction;
+            set {
+                _query04SelectedMalfunction = value;
+                OnPropertyChanged();
+            } // set
+        } // Query04SelectedMalfunction
+        // список владельцев
+        public List<Person> Query04Owners { get; set; }
+        // выбранный владелец
+        private Person _query04SelectedOwner;
+        public Person Query04SelectedOwner {
+            get => _query04SelectedOwner;
+            set {
+                _query04SelectedOwner = value;
+                OnPropertyChanged();
+            } // set
+        } // Query03SelectedOwner
+        private ObservableCollection<(Worker worker, string malfunctionTimeToFix)> _query04Result;
+        public ObservableCollection<(Worker worker, string malfunctionTimeToFix)> Query04Result {
+            get => _query04Result;
+            set {
+                _query04Result = value;
+                OnPropertyChanged();
+            } // set
+        } // Query04Result
 
+        // 5. данные для запроса 5
+        public List<string> Query05Malfunctions { get; set; }
+        // выбранный тип неисправности
+        private string _query05SelectedMalfunction;
+        public string Query05SelectedMalfunction {
+            get => _query05SelectedMalfunction;
+            set {
+                _query05SelectedMalfunction = value;
+                OnPropertyChanged();
+            } // set
+        } // Query05SelectedMalfunction
+        private ObservableCollection<Client> _query05ResultClients;
+        public ObservableCollection<Client> Query05ResultClients{
+            get => _query05ResultClients;
+            set {
+                _query05ResultClients = value;
+                OnPropertyChanged();
+            } // set
+        } // Query05ResultClients
+
+        // 6. Данные для 6-го запроса
+        public List<string> Query06Marks { get; set; }
+        private string _query06SelectedMark;
+        public string Query06SelectedMark {
+            get => _query06SelectedMark;
+            set {
+                _query06SelectedMark = value;
+                OnPropertyChanged();
+            } // set
+        } // Query06SelectedMark
+        private Malfunction _query06Result;
+        public Malfunction Query06Result {
+            get => _query06Result;
+            set {
+                _query06Result = value; 
+                OnPropertyChanged();
+            } // set
+        } // Query06Result
+
+        // 7. данные для 7-го запроса
+        public ObservableCollection<(string title, int count)> Query07Result { get; set; }
+
+        // 8. данные для месячного отчета
+        // TODO:: сформировать класс для финального отчета
 
         #endregion
 

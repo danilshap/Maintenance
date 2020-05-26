@@ -9,7 +9,7 @@ using Maintenance.Views;
 
 namespace Maintenance.Services
 {
-    public class MainWindowOpenWindowService : IWindowOpenService {
+    public class MainWindowOpenWindowService : IMainWindowOpenWindowService {
         // открытие окна для добавление заявки на ремонт
         public RepairOrder OpenAppendOrderWindow(DatabaseContext context) {
             AppendRepairRequestWindow window = new AppendRepairRequestWindow(context);
@@ -36,10 +36,9 @@ namespace Maintenance.Services
         } // OpenAppendWorkerWindow
 
         // открытие окна запросов к базе данных
-        public bool OpenRequestWindow() {
+        public void OpenRequestWindow() {
             RequestWindow window = new RequestWindow();
             window.ShowDialog();
-            return false;
         } // OpenRequestWindow
 
         // открытие окна о программе
