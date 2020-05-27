@@ -50,7 +50,7 @@ namespace Maintenance.Controllers {
 
         // запись в файл
         public void SaveToFile() {
-            File.WriteAllText(_filename, GetOrderToFile());
+            File.WriteAllText(Filename, GetOrderToFile());
         } // SaveToFile
 
     } // CheckController

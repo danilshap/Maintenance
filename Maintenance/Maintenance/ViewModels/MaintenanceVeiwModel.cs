@@ -268,7 +268,7 @@ namespace Maintenance.ViewModels
         private RelayCommand _requestWindow;
         public RelayCommand RequestWindow => _requestWindow ??
             (_requestWindow = new RelayCommand(obj => {
-                _windowOpenService.OpenRequestWindow();
+                _windowOpenService.OpenRequestWindow(_context);
             }));
 
         // открыть окно для просмотра информации о приложении

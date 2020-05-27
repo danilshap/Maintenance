@@ -36,8 +36,8 @@ namespace Maintenance.Services
         } // OpenAppendWorkerWindow
 
         // открытие окна запросов к базе данных
-        public void OpenRequestWindow() {
-            RequestWindow window = new RequestWindow();
+        public void OpenRequestWindow(DatabaseContext context) {
+            RequestWindow window = new RequestWindow(context);
             window.ShowDialog();
         } // OpenRequestWindow
 

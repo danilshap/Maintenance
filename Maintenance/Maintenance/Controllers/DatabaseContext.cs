@@ -436,6 +436,17 @@ namespace Maintenance.Controllers
 
         #region Запросы и Отчеты
 
+        // получение данных для первого запроса
+        // список номеров автомобилей
+        public List<string> GetStateNumbers() => _db.Cars.Select(c => c.StateNumber).ToList();
+        // список владельцев
+        public List<Person> GetOwners() => _db.Cars.Select(c => c.Owner).ToList();
+        // список неисправностей
+        public List<string> GetMalfunctionsStr() => _db.Malfunctions.Select(m => m.Title).ToList();
+        // список марок авто
+        public List<string> GetMarksStr() => _db.Marks.Select(m => m.Title).ToList();
+
+
         // запрос №1: Фамилия, имя, отчество и адрес владельца автомобиля с данным номером государственной регистрации?
         public Client Query01(string stateNumber) => _db.Clients.First(p => p.Person.Passport == _db.Cars.First(c => c.StateNumber.ToLower() == stateNumber.ToLower()).Owner.Passport);
 

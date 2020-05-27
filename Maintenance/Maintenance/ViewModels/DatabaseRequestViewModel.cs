@@ -30,26 +30,29 @@ namespace Maintenance.ViewModels
             SetValues();
         } // DatabaseRequestViewModel
 
+        // присвоение данных для контейнеров входящих данных/рузульлтатов
         private void SetValues() {
-            Query01Data = new List<string>();
+            Query01Data = _context.GetStateNumbers();
             Query01Result = new Client();
 
-            Query02Owners = new List<Person>();
+            Query02Owners = _context.GetOwners();
 
-            Query03Owners = new List<Person>();
+            Query03Owners = _context.GetOwners();
 
-            Query04Malfunctions = new List<string>();
-            Query04Owners = new List<Person>();
+            Query04Malfunctions = _context.GetMalfunctionsStr();
+            Query04Owners = _context.GetOwners();
             Query04Result = new ObservableCollection<(Worker worker, string malfunctionTimeToFix)>();
 
-            Query05Malfunctions = new List<string>();
+            Query05Malfunctions = _context.GetMalfunctionsStr();
             Query05ResultClients = new ObservableCollection<Client>();
 
-            Query06Marks = new List<string>();
+            Query06Marks = _context.GetMarksStr();
             Query06Result = new Malfunction();
 
             Query07Result = new ObservableCollection<(string title, int count)>();
-        }
+        } // SetValues
+
+        // -----------------------------------------------------------------------------
 
         #region Данные для запросов
 
@@ -198,6 +201,43 @@ namespace Maintenance.ViewModels
 
         #endregion
 
+        // -----------------------------------------------------------------------------
+
+        #region Команды для окна
+
+        // первый запрос
+        private RelayCommand _firstQuery;
+        public RelayCommand FirstQuery =>
+            _firstQuery ?? new RelayCommand(obj => { Query01Result = _context.Query01(Query01SelectedNumber); }, obj => string.IsNullOrEmpty(Query01SelectedNumber));
+
+        // второй запрос
+        private RelayCommand _secondQuery;
+        public RelayCommand SecondQuery =>
+            _secondQuery ?? new RelayCommand(obj => { }, obj => Query02SelectedOwner == null);
+
+        // третий запрос
+        private RelayCommand _thirdQuery;
+        public RelayCommand ThirdQuery =>
+            _thirdQuery ?? new RelayCommand(obj => { }, obj => Query03SelectedOwner == null);
+
+        // четвертый запрос
+        private RelayCommand _firthQuery;
+        public RelayCommand FirthQuery => _firthQuery ?? new RelayCommand(obj => { },
+                                              obj => string.IsNullOrEmpty(Query04SelectedMalfunction) &&
+                                                     Query04SelectedOwner == null);
+
+        // пятый запрос
+        private RelayCommand _fifthQuery;
+        public RelayCommand FifthQuery => _fifthQuery ??
+                                          new RelayCommand(obj => { },
+                                              obj => string.IsNullOrEmpty(Query05SelectedMalfunction));
+
+        // шестой запрос
+        private RelayCommand _sixthQuery;
+        public RelayCommand SixthQuery =>
+            _sixthQuery ?? new RelayCommand(obj => { }, obj => string.IsNullOrEmpty(Query06SelectedMark));
+
+        #endregion
 
         // -----------------------------------------------------------------------------
         // реализация интерфейса INotifyPropertyChanged - взял из прошлых работ

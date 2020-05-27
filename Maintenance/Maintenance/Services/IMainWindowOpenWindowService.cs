@@ -11,7 +11,7 @@ namespace Maintenance.Services
     public interface IMainWindowOpenWindowService: IWindowOpenService {
         RepairOrder OpenAppendOrderWindow(DatabaseContext context);
         void OpenAppendWorkerWindow(Worker worker, DatabaseContext context);
-        void OpenRequestWindow();
+        void OpenRequestWindow(DatabaseContext context);
         void OpenAboutApplicationWindow();
     }
 }

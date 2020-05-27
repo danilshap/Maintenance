@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Maintenance.Controllers;
+using Maintenance.Services;
+using Maintenance.ViewModels;
 
 namespace Maintenance.Views
 {
@@ -19,9 +22,13 @@ namespace Maintenance.Views
     /// </summary>
     public partial class RequestWindow : Window
     {
-        public RequestWindow()
-        {
+        private DatabaseRequestViewModel _viewModel;
+
+        public RequestWindow(DatabaseContext context) {
             InitializeComponent();
+
+            _viewModel = new DatabaseRequestViewModel(this, context, new DefaultDialogService());
+            this.DataContext = _viewModel;
         }
     }
 }
