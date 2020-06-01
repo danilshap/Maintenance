@@ -451,7 +451,7 @@ namespace Maintenance.Controllers
         public Client Query01(string stateNumber) => _db.Clients.First(p => p.Person.Passport == _db.Cars.First(c => c.StateNumber.ToLower() == stateNumber.ToLower()).Owner.Passport);
 
         // запрос №2: Марка и год выпуска автомобиля данного владельца?
-        public Car Query02(Person person)=> _db.Cars.First(c => c.Owner.Passport == person.Passport);
+        public List<Car> Query02(Person person)=> _db.Cars.Where(c => c.Owner.Passport == person.Passport).Select(c => c).ToList();
 
         // запрос №3: Перечень устраненных неисправностей в автомобиле данного владельца
         public List<Malfunction> Query03(Person owner) {
@@ -481,7 +481,7 @@ namespace Maintenance.Controllers
             .ToList();
 
         // запрос #6: Самая распространенная неисправность в автомобилях указанной марки?
-        public List<Malfunction> Query06(Mark mark) {
+        public Malfunction Query06(string mark) {
             return null;
         }
 

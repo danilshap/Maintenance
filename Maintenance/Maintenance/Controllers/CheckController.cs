@@ -17,7 +17,7 @@ namespace Maintenance.Controllers {
         // констркутор
         public CheckController(RepairOrder order) {
             _order = order;
-            Filename = $"Заявка №{order.Id}.txt";
+            Filename = $"order{order.Id}.txt";
         } // CheckController
 
         // шаблон для сохранения данных
@@ -26,24 +26,24 @@ namespace Maintenance.Controllers {
             $"Дата оформления: {_order.DateOfTheApplication:D}\r\n" +
             $"Дата завершения: {_order.DateOfCompletion:D}\r\n" +
             $"Стоимость ремонта: {_order.Price}\r\n" +
-            $"------------------------------------------------------" +
-            $"Клиента (ФИО): {_order.Client.Person.Surname} {_order.Client.Person.Name[0]}.{_order.Client.Person.Patronymic}.\r\n" +
+            $"------------------------------------------------------\r\n" +
+            $"Клиент (ФИО): {_order.Client.Person.Surname} {_order.Client.Person.Name[0]}.{_order.Client.Person.Patronymic}.\r\n" +
             $"Пасспорт клиента: {_order.Client.Person.Passport}\r\n" +
             $"Номер телефона: {_order.Client.TelephoneNumber}\r\n" +
-            $"------------------------------------------------------" +
-            $"Марка авто: {_order.Car.Mark.Title}" +
-            $"Модель авто: {_order.Car.Mark.Model}" +
-            $"Гос. номер: {_order.Car.StateNumber}" +
-            $"Список неисправностей: \r\n {GetMalfunctionsTable(_order.Malfunctions.ToList())} \r\n";
+            $"------------------------------------------------------\r\n" +
+            $"Марка авто: {_order.Car.Mark.Title}\r\n" +
+            $"Модель авто: {_order.Car.Mark.Model}\r\n" +
+            $"Гос. номер: {_order.Car.StateNumber}\r\n" +
+            $"Список неисправностей: \r\n{GetMalfunctionsTable(_order.Malfunctions.ToList())}\r\n";
 
         // формирование таблицы неисправностей
         private string GetMalfunctionsTable(List<Malfunction> malfunction) {
             StringBuilder sb = new StringBuilder();
-            sb.Append("+------------------------------+----------+----------+\r\n");
-            sb.Append($"|{"Неисправность",-29}|{"Стоисость",9}|{"Время, ч",9}|\r\n");
-            sb.Append("+------------------------------+----------+----------+\r\n");
-            malfunction.ForEach(m => sb.Append($"|{m.Title, -29}|{m.Price, -9}|{m.TimeToFix, -9}|\r\n"));
-            sb.Append("+------------------------------+----------+----------+\r\n");
+            sb.Append("+------------------------------+---------+-----------+\r\n");
+            sb.Append($"| {"Неисправность",29}|{"Стоисость",9}|{"Время, ч",10} |\r\n");
+            sb.Append("+------------------------------+---------+-----------+\r\n");
+            malfunction.ForEach(m => sb.Append($"| {m.Title, 29}|{m.Price, 9}|{m.TimeToFix, 10} |\r\n"));
+            sb.Append("+------------------------------+---------+-----------+\r\n");
 
             return sb.ToString();
         } // GetMalfunctionsTable

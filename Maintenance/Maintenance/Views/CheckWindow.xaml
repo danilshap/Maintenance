@@ -1,0 +1,30 @@
+﻿<Window x:Class="Maintenance.Views.CheckWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Maintenance.Views"
+        mc:Ignorable="d"
+        Title="Чек по заявке"
+        Height="450"
+        Width="800"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Icon="../Images/application_icon.png">
+    <Grid>
+        <TextBox Margin="10"
+                 BorderThickness="0, 10"
+                 x:Name="TbData"
+                 TextWrapping="Wrap"
+                 Text="{Binding Path=OrderCheckData}"
+                 FontSize="14"
+                 FontFamily="Consolas">
+            <TextBox.BorderBrush>
+                <LinearGradientBrush>
+                    <GradientStop Color="Red" Offset="0"/>
+                    <GradientStop Color="Blue" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBox.BorderBrush>
+        </TextBox>
+    </Grid>
+</Window>

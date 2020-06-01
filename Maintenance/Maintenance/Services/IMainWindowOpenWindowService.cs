@@ -13,5 +13,6 @@ namespace Maintenance.Services
         void OpenAppendWorkerWindow(Worker worker, DatabaseContext context);
         void OpenRequestWindow(DatabaseContext context);
         void OpenAboutApplicationWindow();
+        void OpenCheckWindow(RepairOrder order);
     }
 }

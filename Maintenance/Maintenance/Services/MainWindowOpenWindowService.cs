@@ -41,6 +41,12 @@ namespace Maintenance.Services
             window.ShowDialog();
         } // OpenRequestWindow
 
+        // открытие окна для отображения чека
+        public void OpenCheckWindow(RepairOrder order) {
+            CheckWindow window = new CheckWindow(order);
+            window.ShowDialog();
+        } // OpenCheckWindow
+
         // открытие окна о программе
         public void OpenAboutApplicationWindow() => new AboutApplicationWindow().ShowDialog();
     } // MainWindowOpenWindowService

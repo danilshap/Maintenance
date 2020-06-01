@@ -91,6 +91,7 @@
     <Compile Include="ViewModels\AppendOrChangeClientViewModel.cs" />
     <Compile Include="ViewModels\AppendRequestViewModel.cs" />
     <Compile Include="ViewModels\AppendWorkerViewModel.cs" />
+    <Compile Include="ViewModels\CheckViewModel.cs" />
     <Compile Include="ViewModels\DatabaseRequestViewModel.cs" />
     <Compile Include="ViewModels\MaintenanceVeiwModel.cs" />
     <Compile Include="Views\AboutApplicationWindow.xaml.cs">
@@ -107,6 +108,9 @@
     </Compile>
     <Compile Include="Views\AppendWorkerWindow.xaml.cs">
       <DependentUpon>AppendWorkerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CheckWindow.xaml.cs">
+      <DependentUpon>CheckWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RequestWindow.xaml.cs">
       <DependentUpon>RequestWindow.xaml</DependentUpon>
@@ -140,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AppendWorkerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CheckWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -181,7 +189,9 @@
   <ItemGroup>
     <Resource Include="Images\application_icon.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\mechanic.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -40,11 +40,10 @@ namespace Maintenance.ViewModels
             Query03Owners = _context.GetOwners();
 
             Query04Malfunctions = _context.GetMalfunctionsStr();
-            Query04Owners = _context.GetOwners();
-            Query04Result = new ObservableCollection<(Worker worker, string malfunctionTimeToFix)>();
+            Query04Owners = _context.GetClients().ToList();
 
             Query05Malfunctions = _context.GetMalfunctionsStr();
-            Query05ResultClients = new ObservableCollection<Client>();
+            Query05ResultClients = new List<Client>();
 
             Query06Marks = _context.GetMarksStr();
             Query06Result = new Malfunction();
@@ -73,6 +72,10 @@ namespace Maintenance.ViewModels
         public Client Query01Result {
             get => _query01Result;
             set {
+                if (value == null) {
+                    _openDialogWindow.OpenMessageWindow("Клиента по запросу не найдено");
+                    return;
+                } // if
                 _query01Result = value;
                 OnPropertyChanged();
             } // set
@@ -91,11 +94,15 @@ namespace Maintenance.ViewModels
             } // set
         } // Query02SelectedOwner
         // результат
-        private List<Car> _query2Result;
-        public List<Car> Query2Result {
-            get => _query2Result;
+        private List<Car> _query02Result;
+        public List<Car> Query02Result {
+            get => _query02Result;
             set {
-                _query2Result = value;
+                if (value == null || value.Count == 0) {
+                    _openDialogWindow.OpenMessageWindow("Автомобилей по запросу не найдено");
+                    return;
+                } // if
+                _query02Result = value;
                 OnPropertyChanged();
             } // set
         } // Query2Result
@@ -113,10 +120,14 @@ namespace Maintenance.ViewModels
             } // set
         } // Query03SelectedOwner
         // результат
-        private List<Car> _query3Result;
-        public List<Car> Query3Result {
+        private List<Malfunction> _query3Result;
+        public List<Malfunction> Query3Result {
             get => _query3Result;
             set {
+                if (value == null || value.Count == 0) {
+                    _openDialogWindow.OpenMessageWindow("Неисправностей по запросам не найдено");
+                    return;
+                } // if
                 _query3Result = value;
                 OnPropertyChanged();
             } // set
@@ -135,20 +146,24 @@ namespace Maintenance.ViewModels
             } // set
         } // Query04SelectedMalfunction
         // список владельцев
-        public List<Person> Query04Owners { get; set; }
+        public List<Client> Query04Owners { get; set; }
         // выбранный владелец
-        private Person _query04SelectedOwner;
-        public Person Query04SelectedOwner {
+        private Client _query04SelectedOwner;
+        public Client Query04SelectedOwner {
             get => _query04SelectedOwner;
             set {
                 _query04SelectedOwner = value;
                 OnPropertyChanged();
             } // set
         } // Query03SelectedOwner
-        private ObservableCollection<(Worker worker, string malfunctionTimeToFix)> _query04Result;
-        public ObservableCollection<(Worker worker, string malfunctionTimeToFix)> Query04Result {
+        private (Worker worker, int malfunctionTimeToFix) _query04Result;
+        public (Worker worker, int malfunctionTimeToFix) Query04Result {
             get => _query04Result;
             set {
+                if (value.malfunctionTimeToFix == 0 || value.worker == null) {
+                    _openDialogWindow.OpenMessageWindow("Не было найдено данных по запросу");
+                    return;
+                } // if
                 _query04Result = value;
                 OnPropertyChanged();
             } // set
@@ -165,10 +180,14 @@ namespace Maintenance.ViewModels
                 OnPropertyChanged();
             } // set
         } // Query05SelectedMalfunction
-        private ObservableCollection<Client> _query05ResultClients;
-        public ObservableCollection<Client> Query05ResultClients{
+        private List<Client> _query05ResultClients;
+        public List<Client> Query05ResultClients{
             get => _query05ResultClients;
             set {
+                if (value == null || value.Count == 0) {
+                    _openDialogWindow.OpenMessageWindow("Не было найдено клиентов по запросу");
+                    return;
+                } // if
                 _query05ResultClients = value;
                 OnPropertyChanged();
             } // set
@@ -188,6 +207,10 @@ namespace Maintenance.ViewModels
         public Malfunction Query06Result {
             get => _query06Result;
             set {
+                if (value == null) {
+                    _openDialogWindow.OpenMessageWindow("Неисправность не была найдена по запросу");
+                    return;
+                } // if
                 _query06Result = value; 
                 OnPropertyChanged();
             } // set
@@ -213,29 +236,36 @@ namespace Maintenance.ViewModels
         // второй запрос
         private RelayCommand _secondQuery;
         public RelayCommand SecondQuery =>
-            _secondQuery ?? new RelayCommand(obj => { }, obj => Query02SelectedOwner == null);
+            _secondQuery ?? new RelayCommand(obj => { Query02Result = _context.Query02(Query02SelectedOwner); }, obj => Query02SelectedOwner == null);
 
         // третий запрос
         private RelayCommand _thirdQuery;
         public RelayCommand ThirdQuery =>
-            _thirdQuery ?? new RelayCommand(obj => { }, obj => Query03SelectedOwner == null);
+            _thirdQuery ?? new RelayCommand(obj => { Query3Result = _context.Query03(Query03SelectedOwner); }, obj => Query03SelectedOwner == null);
 
         // четвертый запрос
         private RelayCommand _firthQuery;
-        public RelayCommand FirthQuery => _firthQuery ?? new RelayCommand(obj => { },
+        public RelayCommand FirthQuery => _firthQuery ?? new RelayCommand(obj =>
+                                              {
+                                                  Query04Result = _context.Query04(Query04SelectedMalfunction,
+                                                      Query04SelectedOwner);
+                                              },
                                               obj => string.IsNullOrEmpty(Query04SelectedMalfunction) &&
                                                      Query04SelectedOwner == null);
 
         // пятый запрос
         private RelayCommand _fifthQuery;
         public RelayCommand FifthQuery => _fifthQuery ??
-                                          new RelayCommand(obj => { },
+                                          new RelayCommand(obj =>
+                                              {
+                                                  Query05ResultClients = _context.Query05(Query05SelectedMalfunction);
+                                              },
                                               obj => string.IsNullOrEmpty(Query05SelectedMalfunction));
 
         // шестой запрос
         private RelayCommand _sixthQuery;
         public RelayCommand SixthQuery =>
-            _sixthQuery ?? new RelayCommand(obj => { }, obj => string.IsNullOrEmpty(Query06SelectedMark));
+            _sixthQuery ?? new RelayCommand(obj => { Query06Result = _context.Query06(Query06SelectedMark); }, obj => string.IsNullOrEmpty(Query06SelectedMark));
 
         #endregion
 

@@ -82,6 +82,11 @@ namespace Maintenance.ViewModels
 
         // добавление заявки в базу данных и в коллекция для отображения
         public async void AppendNewRequest(RepairOrder order) {
+            if (order == null || order.Malfunctions.Count <= 0) {
+                _openDialogWindow.OpenErrorWindow("Оформление заявки без неисправностей невозможно");
+                return;
+            } // if
+
             await Task.Run(() => _context.AppendOrder(order));
 
             order.Id = Orders.Count;
@@ -259,9 +264,11 @@ namespace Maintenance.ViewModels
                 }
                 // приводим к типу для доступа к функциям которые не реализованны в интерфейсе
                 RepairOrder neworder = _windowOpenService.OpenAppendOrderWindow(_context);
-                if (neworder == null) return;
+                neworder.Id = Orders.Count;
                 // добавление новой заявки в базу данных и в коллекцию
                 AppendNewRequest(neworder);
+                // открытие окна для чека
+                _windowOpenService.OpenCheckWindow(neworder);
             }));
 
         // открыть окно для заявок
@@ -288,7 +295,7 @@ namespace Maintenance.ViewModels
                 _windowOpenService.OpenAppendOrChangeClientWindow(newСlient, true);
                 // проверка на корректность данных
                 if (_context.IsCorrectClientData(newСlient)) {
-                    _openDialogWindow.OpenMessageWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
+                    _openDialogWindow.OpenErrorWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
                     return;
                 }
                 // асинхронное добавление данных в БД
@@ -319,7 +326,7 @@ namespace Maintenance.ViewModels
                 // открытие окна для создания работника
                 _windowOpenService.OpenAppendWorkerWindow(newWorker, _context);
                 if (_context.IsCorrectWorkerData(newWorker)) {
-                    _openDialogWindow.OpenMessageWindow("Данные по работнику не могут быть добавлены, потому что вы не заполнили все поля");
+                    _openDialogWindow.OpenErrorWindow("Данные по работнику не могут быть добавлены, потому что вы не заполнили все поля");
                     return;
                 } // if
                 // проверка корректности данных
@@ -343,7 +350,7 @@ namespace Maintenance.ViewModels
                 _windowOpenService.OpenAppendOrChangeCarWindow(newCar, _context, true);
                 // проверка корректности данных
                 if (_context.IsCorrectCarData(newCar)) {
-                    _openDialogWindow.OpenMessageWindow("Данные по авто не могут быть добавлены, потому что вы не заполнили все поля");
+                    _openDialogWindow.OpenErrorWindow("Данные по авто не могут быть добавлены, потому что вы не заполнили все поля");
                     return;
                 }
                 // добавление данных в базу данных
