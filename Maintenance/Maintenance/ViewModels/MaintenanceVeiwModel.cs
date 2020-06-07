@@ -71,7 +71,7 @@ namespace Maintenance.ViewModels
 
         // обновление данных по заявке на ремонт
         public void RefreshOrderData(RepairOrder order) {
-            Orders[SelectedRepairOrder.Id - 1].IsReady = true;
+            SelectedRepairOrder.IsReady = true;
         } // RefreshOrderData
 
         #endregion
@@ -97,6 +97,9 @@ namespace Maintenance.ViewModels
 
             // переприсвоение данных по работнику после изменения его статуса
             RefreshWorkerData(order.Worker);
+
+            // открытие окна для чека
+            _windowOpenService.OpenCheckWindow(Orders.Last());
         } // AppendNewRequest
         
         // добавление нового клиента в базу данных и в коллекию для отображения
@@ -264,11 +267,8 @@ namespace Maintenance.ViewModels
                 }
                 // приводим к типу для доступа к функциям которые не реализованны в интерфейсе
                 RepairOrder neworder = _windowOpenService.OpenAppendOrderWindow(_context);
-                neworder.Id = Orders.Count;
                 // добавление новой заявки в базу данных и в коллекцию
                 AppendNewRequest(neworder);
-                // открытие окна для чека
-                _windowOpenService.OpenCheckWindow(neworder);
             }));
 
         // открыть окно для заявок

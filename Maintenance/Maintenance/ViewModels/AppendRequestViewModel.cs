@@ -79,7 +79,7 @@ namespace Maintenance.ViewModels
         }
 
         // поиск работника по выбранному работнику в combobox
-        private Worker FindWorker() => _context.GetWorkersAtWorkAndFree()[Workers.ToList().FindIndex(w => w == SelectedWorker)];
+        private Worker FindWorker() => _context.GetWorkersAtWorkAndFree().ToList()[Workers.ToList().FindIndex(w => w == SelectedWorker)];
         
         private DatabaseContext _context;
 

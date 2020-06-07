@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -65,41 +66,45 @@ namespace Maintenance.Controllers
         #region Получение данных
 
         // получить все данные по персонам
-        public IList<Person> GetPersons() => _db.Persons.Select(pers => pers).ToList();
+        public IEnumerable<Person> GetPersons() => _db.Persons.Select(pers => pers).ToList();
 
         // получить все данные по адресам
-        public IList<Address> GetAddresses() => _db.Addresses.Select(a => a).ToList();
+        public IEnumerable<Address> GetAddresses() => _db.Addresses.Select(a => a).ToList();
 
         // получить данные по клиентам
-        public IList<Client> GetClients() => _db.Clients.Select(client => client).ToList();
+        public IEnumerable<Client> GetClients() => _db.Clients.Select(client => client).ToList();
 
         // получить данные по моделям
-        public IList<Mark> GetMarks() => _db.Marks.Select(mark => mark).ToList();
+        public IEnumerable<Mark> GetMarks() => _db.Marks.Select(mark => mark).ToList();
 
         // получить данные по машинам
-        public IList<Car> GetCars() => _db.Cars.Select(car => car).ToList();
+        public IEnumerable<Car> GetCars() => _db.Cars.Select(car => car).ToList();
 
         // получить данные по специальностям
-        public IList<Specialty> GetSpecialties() => _db.Specialties.Select(specialty => specialty).ToList();
+        public IEnumerable<Specialty> GetSpecialties() => _db.Specialties.Select(specialty => specialty).ToList();
 
-        public IList<WorkerStatus> GetStatuses() => _db.WorkerStatuses.Select(status => status).ToList();
+        public IEnumerable<WorkerStatus> GetStatuses() => _db.WorkerStatuses.Select(status => status).ToList();
 
         // получить данные по работникам
-        public IList<Worker> GetWorkersNotFired() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status != "Уволен").ToList();
-        public IList<Worker> GetWorkersAtWorkAndFree() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status == "На работе. Свободен").ToList();
+        public IEnumerable<Worker> GetWorkersNotFired() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status != "Уволен").ToList();
+        public IEnumerable<Worker> GetWorkersAtWorkAndFree() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status == "На работе. Свободен").ToList();
 
         // получить данные по запросам на ремнт
-        public IList<RepairOrder> GetOrders() => _db.RepairOrders.Select(order => order).ToList();
+        public IEnumerable<RepairOrder> GetOrders() => _db.RepairOrders.Select(order => order).ToList();
 
         // получить данные по неисправностям
-        public IList<Malfunction> GetMalfunctions() => _db.Malfunctions.Select(malfunction => malfunction).ToList();
+        public IEnumerable<Malfunction> GetMalfunctions() => _db.Malfunctions.Select(malfunction => malfunction).ToList();
 
         // получить имя фамилию и отчество всех работников
-        public IList<string> GetWorkerStr() => GetWorkersAtWorkAndFree()
+        public IEnumerable<string> GetWorkerStr() => GetWorkersAtWorkAndFree()
             .Select(w => $"{w.Person.Surname} {w.Person.Name[0]}.{w.Person.Patronymic[0]}.").ToList();
 
         // полчить специальности работников
-        public IList<string> GetSpecialtyStr() => GetSpecialties().Select(s => s.Title).ToList();
+        public IEnumerable<string> GetSpecialtyStr() => GetSpecialties().Select(s => s.Title).ToList();
+
+        // получить заявки на ремонт за этот месяц
+        public IEnumerable<RepairOrder> GetMonthRepairOrders() => GetOrders().Where(o =>
+            o.DateOfTheApplication.Month >= (DateTime.Now.Month - 1 == 0 ? 12 : DateTime.Now.Month - 1) && o.IsReady);
 
         #endregion
 
@@ -336,7 +341,7 @@ namespace Maintenance.Controllers
             workerData?.Specialty == null ||
             workerData?.Discharge == string.Empty;
 
-        public bool IsHaveFreeWorkers() => GetWorkersAtWorkAndFree().Count >= 1;
+        public bool IsHaveFreeWorkers() => GetWorkersAtWorkAndFree().ToList().Count >= 1;
 
         #endregion
 
@@ -421,7 +426,7 @@ namespace Maintenance.Controllers
             ChangeWorker(templorder.Worker, _db.WorkerStatuses.ToList()[1]);
 
             _db.SaveChanges();
-        }
+        } // ChangeOrder
 
         // изменение статуса работника
         public Task RemoveWorker(Worker worker) => Task.Run(() => {
@@ -448,7 +453,7 @@ namespace Maintenance.Controllers
 
 
         // запрос №1: Фамилия, имя, отчество и адрес владельца автомобиля с данным номером государственной регистрации?
-        public Client Query01(string stateNumber) => _db.Clients.First(p => p.Person.Passport == _db.Cars.First(c => c.StateNumber.ToLower() == stateNumber.ToLower()).Owner.Passport);
+        public Client Query01(string stateNumber) => _db.Clients.FirstOrDefault(p => p.Person.Passport == _db.Cars.FirstOrDefault(c => c.StateNumber.ToLower() == stateNumber.ToLower()).Owner.Passport);
 
         // запрос №2: Марка и год выпуска автомобиля данного владельца?
         public List<Car> Query02(Person person)=> _db.Cars.Where(c => c.Owner.Passport == person.Passport).Select(c => c).ToList();
@@ -466,33 +471,54 @@ namespace Maintenance.Controllers
         }
 
         // запрос №4: Фамилия, имя, отчество работника станции, устранявшего данную неисправность в автомобиле данного клиента, и время ее устранения?
-        public (Worker worker, int malfunctionTimeToFix) Query04(string malfunctionTitle, Client client) {
-            RepairOrder templOrder = _db.RepairOrders.First(ro =>
-                ro.Client.Person.Passport == client.Person.Passport &&
-                ro.Malfunctions.ToList().Find(m => m.Title == malfunctionTitle) != null);
+        public Query04 Query04(string malfunctionTitle, Person owner) {
+            RepairOrder templOrder = _db.RepairOrders.FirstOrDefault(ro =>
+                ro.Client.Person.Passport == owner.Passport &&
+                ro.Malfunctions.FirstOrDefault(m => m.Title == malfunctionTitle) != null);
 
-            return (templOrder.Worker, templOrder.Malfunctions.First(m => m.Title == malfunctionTitle).TimeToFix);
-        }
+            if (templOrder != null && templOrder.Worker != null)
+                return new Query04(templOrder.Worker, templOrder.Malfunctions.First(m => m.Title == malfunctionTitle).TimeToFix);
+            
+            return null;
+        } // Query04
 
         // запрос #5: Фамилия, имя, отчество клиентов, сдавших в ремонт автомобили с указанным типом неисправности?
         public List<Client> Query05(string malfunctionTitle) => _db.RepairOrders
-            .Where(ro =>ro.Malfunctions.Contains(GetMalfunctions().ToList().Find(m => m.Title == malfunctionTitle)))
+            .Where(ro =>ro.Malfunctions.FirstOrDefault(m => m.Title == malfunctionTitle) != null)
             .Select(ro => ro.Client)
+            .Distinct()
             .ToList();
 
         // запрос #6: Самая распространенная неисправность в автомобилях указанной марки?
         public Malfunction Query06(string mark) {
-            return null;
-        }
+            // мы должны достать список неисправностей
+            var listsMalfunctions = _db.RepairOrders.Where(o => o.Car.Mark.Title == mark).Select(o => o.Malfunctions).ToList();
+            List<Malfunction> malfunctions = new List<Malfunction>();
+            listsMalfunctions.ForEach(m => m.ToList().ForEach(mm => malfunctions.Add(mm)));
+
+            // статистика неисправностей
+            var statistics = (from malfunction in malfunctions
+                group malfunction by malfunction.Title
+                into g
+                select new {
+                    Malfunction = g.Key,
+                    Count = g.Count(c => c.Title == g.Key)
+                }).OrderByDescending(m => m.Count).ToList();
+
+            return malfunctions.FirstOrDefault(m => m.Title == statistics[0].Malfunction);
+        } // Query06
 
         // запрос #7: Количество рабочих каждой специальности на станции?
-        public IList Query07() {
-            return null;
-        }
-
+        public List<Query07> Query07() =>
+            (from spec in _db.Specialties
+                join worker in _db.Workers on spec equals worker
+                    .Specialty into gj
+                select new Query07
+                {
+                    Specialty = spec.Title,
+                    Count = gj.Count()
+                }).OrderByDescending(v => v.Count)
+            .ToList();
         #endregion
-
-
-
     } // DatabaseContext
 }

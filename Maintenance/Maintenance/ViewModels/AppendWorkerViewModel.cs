@@ -77,7 +77,7 @@ namespace Maintenance.ViewModels
         public RelayCommand Close => _close ??
                                      (_close = new RelayCommand(obj => {
                                          // мы должны присвоить работнику
-                                         Worker.Status = _context.GetStatuses()[1];
+                                         Worker.Status = _context.GetStatuses().ToList()[1];
 
                                          // закрытие окна
                                          _window.Close();
