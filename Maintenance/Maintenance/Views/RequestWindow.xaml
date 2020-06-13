@@ -15,13 +15,17 @@
         Icon="../Images/application_icon.png"
         FontFamily="{materialDesign:MaterialDesignFont}">
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="../Images/reqests.png" Opacity="0.1" Stretch="UniformToFill"/>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <TabControl Margin="10"
                     BorderThickness="2"
-                    Grid.Row="0">
+                    Grid.Row="0"
+                    Background="Transparent">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -62,7 +66,6 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-
                     <GroupBox Grid.Column="0"
                               Header="Входящие данные"
                               Margin="10">
@@ -531,8 +534,8 @@
                             Margin="10">
                         <Border.Background>
                             <LinearGradientBrush Opacity="0.4">
-                                <GradientStop Color="#11998e" Offset="0"/>
-                                <GradientStop Color="#38ef7d" Offset="1"/>
+                                <GradientStop Color="#FEC107" Offset="0"/>
+                                <GradientStop Color="#FE1743" Offset="1"/>
                             </LinearGradientBrush>
                         </Border.Background>
                         <StackPanel>
@@ -540,12 +543,12 @@
                                        Margin="10"
                                        FontSize="14"
                                        FontWeight="Bold"
-                                       Text="{Binding Path=MonthReport.NumberOfTroubleshooting, StringFormat=Количество устрарненных неисправностей: {0}}"/>
+                                       Text="{Binding Path=MonthReport.NumberOfTroubleshooting, StringFormat=Количество устраненных неисправностей: {0} шт.}"/>
                             <TextBlock Foreground="Black"
                                        Margin="10, 0"
                                        FontSize="14"
                                        FontWeight="Bold"
-                                       Text="{Binding Path=MonthReport.Income, StringFormat=Выручка за месяц: {0}}"/>
+                                       Text="{Binding Path=MonthReport.Income, StringFormat=Выручка за месяц: {0} руб.}"/>
                         </StackPanel>
                     </Border>
                 </Grid>

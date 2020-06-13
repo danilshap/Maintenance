@@ -16,6 +16,7 @@ using Maintenance.Controllers;
 using Maintenance.Models;
 using Maintenance.Services;
 using System.Diagnostics;
+using MaterialDesignThemes.Wpf;
 
 namespace Maintenance.ViewModels
 {
@@ -49,6 +50,12 @@ namespace Maintenance.ViewModels
             CheckController _check = new CheckController(order);
             _check.SaveToFile();
         } // GetOrderToCheck
+
+        // передача данных для отображения пользователю
+        private void SendMessage(string message) {
+            var messageQ = _window.SbMessage.MessageQueue;
+            Task.Factory.StartNew(() => messageQ.Enqueue(message));
+        } // SendMessage
 
         // -----------------------------------------------------------------------------
 
@@ -89,7 +96,7 @@ namespace Maintenance.ViewModels
 
             await Task.Run(() => _context.AppendOrder(order));
 
-            order.Id = Orders.Count;
+            order.Id = Orders[Orders.Count - 1].Id + 1;
             Orders.Add(order);
 
             if(Clients.ToList().Find(c => c.Person.Passport == order.Client.Person.Passport) == null) Clients.Add(order.Client);
@@ -144,6 +151,9 @@ namespace Maintenance.ViewModels
 
             // удаляем из коллекции
             Workers.Remove(worker);
+
+            // уведомление для пользователя
+            SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был уволен");
         } // RemoveWorker
 
         // добавление новой машины в базу данных
@@ -186,6 +196,9 @@ namespace Maintenance.ViewModels
 
                 // переприсвоение данных по работнику после изменения его статуса
                 RefreshWorkerData(templOrder.Worker);
+
+                // уведомление для пользователя
+                SendMessage($"Ремонт завершен");
             } // try
             catch (Exception ex) {
                 _openDialogWindow.OpenErrorWindow(ex.Message);
@@ -269,6 +282,8 @@ namespace Maintenance.ViewModels
                 RepairOrder neworder = _windowOpenService.OpenAppendOrderWindow(_context);
                 // добавление новой заявки в базу данных и в коллекцию
                 AppendNewRequest(neworder);
+                // уведомление для пользователя
+                SendMessage("Новый отчет добавлен.");
             }));
 
         // открыть окно для заявок
@@ -290,7 +305,7 @@ namespace Maintenance.ViewModels
         public RelayCommand AppendClient => _appendClient ??
             (_appendClient = new RelayCommand(obj => {
                 // новый клиент
-                Client newСlient = new Client();
+                Client newСlient = new Client{Person = new Person(), Address = new Address()};
                 // открытие окна добавления клиента
                 _windowOpenService.OpenAppendOrChangeClientWindow(newСlient, true);
                 // проверка на корректность данных
@@ -300,6 +315,8 @@ namespace Maintenance.ViewModels
                 }
                 // асинхронное добавление данных в БД
                 AppendNewClient(newСlient);
+                // уведомление для пользователя
+                SendMessage($"Клиент {newСlient.Person.Surname} {newСlient.Person.Name[0]}. {newСlient.Person.Patronymic[0]}. был добавлен");
             }));
 
         // открыть окно для просмотра информации о приложении
@@ -315,6 +332,9 @@ namespace Maintenance.ViewModels
                     _context.IsExistClient(templClient)) return;
 
                 ChangeClientInDb();
+
+                // уведомление для пользователя
+                SendMessage($"Клиент {templClient.Person.Surname} {templClient.Person.Name[0]}. {templClient.Person.Patronymic[0]}. был изменен");
             }, obj => SelectedClient != null));
 
         // открыть окно для добавление
@@ -331,6 +351,8 @@ namespace Maintenance.ViewModels
                 } // if
                 // проверка корректности данных
                 AppendNewWorker(newWorker);
+                // уведомление для пользователя
+                SendMessage($"Работник {newWorker.Person.Surname} {newWorker.Person.Name[0]}. {newWorker.Person.Patronymic[0]}. был добавлен");
             }));
 
         // увольнение работника
@@ -345,7 +367,7 @@ namespace Maintenance.ViewModels
         public RelayCommand AppendCar => _appendCar ??
             (_appendCar = new RelayCommand(obj => {
                 // создание новой переменной
-                Car newCar = new Car();
+                Car newCar = new Car{Mark = new Mark()};
                 // открытие окна
                 _windowOpenService.OpenAppendOrChangeCarWindow(newCar, _context, true);
                 // проверка корректности данных
@@ -355,6 +377,8 @@ namespace Maintenance.ViewModels
                 }
                 // добавление данных в базу данных
                 AppendNewCar(newCar);
+                // уведомление для пользователя
+                SendMessage($"Автомобиль {newCar.StateNumber} был добавлен");
             }));
 
         // открыть окно для просмотра информации о приложении
@@ -369,12 +393,22 @@ namespace Maintenance.ViewModels
                 if (templCar.StateNumber == SelectedCar.StateNumber && _context.IsExistNumber(SelectedCar)) return;
 
                 ChangeCarInDb();
+                // уведомление для пользователя
+                SendMessage($"Автомобиль {templCar.StateNumber} был изменен");
             }, obj => SelectedCar != null));
 
         // открыть окно для просмотра информации о приложении
         private RelayCommand _changeStatusRepairOrder;
         public RelayCommand ChangeStatusRepairOrder => _changeStatusRepairOrder ??
                                          (_changeStatusRepairOrder = new RelayCommand(obj => { ChangeStatus(); }, obj => SelectedRepairOrder != null && !SelectedRepairOrder.IsReady));
+
+        private RelayCommand _openClientApplication;
+
+        public RelayCommand OpenClientApplication => _openClientApplication ?? (_openClientApplication =
+                                                         new RelayCommand(obj =>
+                                                         {
+                                                             _windowOpenService.OpenClientWindow(_context);
+                                                         }));
 
         // закрыть приложение
         private RelayCommand _quitCommand;

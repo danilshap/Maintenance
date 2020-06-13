@@ -14,5 +14,6 @@ namespace Maintenance.Services
         void OpenRequestWindow(DatabaseContext context);
         void OpenAboutApplicationWindow();
         void OpenCheckWindow(RepairOrder order);
+        void OpenClientWindow(DatabaseContext context);
     }
 }

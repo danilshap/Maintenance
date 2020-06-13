@@ -1,0 +1,100 @@
+﻿<Window x:Class="Maintenance.Views.ClientApplicationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Maintenance.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Icon="../Images/application_icon.png"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        FontSize="11"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Title="Клиент-Серверное приложение | Клиентская часть"
+        Height="450"
+        Width="800">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="../Images/client-server.png" Opacity="0.15"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="95*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0"
+                HorizontalAlignment="Center">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="70"/>
+                </Grid.RowDefinitions>
+                <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                                         PlacementMode="BottomAndAlignCentres"
+                                         ToolTipService.Placement="Right"
+                                         ToolTip="Запросы на сервер"
+                                         PopupMode="Click"
+                                         Height="50"
+                                         Width="50">
+                    <materialDesign:PopupBox.ToggleContent>
+                        <materialDesign:PackIcon Kind="DatabaseImport"
+                                                 Height="40"
+                                                 Width="40"/>
+                    </materialDesign:PopupBox.ToggleContent>
+                    <StackPanel>
+                        <Button Content="M"
+                                ToolTip="Месячный отчет"
+                                Command="{Binding MonthRequest}"/>
+                        <Button Content="Р"
+                                ToolTip="Отчет по персоналу"
+                                Command="{Binding StuffRequest}"/>
+                        <Button Content="В"
+                                ToolTip="Выключить сервер командой"
+                                Command="{Binding PowerOffRequest}"/>
+                    </StackPanel>
+                </materialDesign:PopupBox>
+                <Button Grid.Row="2"
+                        Height="50"
+                        Width="50"
+                        ToolTip="Информация о данной части проекта"
+                        Background="{StaticResource PrimaryHueMidBrush}"
+                        BorderBrush="Transparent"
+                        Command="{Binding OpenAboutClientApplicationWindowCommand}"
+                        Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                    <materialDesign:PackIcon Kind="InfoCircle"
+                                             Height="40"
+                                             Width="40"/>
+                </Button>
+                <Button Grid.Row="3"
+                        Height="50"
+                        Width="50"
+                        BorderBrush="Transparent"
+                        Command="{Binding ExitCommand}"
+                        Background="{StaticResource PrimaryHueMidBrush}"
+                        Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                    <materialDesign:PackIcon Kind="Close"
+                                             Height="40"
+                                             Width="40"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <ListBox Grid.Column="1"
+                 Margin="0, 5, 5, 5"
+                 BorderBrush="Black"
+                 BorderThickness="1"
+                 FontSize="14"
+                 FontWeight="Bold"
+                 Foreground="Black"
+                 ItemsSource="{Binding RequestsAndResponse}">
+            <ListBox.Background>
+                <LinearGradientBrush Opacity="0.5">
+                    <GradientStop Color="#FEC107" Offset="0"/>
+                    <GradientStop Color="#FE1743" Offset="1"/>
+                </LinearGradientBrush>
+            </ListBox.Background>
+        </ListBox>
+    </Grid>
+</Window>

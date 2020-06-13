@@ -78,5 +78,13 @@ namespace Maintenance.Models
 
             return sb.ToString();
         } // GetOneStringMalfunctions
+
+        public override string ToString() {
+            StringBuilder sb = new StringBuilder();
+            Data.ForEach(d => sb.Append(d));
+            sb.Append($"Количество устраненных неисправностей: {NumberOfTroubleshooting}\r\n");
+            sb.Append($"Доход: {Income}\r\n");
+            return sb.ToString();
+        } // ToString
     } // MonthReport
 }

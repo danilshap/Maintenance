@@ -15,6 +15,9 @@
         FontFamily="{materialDesign:MaterialDesignFont}"
         Icon="../Images/application_icon.png">
     <StackPanel>
+        <StackPanel.Background>
+            <ImageBrush ImageSource="../Images/clients.png" Opacity="0.1"/>
+        </StackPanel.Background>
         <TextBlock Margin="10"
                    Text="Имя:"/>
         <TextBox

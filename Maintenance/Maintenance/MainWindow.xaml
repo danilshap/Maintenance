@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Maintenance"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Техобслуживание"
@@ -141,11 +140,11 @@
                     <ColumnDefinition Width="40*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- основные команды приложения -->
+                 <!--основные команды приложения--> 
                 <Border Grid.Column="0"
                         Background="White">
                     <StackPanel>
-                        <!-- добавить новый заказ -->
+                         <!--добавить новый заказ--> 
                         <Button x:Name="BtAppendOrder"
                                 Margin="0, 5, 0, 0"
                                 ToolTip="Оформление нового заказа"
@@ -157,7 +156,7 @@
                                 Width="40" />
                         </Button>
 
-                        <!-- запросы -->
+                         <!--запросы--> 
                         <Button x:Name="BtQueries"
                                 ToolTip="Запросы"
                                 Margin="0, 5"
@@ -165,11 +164,11 @@
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="ClipboardList"
-                                Height="44"
-                                Width="44" />
+                                Height="40"
+                                Width="40" />
                         </Button>
 
-                        <!-- о приложении -->
+                         <!--о приложении--> 
                         <Button x:Name="BtAboutProgram"
                                 Margin="5"
                                 ToolTip="О приложении"
@@ -177,13 +176,24 @@
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="About"
-                                Height="44"
-                                Width="44" />
+                                Height="40"
+                                Width="40" />
                         </Button>
+
+                         <Button x:Name="BtClientApplication"
+                                 Margin="5"
+                                 ToolTip="Клиент-консольное приложение"
+                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                 Command="{Binding OpenClientApplication}">
+                             <materialDesign:PackIcon
+                                 Kind="Console"
+                                 Height="40"
+                                 Width="40"/>
+                         </Button>
 
                         <Separator Margin="10" />
 
-                        <!-- завершить ремонт -->
+                         <!--завершить ремонт-->
                         <Button x:Name="BtGetReady"
                                 Margin="5"
                                 ToolTip="Завершить ремонт автомобиля"
@@ -192,13 +202,13 @@
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="Check"
-                                Height="44"
-                                Width="44" />
+                                Height="40"
+                                Width="40" />
                         </Button>
 
                         <Separator Margin="10" />
 
-                        <!-- выход из приложения -->
+                         <!--выход из приложения--> 
                         <Button x:Name="BtExit"
                                 Margin="5"
                                 ToolTip="Выход из приложения"
@@ -206,11 +216,12 @@
                                 Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <materialDesign:PackIcon
                                 Kind="ExitToApp"
-                                Height="44"
-                                Width="44"/>
+                                Height="40"
+                                Width="40"/>
                         </Button>
                     </StackPanel>
                 </Border>
+
 
                 <ListBox Grid.Column="1"
                          ItemTemplate ="{DynamicResource OrderCards}"
@@ -284,6 +295,7 @@
                                 Content="Добавить клиента"
                                 Margin="10"
                                 FontSize="11"
+                                Foreground="White"
                                 ToolTip="Добавить клиента"
                                 Command="{Binding AppendClient}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
@@ -292,6 +304,7 @@
                                 Grid.Row="2"
                                 x:Name="BtChangeClient"
                                 Margin="10"
+                                Foreground="White"
                                 Content="Изменить данные"
                                 FontSize="11"
                                 ToolTip="Изменить данные о выбранном клиенте"
@@ -343,6 +356,7 @@
                                 Grid.Row="5"
                                 x:Name="BtAppendWorker"
                                 Margin="10"
+                                Foreground="White"
                                 ToolTip="Нанять нового работника"
                                 FontSize="11"
                                 Content="Добавить работника"
@@ -352,6 +366,7 @@
                         <Button Grid.Column="1"
                                 Grid.Row="5"
                                 x:Name="BtRemoveWorker"
+                                Foreground="White"
                                 Margin="10"
                                 Content="Удалить работника"
                                 FontSize="11"
@@ -359,7 +374,8 @@
                                 Command="{Binding RemoveWorker}"
                                 CommandParameter="{Binding Path = SelectedWorker}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
-                                BorderBrush="Transparent"/>
+                                BorderBrush="Transparent"
+                                />
                         <!-- работа с авто -->
                         <Label Grid.Column="0"
                                Grid.Row="6"
@@ -399,17 +415,18 @@
                                 Grid.Row="8"
                                 x:Name="BtAppendCar"
                                 Margin="10"
+                                Foreground="White"
                                 Content="Добавить автомобиль"
                                 ToolTip="Добавить автомобиль в базу"
                                 FontSize="11"
-                                
                                 Command="{Binding AppendCar}"
                                 Background="{DynamicResource SecondaryAccentBrush}"
-                                BorderBrush="Transparent" />
+                                BorderBrush="Transparent"/>
                         <Button Grid.Column="1"
                                 Grid.Row="8"
                                 x:Name="BtChangeCar"
                                 Margin="10"
+                                Foreground="White"
                                 Content="Изменить данные"
                                 FontSize="11"
                                 ToolTip="Изменить данные о выбранном автомобиле"
@@ -421,5 +438,7 @@
                 </Border>
             </Grid>
         </Border>
+        <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}"
+                                 x:Name="SbMessage"/>
     </Grid>
 </Window>

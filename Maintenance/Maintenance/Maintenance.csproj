@@ -50,11 +50,11 @@
     <Reference Include="Maintenance.Models">
       <HintPath>..\Maintenance.DataAccess\bin\Debug\Maintenance.Models.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignColors, Version=1.2.4.1361, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignColors.1.2.4\lib\net45\MaterialDesignColors.dll</HintPath>
+    <Reference Include="MaterialDesignColors, Version=1.2.6.1513, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.2.6\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=3.1.1.1361, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.3.1.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=3.1.3.1513, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.3.1.3\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -78,8 +78,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controllers\CheckController.cs" />
+    <Compile Include="Controllers\ClientPart.cs" />
     <Compile Include="Controllers\DatabaseContext.cs" />
     <Compile Include="Controllers\RelayCommand.cs" />
+    <Compile Include="Controllers\RequestClass.cs" />
     <Compile Include="Models\MonthReport.cs" />
     <Compile Include="Models\Query04.cs" />
     <Compile Include="Models\Query07.cs" />
@@ -94,6 +96,7 @@
     <Compile Include="ViewModels\AppendRequestViewModel.cs" />
     <Compile Include="ViewModels\AppendWorkerViewModel.cs" />
     <Compile Include="ViewModels\CheckViewModel.cs" />
+    <Compile Include="ViewModels\ClientApplicationViewModel.cs" />
     <Compile Include="ViewModels\DatabaseRequestViewModel.cs" />
     <Compile Include="ViewModels\MaintenanceVeiwModel.cs" />
     <Compile Include="Views\AboutApplicationWindow.xaml.cs">
@@ -113,6 +116,9 @@
     </Compile>
     <Compile Include="Views\CheckWindow.xaml.cs">
       <DependentUpon>CheckWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClientApplicationWindow.xaml.cs">
+      <DependentUpon>ClientApplicationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RequestWindow.xaml.cs">
       <DependentUpon>RequestWindow.xaml</DependentUpon>
@@ -150,6 +156,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CheckWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ClientApplicationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -194,6 +204,13 @@
   <ItemGroup>
     <Resource Include="Images\mechanic.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cars.png" />
+    <Resource Include="Images\client-server.png" />
+    <Resource Include="Images\clients.png" />
+    <Resource Include="Images\reqests.png" />
+    <Resource Include="Images\workers.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -201,8 +218,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.0\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.0\build\EntityFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.1.1\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.1.1\build\MaterialDesignThemes.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" />
-  <Import Project="..\packages\MaterialDesignThemes.3.1.1\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.1.1\build\MaterialDesignThemes.targets')" />
+  <Import Project="..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets')" />
 </Project>

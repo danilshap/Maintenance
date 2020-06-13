@@ -15,7 +15,10 @@
         FontSize="16"
         FontFamily="{materialDesign:MaterialDesignFont}">
     <StackPanel>
-            <TextBlock Margin="10"
+        <StackPanel.Background>
+            <ImageBrush ImageSource="../Images/cars.png" Opacity="0.1"/>
+        </StackPanel.Background>
+        <TextBlock Margin="10"
                        Text="Марка автомобиля:"/>
             <TextBox
                 x:Name="TbMark"

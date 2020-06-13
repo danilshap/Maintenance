@@ -47,6 +47,11 @@ namespace Maintenance.Services
             window.ShowDialog();
         } // OpenCheckWindow
 
+        public void OpenClientWindow(DatabaseContext context) {
+            ClientApplicationWindow window = new ClientApplicationWindow(context);
+            window.ShowDialog();
+        } // OpenClientWindow
+
         // открытие окна о программе
         public void OpenAboutApplicationWindow() => new AboutApplicationWindow().ShowDialog();
     } // MainWindowOpenWindowService

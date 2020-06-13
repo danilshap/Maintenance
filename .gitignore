@@ -8,3 +8,5 @@ Maintenance/Maintenance.DataAccess/obj
 Maintenance/packages
 Maintenance/Maintenance.DataAccess/packages.config
 Maintenance/Maintenance.Models/Maintenance.Models.csproj.user
+Maintenance/Maintenance.ServerApplication/bin
+Maintenance/Maintenance.ServerApplication/obj
