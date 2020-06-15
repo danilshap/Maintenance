@@ -42,6 +42,17 @@ namespace Maintenance.Models
             RepairOrders = new HashSet<RepairOrder>();
         } // Worker
 
+        // 
+        public override string ToString() {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"Имя работника: {Person.Name}\r\n");
+            sb.Append($"Фамилия работника: {Person.Surname}\r\n");
+            sb.Append($"Отчество работника: {Person.Patronymic}\r\n");
+            sb.Append($"Паспорт работника: {Person.Passport}\r\n");
+            sb.Append("----------------------------------------------\r\n");
+            return sb.ToString();
+        }
+
         // -----------------------------------------------------------------------------
         // реализация интерфейса INotifyPropertyChanged - взял из прошлых работ
         public event PropertyChangedEventHandler PropertyChanged;

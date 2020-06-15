@@ -85,6 +85,8 @@ namespace Maintenance.Controllers
 
         public IEnumerable<WorkerStatus> GetStatuses() => _db.WorkerStatuses.Select(status => status).ToList();
 
+        public IEnumerable<Worker> GetAllWorkers() => _db.Workers.Select(w => w).ToList();
+
         // получить данные по работникам
         public IEnumerable<Worker> GetWorkersNotFired() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status != "Уволен").ToList();
         public IEnumerable<Worker> GetWorkersAtWorkAndFree() => _db.Workers.Select(worker => worker).Where(w => w.Status.Status == "На работе. Свободен").ToList();

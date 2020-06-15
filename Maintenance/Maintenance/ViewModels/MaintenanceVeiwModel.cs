@@ -107,6 +107,9 @@ namespace Maintenance.ViewModels
 
             // открытие окна для чека
             _windowOpenService.OpenCheckWindow(Orders.Last());
+
+            // уведомление для пользователя
+            SendMessage("Новый отчет добавлен.");
         } // AppendNewRequest
         
         // добавление нового клиента в базу данных и в коллекию для отображения
@@ -123,6 +126,9 @@ namespace Maintenance.ViewModels
             // добавление данных в контейнер для отображения
             Clients.Add(client);
             SelectedClient = Clients[Clients.Count - 1];
+
+            // уведомление для пользователя
+            SendMessage($"Клиент {client.Person.Surname} {client.Person.Name[0]}. {client.Person.Patronymic[0]}. был добавлен");
         } // AppendNewClient
 
         // добавление нового клиента в базу данных и в коллекцию для отображения
@@ -139,6 +145,9 @@ namespace Maintenance.ViewModels
             // добавление данных в коллецию для отображения
             Workers.Insert(0, worker);
             SelectedWorker = Workers[0];
+
+            // уведомление для пользователя
+            SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был добавлен");
         } // AppendNewWorker 
 
         // увольнение работника
@@ -170,18 +179,27 @@ namespace Maintenance.ViewModels
             // добавление данных в коллекцию для отображения
             Cars.Insert(0, car);
             SelectedCar = Cars[0];
+
+            // уведомление для пользователя
+            SendMessage($"Автомобиль {car.StateNumber} был добавлен");
         } // AppendNewCar
 
         // изменение данных в по клиенту в БД
         public async void ChangeClientInDb() {
             try { await Task.Run(() => _context.ChangeClient(SelectedClient)); } // try
             catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
+
+            // уведомление для пользователя
+            SendMessage($"Клиент {SelectedClient.Person.Surname} {SelectedClient.Person.Name[0]}. {SelectedClient.Person.Patronymic[0]}. был изменен");
         } // ChangeClientInDb
 
         // изменение данных по автомобилю в БД
         public async void ChangeCarInDb() {
             try { await Task.Run(() => _context.ChangeCar(SelectedCar)); } // try
             catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
+
+            // уведомление для пользователя
+            SendMessage($"Автомобиль {SelectedCar.StateNumber} был изменен");
         } // ChangeCarInDb
 
         // изменение статуса готовности автомобиля
@@ -282,8 +300,6 @@ namespace Maintenance.ViewModels
                 RepairOrder neworder = _windowOpenService.OpenAppendOrderWindow(_context);
                 // добавление новой заявки в базу данных и в коллекцию
                 AppendNewRequest(neworder);
-                // уведомление для пользователя
-                SendMessage("Новый отчет добавлен.");
             }));
 
         // открыть окно для заявок
@@ -315,8 +331,6 @@ namespace Maintenance.ViewModels
                 }
                 // асинхронное добавление данных в БД
                 AppendNewClient(newСlient);
-                // уведомление для пользователя
-                SendMessage($"Клиент {newСlient.Person.Surname} {newСlient.Person.Name[0]}. {newСlient.Person.Patronymic[0]}. был добавлен");
             }));
 
         // открыть окно для просмотра информации о приложении
@@ -332,9 +346,6 @@ namespace Maintenance.ViewModels
                     _context.IsExistClient(templClient)) return;
 
                 ChangeClientInDb();
-
-                // уведомление для пользователя
-                SendMessage($"Клиент {templClient.Person.Surname} {templClient.Person.Name[0]}. {templClient.Person.Patronymic[0]}. был изменен");
             }, obj => SelectedClient != null));
 
         // открыть окно для добавление
@@ -351,8 +362,6 @@ namespace Maintenance.ViewModels
                 } // if
                 // проверка корректности данных
                 AppendNewWorker(newWorker);
-                // уведомление для пользователя
-                SendMessage($"Работник {newWorker.Person.Surname} {newWorker.Person.Name[0]}. {newWorker.Person.Patronymic[0]}. был добавлен");
             }));
 
         // увольнение работника
@@ -377,8 +386,6 @@ namespace Maintenance.ViewModels
                 }
                 // добавление данных в базу данных
                 AppendNewCar(newCar);
-                // уведомление для пользователя
-                SendMessage($"Автомобиль {newCar.StateNumber} был добавлен");
             }));
 
         // открыть окно для просмотра информации о приложении
@@ -393,8 +400,6 @@ namespace Maintenance.ViewModels
                 if (templCar.StateNumber == SelectedCar.StateNumber && _context.IsExistNumber(SelectedCar)) return;
 
                 ChangeCarInDb();
-                // уведомление для пользователя
-                SendMessage($"Автомобиль {templCar.StateNumber} был изменен");
             }, obj => SelectedCar != null));
 
         // открыть окно для просмотра информации о приложении

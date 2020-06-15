@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using Maintenance.Controllers;
+ using Maintenance.Models;
  using Maintenance.Views;
 
  namespace Maintenance.ViewModels
@@ -37,25 +38,39 @@ using Maintenance.Controllers;
         /// <summary>
         /// отправить дневной отчет
         /// </summary>
-        public void SendMonthRequest() {
+        public void SendMonthRequest() => Task.Run(() =>
+        {
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка месячного отчета");
-            RequestsAndResponse.Add($"{DateTime.Now:g} | {Client.SendMessage(RequestClass.CreateMonthRequest("daily"))}");
-        } // SendDailyRequest
+            string response =
+                Client.SendMessage(
+                    RequestClass.CreateMonthRequest(
+                        new MonthReport(_context.GetMonthRepairOrders().ToList()).ToString()));
+            RequestsAndResponse.Add(
+                $"{DateTime.Now:g} | {(string.IsNullOrEmpty(response) ? "Возникли какие-то проблемы" : response)}");
+        });
+
 
         /// <summary>
         /// оправка отчета о месячном составе
         /// </summary>
-        public void SendStuffRequest() {
+        public void SendStuffRequest() => Task.Run(() =>
+        {
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка отчета о рабочем составе");
-            RequestsAndResponse.Add($"{DateTime.Now:g} | { Client.SendMessage(RequestClass.CreateStuffRequest("stuff_data"))}");
-        } // SendStuffRequest
+            string response =
+                Client.SendMessage(
+                    RequestClass.CreateStuffRequest(new StuffReport(_context.GetAllWorkers().ToList()).ToString()));
+            RequestsAndResponse.Add(
+                $"{DateTime.Now:g} | {(string.IsNullOrEmpty(response) ? "Возникли какие-то проблемы" : response)}");
+        });
 
         /// <summary>
         /// отправка запроса на выключение сервера
         /// </summary>
-        public void SendPowerOffRequest() {
+        public void SendPowerOffRequest() => Task.Run(() => {
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка команды для выключения сервера");
-        }
+            Client.SendMessage(RequestClass.GetPowerOffRequest());
+            RequestsAndResponse.Add($"{DateTime.Now:g} | Сервер отключен");
+        });
 
         // --------------------------------------------------------------------------
         // команда для отправки месячного отчета
@@ -84,7 +99,10 @@ using Maintenance.Controllers;
         public RelayCommand OpenAboutClientApplicationWindowCommand => _openAboutClientApplicationWindowCommand ??
                                                                        (_openAboutClientApplicationWindowCommand =
                                                                            new RelayCommand(
-                                                                               obj => { }));
+                                                                               obj =>
+                                                                               {
+                                                                                   new AboutCommandProjectWindow()
+                                                                                       .ShowDialog(); }));
 
         // команда для закрытия окна
         private RelayCommand _exitCommand;

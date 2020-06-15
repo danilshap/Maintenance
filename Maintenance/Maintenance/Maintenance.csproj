@@ -85,6 +85,7 @@
     <Compile Include="Models\MonthReport.cs" />
     <Compile Include="Models\Query04.cs" />
     <Compile Include="Models\Query07.cs" />
+    <Compile Include="Models\StuffReport.cs" />
     <Compile Include="Services\AppendRequestOpenWindowService.cs" />
     <Compile Include="Services\IMainWindowOpenWindowService.cs" />
     <Compile Include="Services\IOpenDialogWindow.cs" />
@@ -101,6 +102,9 @@
     <Compile Include="ViewModels\MaintenanceVeiwModel.cs" />
     <Compile Include="Views\AboutApplicationWindow.xaml.cs">
       <DependentUpon>AboutApplicationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AboutCommandProjectWindow.xaml.cs">
+      <DependentUpon>AboutCommandProjectWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AppendOrChangeCarWindow.xaml.cs">
       <DependentUpon>AppendOrChangeCarWindow.xaml</DependentUpon>
@@ -136,6 +140,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\AboutApplicationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AboutCommandProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

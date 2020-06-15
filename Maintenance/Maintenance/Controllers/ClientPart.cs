@@ -62,8 +62,7 @@ namespace Maintenance.Controllers
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             } // try 
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine($"\n\n{ex.Message}\n\n");
             } // catch
 

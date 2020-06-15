@@ -4,18 +4,23 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Maintenance.Models
 {
-    public class Person: INotifyPropertyChanged {
+    public class Person : INotifyPropertyChanged
+    {
         public int Id { get; set; } // id человека
 
         // фамилия
         private string _surname;
-        public string Surname {
+
+        public string Surname
+        {
             get => _surname;
-            set {
+            set
+            {
                 _surname = value;
                 OnPropertyChanged();
             } // set
@@ -23,9 +28,12 @@ namespace Maintenance.Models
 
         // имя
         private string _name;
-        public string Name {
+
+        public string Name
+        {
             get => _name;
-            set {
+            set
+            {
                 _name = value;
                 OnPropertyChanged();
             } // set
@@ -33,9 +41,12 @@ namespace Maintenance.Models
 
         // отчество
         private string _patronymic;
-        public string Patronymic {
+
+        public string Patronymic
+        {
             get => _patronymic;
-            set {
+            set
+            {
                 _patronymic = value;
                 OnPropertyChanged();
             } // set
@@ -43,9 +54,12 @@ namespace Maintenance.Models
 
         // паспорт
         private string _passport;
-        public string Passport {
+
+        public string Passport
+        {
             get => _passport;
-            set {
+            set
+            {
                 _passport = value;
                 OnPropertyChanged();
             } // set
@@ -53,21 +67,23 @@ namespace Maintenance.Models
 
         // в данном случае используется 1 к 1 потому что клиент может быть только один
         // с такими данными (уникальность по id и уникальность по пасспорту)
-        public virtual Client Client { get; set; }    // ссылка на клиента
+        public virtual Client Client { get; set; } // ссылка на клиента
 
         // так же будет 1 к 1 с работником потому что такой работник будет абсолютно уникальным
-        public virtual Worker Worker { get; set; }    // ссылка на работника
-        public virtual ICollection<Car> Cars { get; set; }  // список ссылок на машины которыми может владеть персона
+        public virtual Worker Worker { get; set; } // ссылка на работника
+        public virtual ICollection<Car> Cars { get; set; } // список ссылок на машины которыми может владеть персона
 
         // конструктор
-        public Person() {
+        public Person()
+        {
             Cars = new HashSet<Car>();
         } // People - конструктор
 
         // -----------------------------------------------------------------------------
         // реализация интерфейса INotifyPropertyChanged - взял из прошлых работ
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "") =>
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "") =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     } // People
 }

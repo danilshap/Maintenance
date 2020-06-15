@@ -14,7 +14,7 @@ namespace Maintenance.Controllers
         /// <returns>запрос который должен отправится на сервер</returns>
         public static string CreateMonthRequest(string data) =>
             "@@@month_request\r\n" +
-            $"size: {Encoding.UTF8.GetBytes(data).Length}\r\n" +
+            $"{Encoding.UTF8.GetBytes(data).Length}\r\n" +
             $"{data}";
 
         /// <summary>
@@ -24,7 +24,13 @@ namespace Maintenance.Controllers
         /// <returns>запрос который должен отправится на сервер</returns>
         public static string CreateStuffRequest(string data) =>
             "@@@stuff_request\r\n" +
-            $"size: {Encoding.UTF8.GetBytes(data).Length}\r\n" +
+            $"{Encoding.UTF8.GetBytes(data).Length}\r\n" +
             $"{data}";
+
+        /// <summary>
+        /// формирование команды для выключения сервера
+        /// </summary>
+        /// <returns>команда для выключения сервера</returns>
+        public static string GetPowerOffRequest() => "@@@power_off";
     } // RequestClass
 }

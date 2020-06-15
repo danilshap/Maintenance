@@ -1,0 +1,40 @@
+﻿<Window x:Class="Maintenance.Views.AboutCommandProjectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Maintenance.Views"
+        mc:Ignorable="d"
+        Icon="../Images/application_icon.png"
+        Title="О командном проекте"
+        Height="450"
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid>
+        <FlowDocumentScrollViewer Margin="10"
+                                  BorderThickness="1"
+                                  BorderBrush="Black">
+            <FlowDocument>
+                <Paragraph TextAlignment="Center">
+                    Задание
+                </Paragraph>
+                <Paragraph>
+                    Команды образуем по вариантам выполнения курсового проекта.
+                </Paragraph>
+                <Paragraph>
+                    Задание передавать данные о личном составе и его загруженности, а также один из отчетов по заданию на сервер.
+                </Paragraph>
+                <Paragraph>Вариант 2. Протокол передачи TCP</Paragraph>
+                <Paragraph>Команда должна принять решение о формате передачи данных по личному составу, отчету.</Paragraph>
+                <Paragraph>Каждый член команды разрабатывает кодирование данных в принятый формат. Сервер – выполняет только парсинг принятых данных, выводить в консоль только сообщение о завершении парсинга – успешно или не успешно. Кто выполняет кодирование сервера – решает команда.</Paragraph>
+                <BlockUIContainer>
+                    <Separator/>
+                </BlockUIContainer>
+                <Paragraph>
+                    Разработал Шаповаленко Д. ПД811
+                </Paragraph>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
+    </Grid>
+</Window>
