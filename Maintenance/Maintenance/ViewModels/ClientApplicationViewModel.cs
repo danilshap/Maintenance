@@ -38,8 +38,7 @@ using Maintenance.Controllers;
         /// <summary>
         /// отправить дневной отчет
         /// </summary>
-        public void SendMonthRequest() => Task.Run(() =>
-        {
+        public void SendMonthRequest() => Task.Run(() => {
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка месячного отчета");
             string response =
                 Client.SendMessage(
@@ -70,6 +69,8 @@ using Maintenance.Controllers;
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка команды для выключения сервера");
             Client.SendMessage(RequestClass.GetPowerOffRequest());
             RequestsAndResponse.Add($"{DateTime.Now:g} | Сервер отключен");
+
+            _window.BtCommands.IsEnabled = false;
         });
 
         // --------------------------------------------------------------------------

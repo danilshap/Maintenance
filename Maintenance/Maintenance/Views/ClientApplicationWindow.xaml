@@ -37,7 +37,8 @@
                                          ToolTip="Запросы на сервер"
                                          PopupMode="Click"
                                          Height="50"
-                                         Width="50">
+                                         Width="50"
+                                         x:Name="BtCommands">
                     <materialDesign:PopupBox.ToggleContent>
                         <materialDesign:PackIcon Kind="DatabaseImport"
                                                  Height="40"

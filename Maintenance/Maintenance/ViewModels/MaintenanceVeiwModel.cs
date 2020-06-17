@@ -89,117 +89,155 @@ namespace Maintenance.ViewModels
 
         // добавление заявки в базу данных и в коллекция для отображения
         public async void AppendNewRequest(RepairOrder order) {
-            if (order == null || order.Malfunctions.Count <= 0) {
-                _openDialogWindow.OpenErrorWindow("Оформление заявки без неисправностей невозможно");
-                return;
-            } // if
+            try {
+                if (order == null || order.Malfunctions.Count <= 0) {
+                    _openDialogWindow.OpenErrorWindow("Оформление заявки без неисправностей невозможно");
+                    return;
+                } // if
 
-            await Task.Run(() => _context.AppendOrder(order));
+                await Task.Run(() => _context.AppendOrder(order));
 
-            order.Id = Orders[Orders.Count - 1].Id + 1;
-            Orders.Add(order);
+                order.Id = Orders[Orders.Count - 1].Id + 1;
+                Orders.Add(order);
 
-            if(Clients.ToList().Find(c => c.Person.Passport == order.Client.Person.Passport) == null) Clients.Add(order.Client);
-            if(Cars.ToList().Find(c => c.StateNumber == order.Car.StateNumber) == null) Cars.Add(order.Car);
+                if (Clients.ToList().Find(c => c.Person.Passport == order.Client.Person.Passport) == null) Clients.Add(order.Client);
+                if (Cars.ToList().Find(c => c.StateNumber == order.Car.StateNumber) == null) Cars.Add(order.Car);
 
-            // переприсвоение данных по работнику после изменения его статуса
-            RefreshWorkerData(order.Worker);
+                // переприсвоение данных по работнику после изменения его статуса
+                RefreshWorkerData(order.Worker);
 
-            // открытие окна для чека
-            _windowOpenService.OpenCheckWindow(Orders.Last());
+                // открытие окна для чека
+                _windowOpenService.OpenCheckWindow(Orders.Last());
 
-            // уведомление для пользователя
-            SendMessage("Новый отчет добавлен.");
+                // уведомление для пользователя
+                SendMessage("Новый отчет добавлен.");
+            }
+            catch (Exception ex) {
+                _openDialogWindow.OpenErrorWindow(ex.Message);
+            }
         } // AppendNewRequest
         
         // добавление нового клиента в базу данных и в коллекию для отображения
         public async void AppendNewClient(Client client) {
-            // проверка существует ли такой клиент
-            if (_context.IsExistClient(client)) {
-                _openDialogWindow.OpenErrorWindow("Клиент с таким паспортом уже существует");
-                return;
-            } // if
+            try {
+                // проверка существует ли такой клиент
+                if (_context.IsExistClient(client)) {
+                    _openDialogWindow.OpenErrorWindow("Клиент с таким паспортом уже существует");
+                    return;
+                } // if
 
-            // асинхронное добавление клиента в базу данных
-            await Task.Run(() => _context.AppendClient(client));
+                // асинхронное добавление клиента в базу данных
+                await Task.Run(() => _context.AppendClient(client));
 
-            // добавление данных в контейнер для отображения
-            Clients.Add(client);
-            SelectedClient = Clients[Clients.Count - 1];
+                // добавление данных в контейнер для отображения
+                Clients.Add(client);
+                SelectedClient = Clients[Clients.Count - 1];
 
-            // уведомление для пользователя
-            SendMessage($"Клиент {client.Person.Surname} {client.Person.Name[0]}. {client.Person.Patronymic[0]}. был добавлен");
+                // уведомление для пользователя
+                SendMessage($"Клиент {client.Person.Surname} {client.Person.Name[0]}. {client.Person.Patronymic[0]}. был добавлен");
+            }
+            catch (Exception ex) {
+                _openDialogWindow.OpenErrorWindow(ex.Message);
+            }
         } // AppendNewClient
 
         // добавление нового клиента в базу данных и в коллекцию для отображения
         public async void AppendNewWorker(Worker worker) {
-            // проверка существует ли такой работник
-            if (_context.IsExistWorker(worker)) {
-                _openDialogWindow.OpenErrorWindow("Работник с таким паспортом уже существует");
-                return;
-            } // if
+            try {
+                // проверка существует ли такой работник
+                if (_context.IsExistWorker(worker))
+                {
+                    _openDialogWindow.OpenErrorWindow("Работник с таким паспортом уже существует");
+                    return;
+                } // if
 
-            // добавление данных в базу данных
-            await Task.Run(() => _context.AppendWorker(worker));
+                // добавление данных в базу данных
+                await Task.Run(() => _context.AppendWorker(worker));
 
-            // добавление данных в коллецию для отображения
-            Workers.Insert(0, worker);
-            SelectedWorker = Workers[0];
+                // добавление данных в коллецию для отображения
+                Workers.Insert(0, worker);
+                SelectedWorker = Workers[0];
 
-            // уведомление для пользователя
-            SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был добавлен");
+                // уведомление для пользователя
+                SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был добавлен");
+            }
+            catch (Exception ex) {
+                _openDialogWindow.OpenErrorWindow(ex.Message);
+            }
         } // AppendNewWorker 
 
         // увольнение работника
         public async void RemoveWorkerByValue() {
-            // сохраняем данные для дальнейшей работы с БД
-            var worker = SelectedWorker;
+            try
+            {
+                // сохраняем данные для дальнейшей работы с БД
+                var worker = SelectedWorker;
 
-            // асинхронное увольнение работника (смена статуса работника на уволен)
-            await Task.Run(() => _context.RemoveWorker(SelectedWorker));
+                // асинхронное увольнение работника (смена статуса работника на уволен)
+                await Task.Run(() => _context.RemoveWorker(SelectedWorker));
 
-            // удаляем из коллекции
-            Workers.Remove(worker);
+                // удаляем из коллекции
+                Workers.Remove(worker);
 
-            // уведомление для пользователя
-            SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был уволен");
+                // уведомление для пользователя
+                SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был уволен");
+            }
+            catch (Exception ex)
+            {
+                _openDialogWindow.OpenErrorWindow(ex.Message);
+            }
         } // RemoveWorker
 
         // добавление новой машины в базу данных
         public async void AppendNewCar(Car car) {
-            // если добавленная машина имеет номер который уже есть бд, то мы останавливаем обработку
-            if (_context.IsExistNumber(car)) {
-                _openDialogWindow.OpenErrorWindow($"Номер \"{car.StateNumber}\" уже существует. Невозможно добавить новое авто");
-                return;
-            };
+            try {
+                // если добавленная машина имеет номер который уже есть бд, то мы останавливаем обработку
+                if (_context.IsExistNumber(car))
+                {
+                    _openDialogWindow.OpenErrorWindow(
+                        $"Номер \"{car.StateNumber}\" уже существует. Невозможно добавить новое авто");
+                    return;
+                }
 
-            // добавление данных в базу данных
-            await Task.Run(() => _context.AppendCar(car));
+                ;
 
-            // добавление данных в коллекцию для отображения
-            Cars.Insert(0, car);
-            SelectedCar = Cars[0];
+                // добавление данных в базу данных
+                await Task.Run(() => _context.AppendCar(car));
 
-            // уведомление для пользователя
-            SendMessage($"Автомобиль {car.StateNumber} был добавлен");
+                // добавление данных в коллекцию для отображения
+                Cars.Insert(0, car);
+                SelectedCar = Cars[0];
+
+                // уведомление для пользователя
+                SendMessage($"Автомобиль {car.StateNumber} был добавлен");
+            } // AppendNewCar
+            catch (Exception ex) {
+                _openDialogWindow.OpenErrorWindow(ex.Message);
+            }
         } // AppendNewCar
 
         // изменение данных в по клиенту в БД
         public async void ChangeClientInDb() {
-            try { await Task.Run(() => _context.ChangeClient(SelectedClient)); } // try
-            catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
+            try {
+                await Task.Run(() => _context.ChangeClient(SelectedClient));
 
-            // уведомление для пользователя
-            SendMessage($"Клиент {SelectedClient.Person.Surname} {SelectedClient.Person.Name[0]}. {SelectedClient.Person.Patronymic[0]}. был изменен");
+                // уведомление для пользователя
+                SendMessage($"Клиент {SelectedClient.Person.Surname} {SelectedClient.Person.Name[0]}. {SelectedClient.Person.Patronymic[0]}. был изменен");
+            } // try
+            catch (Exception ex) {
+                _openDialogWindow.OpenErrorWindow(ex.Message);
+            } // catch
         } // ChangeClientInDb
 
         // изменение данных по автомобилю в БД
         public async void ChangeCarInDb() {
-            try { await Task.Run(() => _context.ChangeCar(SelectedCar)); } // try
-            catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
+            try {
+                await Task.Run(() => _context.ChangeCar(SelectedCar));
 
-            // уведомление для пользователя
-            SendMessage($"Автомобиль {SelectedCar.StateNumber} был изменен");
+                // уведомление для пользователя
+                SendMessage($"Автомобиль {SelectedCar.StateNumber} был изменен");
+            } // try
+            catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
         } // ChangeCarInDb
 
         // изменение статуса готовности автомобиля
