@@ -368,7 +368,7 @@
                                 x:Name="BtRemoveWorker"
                                 Foreground="White"
                                 Margin="10"
-                                Content="Удалить работника"
+                                Content="Уволить работника"
                                 FontSize="11"
                                 ToolTip="Уволить выбранного работника работника"
                                 Command="{Binding RemoveWorker}"

@@ -8,6 +8,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Оформления заявки на ремонт"
+        ShowInTaskbar="False"
         Height="700"
         Width="1200"
         ResizeMode="NoResize"

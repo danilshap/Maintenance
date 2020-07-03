@@ -38,7 +38,7 @@ using Maintenance.Controllers;
         /// <summary>
         /// отправить дневной отчет
         /// </summary>
-        public void SendMonthRequest() => Task.Run(() => {
+        public void SendMonthRequest(){
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка месячного отчета");
             string response =
                 Client.SendMessage(
@@ -46,13 +46,13 @@ using Maintenance.Controllers;
                         new MonthReport(_context.GetMonthRepairOrders().ToList()).ToString()));
             RequestsAndResponse.Add(
                 $"{DateTime.Now:g} | {(string.IsNullOrEmpty(response) ? "Возникли какие-то проблемы" : response)}");
-        });
+        }
 
 
         /// <summary>
         /// оправка отчета о месячном составе
         /// </summary>
-        public void SendStuffRequest() => Task.Run(() =>
+        public void SendStuffRequest()
         {
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка отчета о рабочем составе");
             string response =
@@ -60,18 +60,18 @@ using Maintenance.Controllers;
                     RequestClass.CreateStuffRequest(new StuffReport(_context.GetAllWorkers().ToList()).ToString()));
             RequestsAndResponse.Add(
                 $"{DateTime.Now:g} | {(string.IsNullOrEmpty(response) ? "Возникли какие-то проблемы" : response)}");
-        });
+        }
 
         /// <summary>
         /// отправка запроса на выключение сервера
         /// </summary>
-        public void SendPowerOffRequest() => Task.Run(() => {
+        public void SendPowerOffRequest(){
             RequestsAndResponse.Add($"{DateTime.Now:g} | Отправка команды для выключения сервера");
             Client.SendMessage(RequestClass.GetPowerOffRequest());
             RequestsAndResponse.Add($"{DateTime.Now:g} | Сервер отключен");
 
             _window.BtCommands.IsEnabled = false;
-        });
+        }
 
         // --------------------------------------------------------------------------
         // команда для отправки месячного отчета

@@ -9,6 +9,7 @@
         Title="Добавление работника"
         Height="620"
         Width="600"
+        ShowInTaskbar="False"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         FontSize="16"

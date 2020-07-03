@@ -89,155 +89,126 @@ namespace Maintenance.ViewModels
 
         // добавление заявки в базу данных и в коллекция для отображения
         public async void AppendNewRequest(RepairOrder order) {
-            try {
-                if (order == null || order.Malfunctions.Count <= 0) {
-                    _openDialogWindow.OpenErrorWindow("Оформление заявки без неисправностей невозможно");
-                    return;
-                } // if
+            if (order == null || order.Malfunctions.Count <= 0)
+            {
+                _openDialogWindow.OpenErrorWindow("Оформление заявки без неисправностей невозможно");
+                return;
+            } // if
 
-                await Task.Run(() => _context.AppendOrder(order));
+            await Task.Run(() => _context.AppendOrder(order));
 
-                order.Id = Orders[Orders.Count - 1].Id + 1;
-                Orders.Add(order);
+            order.Id = Orders[Orders.Count - 1].Id + 1;
+            Orders.Add(order);
 
-                if (Clients.ToList().Find(c => c.Person.Passport == order.Client.Person.Passport) == null) Clients.Add(order.Client);
-                if (Cars.ToList().Find(c => c.StateNumber == order.Car.StateNumber) == null) Cars.Add(order.Car);
+            if (Clients.ToList().Find(c => c.Person.Passport == order.Client.Person.Passport) == null)
+                Clients.Add(order.Client);
+            if (Cars.ToList().Find(c => c.StateNumber == order.Car.StateNumber) == null) Cars.Add(order.Car);
 
-                // переприсвоение данных по работнику после изменения его статуса
-                RefreshWorkerData(order.Worker);
+            // переприсвоение данных по работнику после изменения его статуса
+            RefreshWorkerData(order.Worker);
 
-                // открытие окна для чека
-                _windowOpenService.OpenCheckWindow(Orders.Last());
+            // открытие окна для чека
+            _windowOpenService.OpenCheckWindow(Orders.Last());
 
-                // уведомление для пользователя
-                SendMessage("Новый отчет добавлен.");
-            }
-            catch (Exception ex) {
-                _openDialogWindow.OpenErrorWindow(ex.Message);
-            }
+            // уведомление для пользователя
+            SendMessage("Новый отчет добавлен.");
         } // AppendNewRequest
         
         // добавление нового клиента в базу данных и в коллекию для отображения
         public async void AppendNewClient(Client client) {
-            try {
-                // проверка существует ли такой клиент
-                if (_context.IsExistClient(client)) {
-                    _openDialogWindow.OpenErrorWindow("Клиент с таким паспортом уже существует");
-                    return;
-                } // if
+            // проверка существует ли такой клиент
+            if (_context.IsExistClient(client))
+            {
+                _openDialogWindow.OpenErrorWindow("Клиент с таким паспортом уже существует");
+                return;
+            } // if
 
-                // асинхронное добавление клиента в базу данных
-                await Task.Run(() => _context.AppendClient(client));
+            // асинхронное добавление клиента в базу данных
+            await Task.Run(() => _context.AppendClient(client));
 
-                // добавление данных в контейнер для отображения
-                Clients.Add(client);
-                SelectedClient = Clients[Clients.Count - 1];
+            // добавление данных в контейнер для отображения
+            Clients.Add(client);
+            SelectedClient = Clients[Clients.Count - 1];
 
-                // уведомление для пользователя
-                SendMessage($"Клиент {client.Person.Surname} {client.Person.Name[0]}. {client.Person.Patronymic[0]}. был добавлен");
-            }
-            catch (Exception ex) {
-                _openDialogWindow.OpenErrorWindow(ex.Message);
-            }
+            // уведомление для пользователя
+            SendMessage(
+                $"Клиент {client.Person.Surname} {client.Person.Name[0]}. {client.Person.Patronymic[0]}. был добавлен");
         } // AppendNewClient
 
         // добавление нового клиента в базу данных и в коллекцию для отображения
         public async void AppendNewWorker(Worker worker) {
-            try {
-                // проверка существует ли такой работник
-                if (_context.IsExistWorker(worker))
-                {
-                    _openDialogWindow.OpenErrorWindow("Работник с таким паспортом уже существует");
-                    return;
-                } // if
+            // проверка существует ли такой работник
+            if (_context.IsExistWorker(worker))
+            {
+                _openDialogWindow.OpenErrorWindow("Работник с таким паспортом уже существует");
+                return;
+            } // if
 
-                // добавление данных в базу данных
-                await Task.Run(() => _context.AppendWorker(worker));
+            // добавление данных в базу данных
+            await Task.Run(() => _context.AppendWorker(worker));
 
-                // добавление данных в коллецию для отображения
-                Workers.Insert(0, worker);
-                SelectedWorker = Workers[0];
+            // добавление данных в коллецию для отображения
+            Workers.Add(worker);
+            SelectedWorker = Workers[0];
 
-                // уведомление для пользователя
-                SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был добавлен");
-            }
-            catch (Exception ex) {
-                _openDialogWindow.OpenErrorWindow(ex.Message);
-            }
+            // уведомление для пользователя
+            SendMessage(
+                $"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был добавлен");
         } // AppendNewWorker 
 
         // увольнение работника
         public async void RemoveWorkerByValue() {
-            try
-            {
-                // сохраняем данные для дальнейшей работы с БД
-                var worker = SelectedWorker;
+            // сохраняем данные для дальнейшей работы с БД
+            var worker = SelectedWorker;
 
-                // асинхронное увольнение работника (смена статуса работника на уволен)
-                await Task.Run(() => _context.RemoveWorker(SelectedWorker));
+            // асинхронное увольнение работника (смена статуса работника на уволен)
+            await Task.Run(() => _context.RemoveWorker(SelectedWorker));
 
-                // удаляем из коллекции
-                Workers.Remove(worker);
+            // удаляем из коллекции
+            Workers.Remove(worker);
 
-                // уведомление для пользователя
-                SendMessage($"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был уволен");
-            }
-            catch (Exception ex)
-            {
-                _openDialogWindow.OpenErrorWindow(ex.Message);
-            }
+            // уведомление для пользователя
+            SendMessage(
+                $"Работник {worker.Person.Surname} {worker.Person.Name[0]}. {worker.Person.Patronymic[0]}. был уволен");
         } // RemoveWorker
 
         // добавление новой машины в базу данных
         public async void AppendNewCar(Car car) {
-            try {
-                // если добавленная машина имеет номер который уже есть бд, то мы останавливаем обработку
-                if (_context.IsExistNumber(car))
-                {
-                    _openDialogWindow.OpenErrorWindow(
-                        $"Номер \"{car.StateNumber}\" уже существует. Невозможно добавить новое авто");
-                    return;
-                }
-
-                ;
-
-                // добавление данных в базу данных
-                await Task.Run(() => _context.AppendCar(car));
-
-                // добавление данных в коллекцию для отображения
-                Cars.Insert(0, car);
-                SelectedCar = Cars[0];
-
-                // уведомление для пользователя
-                SendMessage($"Автомобиль {car.StateNumber} был добавлен");
-            } // AppendNewCar
-            catch (Exception ex) {
-                _openDialogWindow.OpenErrorWindow(ex.Message);
+            // если добавленная машина имеет номер который уже есть бд, то мы останавливаем обработку
+            if (_context.IsExistNumber(car))
+            {
+                _openDialogWindow.OpenErrorWindow(
+                    $"Номер \"{car.StateNumber}\" уже существует. Невозможно добавить новое авто");
+                return;
             }
+
+            // добавление данных в базу данных
+            await Task.Run(() => _context.AppendCar(car));
+
+            // добавление данных в коллекцию для отображения
+            Cars.Add(car);
+            SelectedCar = Cars[0];
+
+            // уведомление для пользователя
+            SendMessage($"Автомобиль {car.StateNumber} был добавлен");
         } // AppendNewCar
 
         // изменение данных в по клиенту в БД
-        public async void ChangeClientInDb() {
-            try {
-                await Task.Run(() => _context.ChangeClient(SelectedClient));
+        public async void ChangeClientInDb()
+        {
+            await Task.Run(() => _context.ChangeClient(SelectedClient));
 
-                // уведомление для пользователя
-                SendMessage($"Клиент {SelectedClient.Person.Surname} {SelectedClient.Person.Name[0]}. {SelectedClient.Person.Patronymic[0]}. был изменен");
-            } // try
-            catch (Exception ex) {
-                _openDialogWindow.OpenErrorWindow(ex.Message);
-            } // catch
+            // уведомление для пользователя
+            SendMessage(
+                $"Клиент {SelectedClient.Person.Surname} {SelectedClient.Person.Name[0]}. {SelectedClient.Person.Patronymic[0]}. был изменен");
         } // ChangeClientInDb
 
         // изменение данных по автомобилю в БД
         public async void ChangeCarInDb() {
-            try {
-                await Task.Run(() => _context.ChangeCar(SelectedCar));
+            await Task.Run(() => _context.ChangeCar(SelectedCar));
 
-                // уведомление для пользователя
-                SendMessage($"Автомобиль {SelectedCar.StateNumber} был изменен");
-            } // try
-            catch (Exception ex) { _openDialogWindow.OpenErrorWindow(ex.Message); } // catch
+            // уведомление для пользователя
+            SendMessage($"Автомобиль {SelectedCar.StateNumber} был изменен");
         } // ChangeCarInDb
 
         // изменение статуса готовности автомобиля
@@ -330,14 +301,22 @@ namespace Maintenance.ViewModels
         private RelayCommand _appendRequest;
         public RelayCommand AppendRequest => _appendRequest ??
             (_appendRequest = new RelayCommand(obj => {
-                if (!_context.IsHaveFreeWorkers()) {
-                    _openDialogWindow.OpenMessageWindow("В данный момент нет свободных работников");
-                    return;
+                try
+                {
+                    if (!_context.IsHaveFreeWorkers())
+                    {
+                        _openDialogWindow.OpenMessageWindow("В данный момент нет свободных работников");
+                        return;
+                    }
+                    // приводим к типу для доступа к функциям которые не реализованны в интерфейсе
+                    RepairOrder neworder = _windowOpenService.OpenAppendOrderWindow(_context);
+                    // добавление новой заявки в базу данных и в коллекцию
+                    AppendNewRequest(neworder);
                 }
-                // приводим к типу для доступа к функциям которые не реализованны в интерфейсе
-                RepairOrder neworder = _windowOpenService.OpenAppendOrderWindow(_context);
-                // добавление новой заявки в базу данных и в коллекцию
-                AppendNewRequest(neworder);
+                catch (Exception ex)
+                {
+                    _openDialogWindow.OpenErrorWindow(ex.Message);
+                }
             }));
 
         // открыть окно для заявок
@@ -358,48 +337,68 @@ namespace Maintenance.ViewModels
         private RelayCommand _appendClient;
         public RelayCommand AppendClient => _appendClient ??
             (_appendClient = new RelayCommand(obj => {
-                // новый клиент
-                Client newСlient = new Client{Person = new Person(), Address = new Address()};
-                // открытие окна добавления клиента
-                _windowOpenService.OpenAppendOrChangeClientWindow(newСlient, true);
-                // проверка на корректность данных
-                if (_context.IsCorrectClientData(newСlient)) {
-                    _openDialogWindow.OpenErrorWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
-                    return;
+                try {
+                    // новый клиент
+                    Client newСlient = new Client { Person = new Person(), Address = new Address() };
+                    // открытие окна добавления клиента
+                    _windowOpenService.OpenAppendOrChangeClientWindow(newСlient, true);
+                    // проверка на корректность данных
+                    if (_context.IsCorrectClientData(newСlient))
+                    {
+                        _openDialogWindow.OpenErrorWindow("Данные по клиенту не могут быть добавлены, потому что вы не заполнили все поля");
+                        return;
+                    }
+                    // асинхронное добавление данных в БД
+                    AppendNewClient(newСlient);
                 }
-                // асинхронное добавление данных в БД
-                AppendNewClient(newСlient);
+                catch (Exception ex) {
+                    _openDialogWindow.OpenErrorWindow(ex.Message);
+                }
+
             }));
 
         // открыть окно для просмотра информации о приложении
         private RelayCommand _changeClient;
         public RelayCommand ChangeClient => _changeClient ??
             (_changeClient = new RelayCommand(obj => {
-                // создание временной переменной для корректировки данных при изменении
-                var templClient = SelectedClient;
-                _windowOpenService.OpenAppendOrChangeClientWindow(SelectedClient, false);
-                // проверяем изменились ли данные-идентификаторы
-                // если у нас не совпадает с измененным и этот паспорт уже существует то мы кидаем исключение
-                if (templClient.Person.Passport == SelectedClient.Person.Passport &&
-                    _context.IsExistClient(templClient)) return;
+                try
+                {
+                    // создание временной переменной для корректировки данных при изменении
+                    var templClient = SelectedClient;
+                    _windowOpenService.OpenAppendOrChangeClientWindow(SelectedClient, false);
+                    // проверяем изменились ли данные-идентификаторы
+                    // если у нас не совпадает с измененным и этот паспорт уже существует то мы кидаем исключение
+                    if (templClient.Person.Passport == SelectedClient.Person.Passport &&
+                        _context.IsExistClient(templClient)) return;
 
-                ChangeClientInDb();
+                    ChangeClientInDb();
+                }
+                catch (Exception ex)
+                {
+                    _openDialogWindow.OpenErrorWindow(ex.Message);
+                }
             }, obj => SelectedClient != null));
 
         // открыть окно для добавление
         private RelayCommand _appendWorker;
         public RelayCommand AppendWorker => _appendWorker ??
             (_appendWorker = new RelayCommand(obj => {
-                // создание данных о работнике
-                Worker newWorker = new Worker{WorkExperience = 0};
-                // открытие окна для создания работника
-                _windowOpenService.OpenAppendWorkerWindow(newWorker, _context);
-                if (_context.IsCorrectWorkerData(newWorker)) {
-                    _openDialogWindow.OpenErrorWindow("Данные по работнику не могут быть добавлены, потому что вы не заполнили все поля");
-                    return;
-                } // if
-                // проверка корректности данных
-                AppendNewWorker(newWorker);
+                try {
+                    // создание данных о работнике
+                    Worker newWorker = new Worker { WorkExperience = 0 };
+                    // открытие окна для создания работника
+                    _windowOpenService.OpenAppendWorkerWindow(newWorker, _context);
+                    if (_context.IsCorrectWorkerData(newWorker))
+                    {
+                        _openDialogWindow.OpenErrorWindow("Данные по работнику не могут быть добавлены, потому что вы не заполнили все поля");
+                        return;
+                    } // if
+                    // проверка корректности данных
+                    AppendNewWorker(newWorker);
+                }
+                catch (Exception ex) {
+                    _openDialogWindow.OpenErrorWindow(ex.Message);
+                }
             }));
 
         // увольнение работника
@@ -413,31 +412,44 @@ namespace Maintenance.ViewModels
         private RelayCommand _appendCar;
         public RelayCommand AppendCar => _appendCar ??
             (_appendCar = new RelayCommand(obj => {
-                // создание новой переменной
-                Car newCar = new Car{Mark = new Mark()};
-                // открытие окна
-                _windowOpenService.OpenAppendOrChangeCarWindow(newCar, _context, true);
-                // проверка корректности данных
-                if (_context.IsCorrectCarData(newCar)) {
-                    _openDialogWindow.OpenErrorWindow("Данные по авто не могут быть добавлены, потому что вы не заполнили все поля");
-                    return;
+                try {
+                    // создание новой переменной
+                    Car newCar = new Car { Mark = new Mark() };
+                    // открытие окна
+                    _windowOpenService.OpenAppendOrChangeCarWindow(newCar, _context, true);
+                    // проверка корректности данных
+                    if (_context.IsCorrectCarData(newCar))
+                    {
+                        _openDialogWindow.OpenErrorWindow("Данные по авто не могут быть добавлены, потому что вы не заполнили все поля");
+                        return;
+                    }
+                    // добавление данных в базу данных
+                    AppendNewCar(newCar);
                 }
-                // добавление данных в базу данных
-                AppendNewCar(newCar);
+                catch (Exception ex)
+                {
+                    _openDialogWindow.OpenErrorWindow(ex.Message);
+                }
             }));
 
         // открыть окно для просмотра информации о приложении
         private RelayCommand _changeCar;
         public RelayCommand ChangeCar => _changeCar ??
             (_changeCar = new RelayCommand(obj => {
-                // создание временной переменной для корректирования данных при изменении
-                var templCar = SelectedCar;
-                _windowOpenService.OpenAppendOrChangeCarWindow(SelectedCar, _context, false);
-                // если изменения отличаются от временной переменной, и при этом переменная присутствует то мы уведомляем
-                // пользователя об ошибке
-                if (templCar.StateNumber == SelectedCar.StateNumber && _context.IsExistNumber(SelectedCar)) return;
+                try {
+                    // создание временной переменной для корректирования данных при изменении
+                    var templCar = SelectedCar;
+                    _windowOpenService.OpenAppendOrChangeCarWindow(SelectedCar, _context, false);
+                    // если изменения отличаются от временной переменной, и при этом переменная присутствует то мы уведомляем
+                    // пользователя об ошибке
+                    if (templCar.StateNumber == SelectedCar.StateNumber && _context.IsExistNumber(SelectedCar)) return;
 
-                ChangeCarInDb();
+                    ChangeCarInDb();
+                }
+                catch (Exception ex) {
+                    _openDialogWindow.OpenErrorWindow(ex.Message);
+                }
+
             }, obj => SelectedCar != null));
 
         // открыть окно для просмотра информации о приложении

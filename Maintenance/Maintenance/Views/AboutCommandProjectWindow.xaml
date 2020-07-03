@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Maintenance.Views"
         mc:Ignorable="d"
         Icon="../Images/application_icon.png"
+        ShowInTaskbar="False"
         Title="О командном проекте"
         Height="450"
         Width="800"

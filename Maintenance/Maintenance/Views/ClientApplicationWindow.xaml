@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Maintenance.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
+        ShowInTaskbar="False"
         Icon="../Images/application_icon.png"
         FontFamily="{materialDesign:MaterialDesignFont}"
         FontSize="11"
