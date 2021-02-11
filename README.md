@@ -39,10 +39,6 @@ Part of team project: https://github.com/whaplzzz/TeamProject
 **Demonstration of a team project**
 ![Снимок10](https://user-images.githubusercontent.com/60642588/107141870-95f8d900-693c-11eb-9fc3-1272722f2ac5.PNG)
 
-**Team Project Information Window"**
-
-![Снимок9](https://user-images.githubusercontent.com/60642588/107141869-95f8d900-693c-11eb-92f8-651f9b5b8112.PNG)
-
 ### Documentation
 
 Also, one of the tasks of the course project was writing documentation, namely maintaining sprints (tasks and stories) and writing C and D requirements
