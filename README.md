@@ -29,26 +29,6 @@ It was necessary to change / add data. Working with multithreading, ASP.NET and 
 В данном окне есть возможность добавления клиентов и автомобилей (сразу)
 ![Снимок2](https://user-images.githubusercontent.com/60642588/107141854-942f1580-693c-11eb-9774-44167189faf6.PNG)
 
-**Submitting a new repair request**
-
-![Снимок3](https://user-images.githubusercontent.com/60642588/107141856-942f1580-693c-11eb-9e6d-483023615e83.PNG)
-
-**Add worker window**
-
-![Снимок4](https://user-images.githubusercontent.com/60642588/107141859-94c7ac00-693c-11eb-8a7c-e43325e80de5.PNG)
-
-**Add car window**
-
-![Снимок5](https://user-images.githubusercontent.com/60642588/107141861-94c7ac00-693c-11eb-8784-16add94e709c.PNG)
-
-**Window for receiving inquiries about the work of the workshop**
-
-![Снимок6](https://user-images.githubusercontent.com/60642588/107141864-95604280-693c-11eb-8da5-ac679e6bac07.PNG)
-
-**Program Information Window**
-
-![Снимок7](https://user-images.githubusercontent.com/60642588/107141865-95604280-693c-11eb-882a-1b97252348a8.PNG)
-
 ### Team part of the project
 
 Also, work was done with the team to write a client-server application for transferring service reports to the server from the client application. The work was done via TCP protocol
